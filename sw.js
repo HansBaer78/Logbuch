@@ -2,7 +2,7 @@
    Die App-Dateien werden beim ersten Aufruf gespeichert und danach
    immer aus dem Gerät geladen. Wetterabrufe gehen weiter ins Netz. */
 
-var CACHE = "logbuch-v8";
+var CACHE = "logbuch-v15";
 var DATEIEN = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./logo.png"];
 
 self.addEventListener("install", function(e){

@@ -27,16 +27,17 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);color:#EDF1EE;padd
 .brand .boat{display:block;font-family:var(--f-data);font-size:11px;color:#8FA8AE;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .totals{display:flex;gap:14px;font-family:var(--f-data);font-size:11.5px;color:#9FB8BD;letter-spacing:.05em;margin:4px 0 8px;flex-wrap:wrap}
 .totals b{color:#F4F7F4;font-weight:600}
-nav{display:flex;gap:4px;margin:2px 0 0}
-nav button{flex:1;background:transparent;border:0;border-bottom:2px solid transparent;color:#8FA8AE;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:12.5px;padding:9px 4px;min-height:40px}
+nav{display:flex;gap:2px;margin:2px 0 0;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;min-width:82px;background:transparent;border:0;border-bottom:2px solid transparent;color:#8FA8AE;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-size:11.5px;padding:9px 2px;min-height:40px;white-space:nowrap}
 nav button[aria-selected="true"]{color:#F4F7F4;border-bottom-color:var(--brass)}
 .ruler{position:relative;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .ruler::-webkit-scrollbar{display:none}
 .ruler.hidden{display:none}
 .days{display:flex;gap:6px;padding:6px 0 10px}
-.day{flex:0 0 auto;min-width:58px;padding:6px 8px 7px;border:1px solid #38525E;border-radius:8px 8px 0 0;background:#16303D;color:#C3D5D8;text-align:center;font-family:var(--f-data);cursor:pointer;position:relative}
+.day{flex:0 0 auto;min-width:68px;padding:6px 8px 7px;border:1px solid #38525E;border-radius:8px 8px 0 0;background:#16303D;color:#C3D5D8;text-align:center;font-family:var(--f-data);cursor:pointer;position:relative}
 .day .n{display:block;font-size:15px;font-weight:600}
-.day .d{display:block;font-size:10px;color:#87A2A9;margin-top:1px}
+.day .d{display:block;font-size:9.5px;color:#87A2A9;margin-top:1px}
 .day.filled{border-color:var(--seagrass)}
 .day.filled::after{content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:3px;width:16px;height:2px;background:#5BB98C;border-radius:2px}
 .day[aria-current="true"]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
@@ -104,13 +105,28 @@ footer .navbtns.hidden{display:none}
 #exportOut{white-space:pre-wrap;font-family:var(--f-data);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:22px}
 #exportOut.hidden{display:none}
 #druckkopf{display:none}
+.hilfe h3{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.09em;font-size:12px;color:var(--ink-soft);margin:14px 0 4px}
+.hilfe p{margin:0 0 8px;font-size:14.5px}
+.hilfe ul{margin:0 0 10px;padding-left:20px;font-size:14.5px}
+.hilfe li{margin:0 0 5px}
+.hilfe b{font-weight:600}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-family:var(--f-data);font-size:12.5px;margin:0 0 12px}
+.kv span:nth-child(odd){color:var(--ink-soft)}
+.wtab{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 12px}
+.wtab th{text-align:left;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.07em;font-size:10.5px;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:5px 6px 5px 0;vertical-align:bottom}
+.wtab td{border-bottom:1px solid #E8EDE9;padding:6px 6px 6px 0;vertical-align:top}
+.wtab td:first-child{font-weight:600;white-space:nowrap}
+.funk{background:#F5F7F3;border-left:3px solid var(--ink);border-radius:0 8px 8px 0;padding:9px 11px;margin:0 0 12px;font-family:var(--f-data);font-size:12.5px;line-height:1.55;white-space:pre-line}
+.linkliste{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.linkliste a{font-family:var(--f-data);font-size:12.5px;color:var(--ink);text-decoration:none;border:1px solid var(--ink);border-radius:8px;padding:9px 11px;min-height:40px;display:flex;align-items:center}
 @media (min-width:560px){.dayhead .big{font-size:26px}}
 @media print{
   header,footer,.tools,.btnrow,#exportOut,#viewSetup{display:none}
   #druckkopf{display:flex;align-items:center;gap:12px;padding:0 0 10px;border-bottom:1px solid #999;margin:0 0 12px}
   #druckkopf img{width:54px;height:54px}
   #druckkopf b{display:block;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.08em;font-size:16px}
-  #druckkopf span{font-family:var(--f-data);font-size:11px}body{background:#fff;padding:0}.view{display:block!important}.sheet{break-inside:avoid;border-color:#999}}
+  #druckkopf span{display:block;font-family:var(--f-data);font-size:11px}
+  #dkHinweis{color:#555;font-size:9.5px}body{background:#fff;padding:0}.view{display:block!important}.sheet{break-inside:avoid;border-color:#999}}
 @media (prefers-reduced-motion:no-preference){.sheet{animation:rise .18s ease-out}@keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
 </style>
 </head>
@@ -129,6 +145,8 @@ footer .navbtns.hidden{display:none}
     <button data-v="log" aria-selected="true">Logbuch</button>
     <button data-v="wetter" aria-selected="false">Wetter</button>
     <button data-v="setup" aria-selected="false">Stammdaten</button>
+    <button data-v="wiki" aria-selected="false">Wiki</button>
+    <button data-v="info" aria-selected="false">Info</button>
   </nav>
   <div class="ruler" id="ruler"><div class="days" id="days"></div></div>
 </header>
@@ -137,7 +155,7 @@ footer .navbtns.hidden{display:none}
 
 <div id="druckkopf">
   <img src="./logo.png" alt="">
-  <div><b id="dkBoot"></b><span id="dkZeit"></span></div>
+  <div><b id="dkBoot"></b><span id="dkZeit"></span><span id="dkHinweis"></span></div>
 </div>
 
 <main>
@@ -164,8 +182,18 @@ footer .navbtns.hidden{display:none}
     <div class="sheet">
       <h2>Wetteranalyse für Segler</h2>
       <div class="grid">
-        <div class="f wide"><label for="w_stand">Standort</label><input id="w_stand" type="text" placeholder="43.5871, 15.9203 oder Ortsname"></div>
-        <div class="f wide"><label for="w_ziel">Ziel (optional)</label><input id="w_ziel" type="text" placeholder="z. B. Zut oder 43.90, 15.30"></div>
+        <div class="f wide"><label for="w_stand">Standort</label><input id="w_stand" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="43.5871, 15.9203 oder Ortsname"></div>
+        <div class="f wide"><label for="w_ziel">Ziel (optional)</label><input id="w_ziel" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="z. B. Zut oder 43.90, 15.30"></div>
+        <div class="f"><label for="w_offen">Ankerbucht offen nach</label>
+          <select id="w_offen">
+            <option value="">unbekannt / noch offen</option>
+            <option value="rundum">rundum geschützt</option>
+            <option value="N">N</option><option value="NE">NE</option>
+            <option value="E">E</option><option value="SE">SE</option>
+            <option value="S">S</option><option value="SW">SW</option>
+            <option value="W">W</option><option value="NW">NW</option>
+          </select>
+        </div>
         <div class="f"><label for="w_umkreis">Umkreis</label>
           <select id="w_umkreis">
             <option value="0">nur Punkt</option>
@@ -186,6 +214,15 @@ footer .navbtns.hidden{display:none}
           </select>
         </div>
       </div>
+      <div class="f wide" style="margin:0 0 10px">
+        <label for="w_amt">Amtlicher Seewetterbericht (Text einfügen)</label>
+        <textarea id="w_amt" rows="3" placeholder="Text von meteo.hr hier einfügen – die Analyse vergleicht ihn mit dem Modell"></textarea>
+      </div>
+      <div class="btnrow">
+        <button class="small" id="wDhmzDe">DHMZ Adria</button>
+        <button class="small" id="wDhmzEn">DHMZ englisch</button>
+        <button class="small" id="wGekom">bora.gekom.hr</button>
+      </div>
       <div class="btnrow">
         <button class="small primary" id="wGo">Analyse starten</button>
         <button class="small" id="wGps">Standort vom GPS</button>
@@ -200,15 +237,15 @@ footer .navbtns.hidden{display:none}
     <div class="sheet">
       <h2>Törn und Schiff</h2>
       <div class="grid">
-        <div class="f"><label for="t_boot">Bootsname</label><input id="t_boot" type="text" placeholder="Red Twin II"></div>
-        <div class="f"><label for="t_typ">Bootstyp</label><input id="t_typ" type="text" placeholder="Lagoon 450F"></div>
-        <div class="f wide"><label for="t_skipper">Skipper</label><input id="t_skipper" type="text" placeholder="Name des Skippers"></div>
+        <div class="f"><label for="t_boot">Bootsname</label><input id="t_boot" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Red Twin II"></div>
+        <div class="f"><label for="t_typ">Bootstyp</label><input id="t_typ" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Lagoon 450F"></div>
+        <div class="f wide"><label for="t_skipper">Skipper</label><input id="t_skipper" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Name des Skippers"></div>
         <div class="f"><label for="t_start">Reise von</label><input id="t_start" type="date"></div>
         <div class="f"><label for="t_ende">Reise bis</label><input id="t_ende" type="date"></div>
-        <div class="f"><label for="t_personen">Personen an Bord</label><input id="t_personen" type="text" inputmode="numeric" placeholder="6"></div>
-        <div class="f"><label for="t_motBB">Motorstunden BB bei Übernahme</label><input id="t_motBB" type="text" inputmode="decimal" placeholder="z. B. 1842,5"></div>
-        <div class="f"><label for="t_motSB">Motorstunden SB bei Übernahme</label><input id="t_motSB" type="text" inputmode="decimal" placeholder="z. B. 1798,0"></div>
-        <div class="f"><label for="t_gen">Generatorstunden bei Übernahme</label><input id="t_gen" type="text" inputmode="decimal" placeholder="z. B. 640,0"></div>
+        <div class="f"><label for="t_personen">Personen an Bord</label><input id="t_personen" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="numeric" placeholder="6"></div>
+        <div class="f"><label for="t_motBB">Motorstunden BB bei Übernahme</label><input id="t_motBB" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 1842,5"></div>
+        <div class="f"><label for="t_motSB">Motorstunden SB bei Übernahme</label><input id="t_motSB" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 1798,0"></div>
+        <div class="f"><label for="t_gen">Generatorstunden bei Übernahme</label><input id="t_gen" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 640,0"></div>
       </div>
       <p class="note" id="tornInfo"></p>
     </div>
@@ -221,7 +258,7 @@ footer .navbtns.hidden{display:none}
     </div>
 
     <div class="sheet" id="setup">
-      <h2>Speicherort und Wetterquelle</h2>
+      <h2>Speicherort, Wetterquelle und Modell</h2>
       <p class="note" id="storeInfo"></p>
       <div class="btnrow">
         <button class="small" id="btnPick">Speicherort wählen</button>
@@ -235,9 +272,12 @@ footer .navbtns.hidden{display:none}
             <option value="windy">Windy Point Forecast (Schlüssel)</option>
           </select>
         </div>
-        <div class="f"><label for="s_key">Windy API-Schlüssel</label><input id="s_key" type="text" autocomplete="off" placeholder="nur für Windy nötig"></div>
-        <div class="f"><label for="s_lat">Breite (Lat)</label><input id="s_lat" type="text" inputmode="decimal" placeholder="43.5871"></div>
-        <div class="f"><label for="s_lon">Länge (Lon)</label><input id="s_lon" type="text" inputmode="decimal" placeholder="15.9203"></div>
+        <div class="f"><label for="s_modell">Wettermodell für die Analyse</label>
+          <select id="s_modell"></select>
+        </div>
+        <div class="f"><label for="s_key">Windy API-Schlüssel</label><input id="s_key" type="text" autocomplete="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="nur für Windy nötig"></div>
+        <div class="f"><label for="s_lat">Breite (Lat)</label><input id="s_lat" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="43.5871"></div>
+        <div class="f"><label for="s_lon">Länge (Lon)</label><input id="s_lon" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="15.9203"></div>
       </div>
       <p class="note" id="diag"></p>
       <p class="note">Der freie Windy-Schlüssel liefert nur Testdaten von zufälligen Koordinaten. Für den Törn ist Open-Meteo die brauchbare Quelle.</p>
@@ -253,6 +293,338 @@ footer .navbtns.hidden{display:none}
       <input type="file" id="file" accept=".json,application/json" hidden>
     </div>
     <div id="exportOut" class="hidden"></div>
+  </section>
+  <section class="view" id="viewWiki">
+    <div class="sheet hilfe">
+      <h2>Notruf und Funk</h2>
+      <p class="note err">Alle Angaben ohne Gewähr, vor dem Törn im Hafenhandbuch und bei der Basis prüfen. Im Notfall zählt Kanal 16 und DSC, nicht das Handy.</p>
+
+      <h3>Kroatien</h3>
+      <table class="wtab">
+        <tr><th>Weg</th><th>Angabe</th></tr>
+        <tr><td>Seenot Kurzwahl</td><td>195 (MRCC Rijeka, gebührenfrei) · aus dem Ausland +385 51 195</td></tr>
+        <tr><td>Allgemein</td><td>112, wird an das MRCC weitergeleitet</td></tr>
+        <tr><td>UKW</td><td>Kanal 16 Sprechfunk, Kanal 70 DSC, MRCC hört auch Kanal 10</td></tr>
+        <tr><td>Grenzwelle</td><td>2187,5 kHz DSC</td></tr>
+        <tr><td>Küstenfunk</td><td>Rijeka Radio, Split Radio, Dubrovnik Radio – Ruf auf 16, dann Arbeitskanal</td></tr>
+        <tr><td>NAVTEX</td><td>518 kHz, Sender Split, Kennung Q, englisch</td></tr>
+        <tr><td>Hafenämter</td><td>Šibenik und Split rund um die Uhr besetzt</td></tr>
+        <tr><td>Pannendienst</td><td>SeaHelp +385 919 112 112, auch auf Kanal 16</td></tr>
+      </table>
+
+      <h3>Italien</h3>
+      <table class="wtab">
+        <tr><th>Weg</th><th>Angabe</th></tr>
+        <tr><td>Seenot Kurzwahl</td><td>1530 (Guardia Costiera, gebührenfrei)</td></tr>
+        <tr><td>Allgemein</td><td>112</td></tr>
+        <tr><td>UKW</td><td>Kanal 16, DSC 70</td></tr>
+        <tr><td>Koordination</td><td>MRCC Roma, Küstenfunkstellen als Roma Radio rufen</td></tr>
+      </table>
+
+      <h3>Griechenland</h3>
+      <table class="wtab">
+        <tr><th>Weg</th><th>Angabe</th></tr>
+        <tr><td>Seenot Kurzwahl</td><td>108 (Hellenic Coast Guard)</td></tr>
+        <tr><td>Allgemein</td><td>112</td></tr>
+        <tr><td>UKW</td><td>Kanal 16, DSC 70</td></tr>
+        <tr><td>Koordination</td><td>JRCC Piräus, Küstenfunk als Olympia Radio rufen</td></tr>
+      </table>
+
+      <h3>Immer bereitlegen</h3>
+      <p>Bootsname, Rufzeichen, MMSI, Position in Grad und Minuten, Anzahl Personen an Bord. Das Blatt gehört neben das Funkgerät, nicht ins Gedächtnis.</p>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Wichtige Funksprüche</h2>
+
+      <h3>Seenotfall – Lebensgefahr</h3>
+      <div class="funk">MAYDAY MAYDAY MAYDAY
+HIER IST Red Twin II, Red Twin II, Red Twin II
+Rufzeichen ..., MMSI ...
+MAYDAY Red Twin II
+POSITION 43 Grad 35 Minuten Nord, 015 Grad 55 Minuten Ost
+ART DER NOT: Wassereinbruch, Boot sinkt
+BENÖTIGE Hilfe: sofortige Rettung
+6 PERSONEN AN BORD, davon 1 Kind
+ENDE</div>
+      <p>Vorher DSC-Notalarm mit dem roten Knopf senden, dann diesen Spruch auf Kanal 16 sprechen. Langsam, deutlich, notfalls wiederholen.</p>
+
+      <h3>Dringlichkeit – ernst, aber keine Lebensgefahr</h3>
+      <div class="funk">PAN PAN PAN PAN PAN PAN
+AN ALLE, AN ALLE, AN ALLE
+HIER IST Red Twin II, Red Twin II, Red Twin II
+POSITION ...
+Ruderschaden, treibe auf Küste zu, benötige Schlepphilfe
+ENDE</div>
+
+      <h3>Sicherheit – Warnung</h3>
+      <div class="funk">SÉCURITÉ SÉCURITÉ SÉCURITÉ
+AN ALLE
+HIER IST Red Twin II
+Treibender Container in Position ...
+ENDE</div>
+
+      <h3>Mann über Bord</h3>
+      <div class="funk">MAYDAY MAYDAY MAYDAY
+HIER IST Red Twin II (3x)
+MAYDAY Red Twin II, POSITION ...
+PERSON ÜBER BORD, 1 Person im Wasser
+BENÖTIGE sofortige Suchhilfe
+ENDE</div>
+      <p>Sofort: MOB-Knopf am Plotter, Rettungsring mit Licht werfen, ein Crewmitglied zeigt dauerhaft auf die Person, Motor an, Segel bergen.</p>
+
+      <h3>Anruf einer Marina oder Küstenfunkstelle</h3>
+      <div class="funk">Marina Kremik, Marina Kremik
+HIER IST Segelyacht Red Twin II
+Katamaran, 13,96 Meter lang, 7,84 Meter breit
+Bitten um Liegeplatz für heute Nacht
+KOMMEN</div>
+      <p>Bei einem Kat immer die Breite mit angeben, sonst wird ein Platz zugewiesen, der nicht passt.</p>
+
+      <h3>Verständigung</h3>
+      <p>Buchstabieren nach NATO: Alfa, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliett, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-Ray, Yankee, Zulu.</p>
+      <p><b>KOMMEN</b> = ich erwarte Antwort · <b>ENDE</b> = Gespräch beendet · <b>ROGER</b> = verstanden · <b>WILCO</b> = verstanden und wird ausgeführt · <b>SAY AGAIN</b> = wiederholen · <b>STAND BY</b> = warten.</p>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Ausweichregeln</h2>
+
+      <h3>Segler gegen Segler</h3>
+      <ul>
+        <li><b>Verschiedener Bug:</b> Backbordbug weicht aus. Backbordbug heißt, der Wind kommt von Backbord und der Baum steht auf Steuerbord.</li>
+        <li><b>Gleicher Bug:</b> Der Luvfahrer weicht dem Leefahrer aus.</li>
+        <li><b>Unklar, welchen Bug der andere hat:</b> du weichst aus.</li>
+        <li><b>Überholen:</b> Der Überholende weicht aus, egal wer wo liegt.</li>
+      </ul>
+
+      <h3>Segler gegen Motor</h3>
+      <p>Grundsätzlich weicht das Maschinenfahrzeug dem Segler aus – aber mit vielen Ausnahmen, die in der Praxis wichtiger sind als die Regel. Der Segler weicht aus gegenüber:</p>
+      <ul>
+        <li>manövrierunfähigen und manövrierbehinderten Fahrzeugen</li>
+        <li>Fischern beim Fischen mit Netzen oder Leinen</li>
+        <li>großen Schiffen in engen Fahrwassern und Zufahrten – dort darf man nicht behindern</li>
+        <li>Fähren und Linienverkehr, praktisch immer: nicht auf das Vorfahrtsrecht pochen</li>
+      </ul>
+      <p>Sobald du unter Motor fährst, bist du Maschinenfahrzeug – auch mit gesetzten Segeln.</p>
+
+      <h3>Motor gegen Motor</h3>
+      <ul>
+        <li><b>Entgegenkommend:</b> beide nach Steuerbord ausweichen, Backbord an Backbord passieren</li>
+        <li><b>Kreuzend:</b> wer den anderen an Steuerbord hat, weicht aus und geht hinter ihm vorbei</li>
+        <li><b>Überholen:</b> der Überholende weicht aus</li>
+      </ul>
+
+      <h3>Immer gültig</h3>
+      <p>Ständiger Ausguck, angepasste Geschwindigkeit, frühzeitiges und deutliches Manöver. Wer Vorfahrt hat, muss Kurs und Fahrt beibehalten – bis eine Kollision nur noch durch eigenes Handeln zu vermeiden ist. Die letzte Regel schlägt alle anderen: Kollision vermeiden.</p>
+
+      <h3>Schallsignale</h3>
+      <p>Ein kurzer Ton = ich gehe nach Steuerbord · zwei kurz = nach Backbord · drei kurz = ich fahre rückwärts · fünf kurz und schnell = ich verstehe deine Absicht nicht, Gefahr.</p>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Seezeichen (IALA A)</h2>
+      <p>Kroatien, Italien und Griechenland liegen alle in Region A: <b>rot an Backbord</b> beim Einlaufen.</p>
+
+      <h3>Kardinalzeichen – wo ist freies Wasser</h3>
+      <table class="wtab">
+        <tr><th>Zeichen</th><th>Farbe</th><th>Toppzeichen</th><th>Feuer (weiß)</th><th>Bedeutung</th></tr>
+        <tr><td>Nord</td><td>schwarz über gelb</td><td>2 Kegel, Spitzen nach oben</td><td>Q oder VQ, ununterbrochen</td><td>nördlich vorbeifahren</td></tr>
+        <tr><td>Ost</td><td>schwarz, gelb, schwarz</td><td>2 Kegel, Basis an Basis</td><td>Q(3) 10 s oder VQ(3) 5 s</td><td>östlich vorbeifahren</td></tr>
+        <tr><td>Süd</td><td>gelb über schwarz</td><td>2 Kegel, Spitzen nach unten</td><td>Q(6)+LFl 15 s oder VQ(6)+LFl 10 s</td><td>südlich vorbeifahren</td></tr>
+        <tr><td>West</td><td>gelb, schwarz, gelb</td><td>2 Kegel, Spitze an Spitze</td><td>Q(9) 15 s oder VQ(9) 10 s</td><td>westlich vorbeifahren</td></tr>
+      </table>
+      <p>Eselsbrücke: Die Zahl der Blitze folgt dem Uhrzeigersinn – Ost 3, Süd 6, West 9, Nord ohne Unterbrechung. Süd hat zusätzlich den langen Blitz, damit man 6 und 9 nicht verzählt. Die Kegel zeigen dorthin, wo das Schwarz sitzt.</p>
+
+      <h3>Weitere Zeichen</h3>
+      <table class="wtab">
+        <tr><th>Zeichen</th><th>Aussehen</th><th>Bedeutung</th></tr>
+        <tr><td>Backbord</td><td>rot, Zylinder, rotes Feuer</td><td>beim Einlaufen links liegen lassen</td></tr>
+        <tr><td>Steuerbord</td><td>grün, Kegel, grünes Feuer</td><td>beim Einlaufen rechts liegen lassen</td></tr>
+        <tr><td>Einzelgefahr</td><td>schwarz mit rotem Band, 2 schwarze Bälle, Fl(2)</td><td>Gefahr an der Tonne, ringsum frei</td></tr>
+        <tr><td>Mitte-Fahrwasser</td><td>rot-weiß längs gestreift, roter Ball</td><td>freies Wasser, beidseitig passierbar</td></tr>
+        <tr><td>Sonderzeichen</td><td>gelb, gelbes Kreuz, gelbes Feuer</td><td>Sperrgebiet, Kabel, Bojenfeld, Badezone</td></tr>
+        <tr><td>Neue Gefahr</td><td>doppelt bezeichnet, oft Racon</td><td>frisches Wrack oder Hindernis</td></tr>
+      </table>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Kurse zum Wind</h2>
+      <table class="wtab">
+        <tr><th>Kurs</th><th>Winkel zum Wind</th><th>Hinweis</th></tr>
+        <tr><td>Im Wind</td><td>0 bis 35°</td><td>Segel killen, kein Vortrieb – nur zum Reffen und Manövrieren</td></tr>
+        <tr><td>Am Wind</td><td>ca. 45°</td><td>Der Kat mag es nicht zu spitz, 50 bis 55° laufen schneller als 40°</td></tr>
+        <tr><td>Halber Wind</td><td>ca. 90°</td><td>schnellster und angenehmster Kurs</td></tr>
+        <tr><td>Raumschots</td><td>ca. 135°</td><td>bequem, Baum sichern (Bullenstander)</td></tr>
+        <tr><td>Vor dem Wind</td><td>ca. 180°</td><td>Patenthalse-Gefahr, Baum immer sichern</td></tr>
+      </table>
+      <p><b>Wende:</b> durch den Wind mit dem Bug. Kommando „Klar zum Wenden" – „Ree". Beim Kat mit Fahrt in die Wende gehen, sonst bleibt er im Wind stehen.</p>
+      <p><b>Halse:</b> durch den Wind mit dem Heck. Kommando „Klar zur Halse" – „Halse". Großschot dicht holen, kontrolliert übernehmen, nie schießen lassen.</p>
+      <p><b>Reffen:</b> früh und in Lee vor einer Insel, nicht mitten in der Böe. Der Kat krängt nicht als Vorwarnung – die Regel lautet: wenn du überlegst, ob du reffen sollst, ist es Zeit.</p>
+
+      <h3>Ankern – Faustregeln</h3>
+      <ul>
+        <li>Kette 4:1 bei ruhigem Wetter, 5:1 normal, 6 bis 7:1 bei starkem Wind – gerechnet auf Wassertiefe plus Bughöhe</li>
+        <li>Bridle an beide Bugklampen, entlastet die Winsch und hält den Kat ruhig</li>
+        <li>Sandgrund suchen, Seegraswiesen halten schlecht und sind geschützt</li>
+        <li>Rückwärts eindampfen, Peilung nehmen, Ankeralarm setzen</li>
+        <li>Schwoikreis vor dem Dunkelwerden prüfen, auch für den erwarteten Winddreher</li>
+      </ul>
+
+      <h3>Lichter nachts erkennen</h3>
+      <p>Grün rechts, rot links: Sehe ich rot und grün, kommt er direkt auf mich zu. Nur grün heißt, ich sehe seine Steuerbordseite. Weißes Licht über zwei farbigen: Maschinenfahrzeug über 50 m mit zwei Masttopplichtern. Ein Segler zeigt keine Masttopplichter, ein Kat unter Motor schon.</p>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Adria-Winde</h2>
+      <table class="wtab">
+        <tr><th>Wind</th><th>Richtung</th><th>Verhalten</th></tr>
+        <tr><td>Bora</td><td>NE bis E</td><td>Fallwind von den Bergen, extrem böig, setzt plötzlich ein, unter Land am stärksten, klare Sicht. Nicht auslaufen, Buchten mit Schutz nach NE wählen.</td></tr>
+        <tr><td>Jugo</td><td>SE</td><td>baut über Stunden auf, lange Welle, feucht und diesig, hält oft 2 bis 3 Tage. Marina bevorzugen.</td></tr>
+        <tr><td>Maestral</td><td>NW</td><td>thermisch, ab Mittag einsetzend, Maximum am Nachmittag, abends Abflauen. Der Schönwetterwind – früh los, früh Bucht.</td></tr>
+        <tr><td>Tramontana</td><td>N</td><td>kalt, böig, meist kurzlebig</td></tr>
+        <tr><td>Levanat / Oštro</td><td>E bis SE</td><td>oft Vorbote eines Wetterwechsels</td></tr>
+      </table>
+      <p>Warnsignale für Bora: hohe Druckdifferenz, klarer Himmel mit Wolkenkappe über dem Velebit, plötzliches Abflauen vor dem Einsetzen. Die Modelle in dieser App unterschätzen die Böen unter der Steilküste – Aufschlag von 10 bis 15 kn einrechnen.</p>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Links</h2>
+      <h3>Wetter</h3>
+      <div class="linkliste">
+        <a href="https://meteo.hr/prognoze.php?section=prognoze_specp&param=jadran&el=jadran_n" target="_blank" rel="noopener">DHMZ Adria</a>
+        <a href="https://www.meteo.hr/prognoze_e.php?section=prognoze_specp&param=jadran" target="_blank" rel="noopener">DHMZ englisch</a>
+        <a href="https://www.bora.gekom.hr/" target="_blank" rel="noopener">bora.gekom.hr</a>
+        <a href="https://www.windy.com/" target="_blank" rel="noopener">Windy</a>
+        <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>
+      </div>
+      <h3>Kroatien – Behörden und Revier</h3>
+      <div class="linkliste">
+        <a href="https://www.np-kornati.hr/" target="_blank" rel="noopener">Nationalpark Kornati</a>
+        <a href="https://www.np-krka.hr/" target="_blank" rel="noopener">Nationalpark Krka</a>
+        <a href="https://mmpi.gov.hr/" target="_blank" rel="noopener">Verkehrsministerium HR</a>
+        <a href="https://www.plovput.hr/" target="_blank" rel="noopener">Plovput (Seezeichen, NAVTEX)</a>
+        <a href="https://nautika.mmpi.hr/" target="_blank" rel="noopener">Vignette und Crewliste online</a>
+        <a href="https://www.seahelp.eu/" target="_blank" rel="noopener">SeaHelp</a>
+      </div>
+      <h3>Wissen und Nachschlagen</h3>
+      <div class="linkliste">
+        <a href="https://www.skipperguide.de/" target="_blank" rel="noopener">SkipperGuide Wiki</a>
+        <a href="https://www.blauwasser.de/" target="_blank" rel="noopener">Blauwasser.de</a>
+        <a href="https://www.elektronische-seekarten.de/" target="_blank" rel="noopener">Seekarten-Info</a>
+        <a href="https://www.marinetraffic.com/" target="_blank" rel="noopener">MarineTraffic (AIS)</a>
+      </div>
+      <p class="note">Links öffnen im Browser und brauchen Internet. Notrufnummern und Kanäle bitte zusätzlich ausgedruckt an Bord haben.</p>
+    </div>
+  </section>
+
+  <section class="view" id="viewInfo">
+    <div class="sheet">
+      <h2>Über diese App</h2>
+      <div class="kv" id="infoKv"></div>
+      <p class="note">Gebaut als reine Webseite ohne Fremdbibliotheken. Alle Einträge bleiben auf dem Gerät, es gibt keinen Server, der mitliest. Nur Wetterabruf und Karte brauchen Internet.</p>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Kurzanleitung</h2>
+
+      <h3>Logbuch</h3>
+      <p>Oben die Tagesleiste: Tagesnummer, Wochentag und Datum. Ein grüner Strich zeigt, dass für den Tag etwas erfasst ist. Unten rechts blätterst du mit „Tag" vor und zurück. Jede Eingabe wird sofort gespeichert, du musst nichts bestätigen.</p>
+      <ul>
+        <li><b>Etappe</b> – von, nach, Zeiten, Distanz, Log, Segel- und Motorstunden</li>
+        <li><b>Wetter und See</b> – von Hand oder per Knopf „Wetter jetzt übernehmen"</li>
+        <li><b>Schiffsbetrieb</b> – Tankstände, Generator, Gebühren, Technik</li>
+        <li><b>Crew</b> und <b>Eintrag des Skippers</b> für Besonderheiten und Vorfälle</li>
+      </ul>
+
+      <h3>Strecke messen</h3>
+      <p>„Start ab hier" zeichnet die Fahrt per GPS auf und zeigt Distanz, Dauer, Fahrt über Grund und Durchschnitt. „Etappe beenden" schreibt alles in den Tag: Distanz, Ablege- und Anlegezeit, Start- und Endkoordinaten.</p>
+      <p>Wichtig: Android schaltet das GPS ab, sobald die App in den Hintergrund geht. Handy also sichtbar liegen lassen, die App hält den Bildschirm selbst wach. Eine unterbrochene Messung bleibt gespeichert und lässt sich fortsetzen.</p>
+
+      <h3>Wetter</h3>
+      <p>Standort als Koordinaten, Ortsname oder per GPS. Ziel optional – dann werden drei Zwischenpunkte auf der Strecke mitgeprüft. Umkreis fragt vier Punkte rund um dich ab, damit Düsenlagen zwischen den Inseln auffallen.</p>
+      <ul>
+        <li><b>Ankerbucht offen nach</b> – die App prüft, ob der Nachtwind aus der offenen Richtung einsteht</li>
+        <li><b>Amtlicher Bericht</b> – Text von meteo.hr einfügen, wird mit dem Modell verglichen; liegt er höher, gilt er</li>
+        <li><b>Zwei Ampeln</b> – oben für die Fahrt, darunter für die Nacht mit Empfehlung Anker, Boje oder Marina</li>
+        <li><b>In Logbuch übernehmen</b> schreibt die Kurzfassung in den aktuellen Tag</li>
+      </ul>
+
+      <h3>Stammdaten</h3>
+      <p>Boot, Skipper, Reisezeitraum, Personen und Motorstunden bei Übernahme. Aus den Startwerten rechnet die Kopfzeile die aktuellen Zählerstände.</p>
+      <p>Die Wetterschwellen legen fest, ab wann etwas gelb oder rot ist – für Wind, Böen, Welle, Böenfaktor, Druckfall, Nachtzeitraum sowie die Grenzen für Anker, Boje und Marina. Leere Felder fallen auf den Standard zurück, unplausible Kombinationen werden rot gemeldet.</p>
+
+      <h3>Sichern und weitergeben</h3>
+      <ul>
+        <li><b>Gerätespeicher</b> – läuft automatisch, ohne Internet</li>
+        <li><b>Speicherort wählen</b> – zusätzlich in eine eigene Datei schreiben</li>
+        <li><b>Backup in Downloads</b> – JSON-Datei, mit „Backup laden" zurückholbar</li>
+        <li><b>Excel-Export</b> – zwei Blätter, Logbuch und Stammdaten, zum Weitergeben</li>
+        <li><b>Drucken / PDF</b> – mit Logo, Bootsname und Törnzeitraum als Kopf</li>
+      </ul>
+
+      <h3>Grenzen</h3>
+      <p>Die Wetteranalyse ist eine Vorsortierung aus Modelldaten, kein amtlicher Seewetterbericht. Auch 2-km-Modelle lösen Bora-Fallwinde an der Steilküste nicht vollständig auf; örtlich sind 10 bis 15 kn mehr möglich. Vor jeder Etappe zusätzlich UKW Kanal 16 und den DHMZ-Bericht prüfen.</p>
+    </div>
+
+    <div class="sheet">
+      <h2>Wählbare Wettermodelle</h2>
+      <div id="modellListe"></div>
+      <p class="note">Umschaltbar in den Stammdaten. Hochauflösende Modelle rechnen kürzer; wählst du einen längeren Zeitraum, kürzt die App ihn automatisch. Bei jeder Analyse werden zusätzlich fünf Modelle für den Standort verglichen und die Streuung ausgewiesen.</p>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Datenquellen</h2>
+      <h3>Wetter und Vorhersage</h3>
+      <ul>
+        <li><b>Open-Meteo Forecast API</b> – Wind, Böen, Richtung, Luftdruck, Temperatur, Niederschlag, Wettercode, Labilität (CAPE). Lizenz CC BY 4.0, ohne Schlüssel</li>
+        <li><b>Open-Meteo Marine API</b> – Wellenhöhe, Wellenperiode, Wassertemperatur</li>
+        <li><b>Open-Meteo Geocoding API</b> – Ortssuche für Standort und Ziel</li>
+        <li><b>Windy Point Forecast API</b> – optional, nur mit eigenem Schlüssel. Der freie Schlüssel liefert lediglich Testdaten von zufällig verschobenen Koordinaten</li>
+      </ul>
+
+      <h3>Karten</h3>
+      <ul>
+        <li><b>Windy Embed</b> – Wetterkarte mit Wind, Böen, Wellen, Regen und Druck, Modell ECMWF</li>
+      </ul>
+
+      <h3>Amtliche Berichte</h3>
+      <ul>
+        <li><b>DHMZ Adriaprognose</b> – meteo.hr, deutschsprachige Fassung</li>
+        <li><b>DHMZ englisch</b> – Marine Forecast for Small Crafts</li>
+        <li><b>bora.gekom.hr</b> – hochauflösende Adria-Prognose für Nautiker</li>
+        <li>Ergänzend nicht in der App: UKW Kanal 16 und 67, NAVTEX 518 kHz über Plovput</li>
+      </ul>
+
+      <h3>Gerät</h3>
+      <ul>
+        <li><b>GPS des Handys</b> – Position und Streckenmessung</li>
+        <li><b>Gerätespeicher und gewählte Datei</b> – alle Logbucheinträge, nichts verlässt das Gerät</li>
+      </ul>
+    </div>
+
+    <div class="sheet hilfe">
+      <h2>Haftungsausschluss</h2>
+      <p>Diese App ist ein privates Hilfsmittel und wird ohne jede Gewähr bereitgestellt. Die Nutzung erfolgt auf eigene Gefahr.</p>
+
+      <h3>Keine Navigations- oder Sicherheitsausrüstung</h3>
+      <p>Die App ist <b>nicht</b> zur Navigation bestimmt und ersetzt weder Seekarten und Plotter noch den amtlichen Seewetterbericht, Sturmwarnungen, NAVTEX oder UKW-Ansagen. Sie ersetzt auch kein amtliches Schiffstagebuch und erfüllt keine behördlichen Aufzeichnungspflichten.</p>
+
+      <h3>Verantwortung des Skippers</h3>
+      <p>Alle Entscheidungen über Auslaufen, Route, Liegeplatz, Ankern und Sicherheit trifft ausschließlich der Skipper nach eigener Einschätzung, guter Seemannschaft und den geltenden Vorschriften. Ampeln, Schwellenwerte und Empfehlungen dieser App sind unverbindliche Anhaltspunkte, keine Freigabe und keine Warnung im rechtlichen Sinne.</p>
+
+      <h3>Daten und Verfügbarkeit</h3>
+      <p>Wetterdaten stammen von Open-Meteo, die Karte von Windy, amtliche Berichte vom DHMZ. Für Richtigkeit, Vollständigkeit, Aktualität und Verfügbarkeit dieser fremden Dienste wird keine Haftung übernommen. GPS-Messungen können durch Empfang, Gerät und Betriebssystem verfälscht oder unterbrochen werden; Distanzen und Positionen sind Näherungswerte.</p>
+
+      <h3>Datenverlust</h3>
+      <p>Alle Einträge liegen ausschließlich auf diesem Gerät. Löschen der Browserdaten, ein Gerätewechsel oder ein Defekt führen zum Verlust. Regelmäßige Backups über „Backup in Downloads" liegen in der Verantwortung des Nutzers.</p>
+
+      <h3>Haftung</h3>
+      <p>Eine Haftung für Schäden, die aus der Nutzung oder Nichtverfügbarkeit dieser App entstehen, ist ausgeschlossen, soweit gesetzlich zulässig. Zwingende Haftung, etwa für Vorsatz, grobe Fahrlässigkeit oder Personenschäden, bleibt unberührt.</p>
+
+      <h3>Nutzung</h3>
+      <p>Private, nicht kommerzielle Nutzung. Wetterdaten von Open-Meteo unter CC BY 4.0; Windy und DHMZ nach den Bedingungen der jeweiligen Anbieter. Marken und Rechte Dritter liegen bei ihren Inhabern.</p>
+      <p class="note" id="dsStand"></p>
+    </div>
   </section>
 </main>
 
@@ -285,6 +657,57 @@ var PLAN = {
 };
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
+
+var APP_VERSION = "1.3";
+var APP_STAND = "28.08.2026";
+var APP_AUTOR = "M. Button";
+
+function infoBauen(){
+  var eintraege = [
+    ["Version", APP_VERSION + " · Cache v15"],
+    ["Stand", APP_STAND],
+    ["Autor", APP_AUTOR],
+    ["Wettermodell", modellInfo(setup.modell).l],
+    ["Betrieb", (location.protocol.indexOf("http") === 0 ? "online-fähig, offline nutzbar" : "lokale Datei, GPS gesperrt")],
+    ["Speicher", "Gerätespeicher" + (dateiHandle ? " + Datei " + dateiHandle.name : "")]
+  ];
+  var h = "";
+  eintraege.forEach(function(e){
+    h += "<span>" + e[0] + "</span><span>" + String(e[1]).replace(/</g, "&lt;") + "</span>";
+  });
+  $("infoKv").innerHTML = h;
+  var mh = "";
+  MODELLE.forEach(function(m){
+    var aktiv = m.id === setup.modell;
+    mh += '<div class="block"><h3>' + m.l + (aktiv ? ' <span class="stufe s-gruen">aktiv</span>' : '') + '</h3>' +
+      '<p>Gitterweite ' + m.km + ' · Vorhersage bis ' + m.max + ' Stunden<br>' +
+      'Gebiet: ' + m.region + '<br>Betreiber: ' + m.betreiber + '</p></div>';
+  });
+  var ml = $("modellListe");
+  if(ml) ml.innerHTML = mh;
+
+  var ds = $("dsStand");
+  if(ds) ds.textContent = "Version " + APP_VERSION + " · Stand " + APP_STAND + " · " + APP_AUTOR;
+}
+
+/* Verfügbare Wettermodelle. Hochauflösende Modelle rechnen kürzer. */
+var MODELLE = [
+  {id:"best_match", l:"Automatisch (beste Mischung)", km:"gemischt", max:168,
+   region:"weltweit, nimmt je Ort und Zeitpunkt das beste Modell", betreiber:"Open-Meteo"},
+  {id:"italia_meteo_arpae_icon_2i", l:"ICON-2I 2 km (Adria)", km:"2 km", max:60,
+   region:"Italien, Adria, Mittelmeer", betreiber:"ItaliaMeteo / ARPAE Emilia-Romagna"},
+  {id:"icon_d2", l:"ICON-D2 2 km (Mitteleuropa)", km:"2 km", max:48,
+   region:"Mitteleuropa, Adria nur am Südrand", betreiber:"DWD"},
+  {id:"icon_eu", l:"ICON-EU 7 km", km:"7 km", max:120,
+   region:"Europa", betreiber:"DWD"},
+  {id:"ecmwf_ifs025", l:"ECMWF IFS 9 km", km:"9 km", max:168,
+   region:"weltweit", betreiber:"ECMWF"},
+  {id:"gfs_seamless", l:"GFS 13 km", km:"13 km", max:168,
+   region:"weltweit", betreiber:"NOAA"}
+];
+function modellInfo(id){
+  return MODELLE.filter(function(m){ return m.id === id; })[0] || MODELLE[0];
+}
 
 var KOMPASS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
 var HIMMEL = [""].concat(KOMPASS);
@@ -345,7 +768,7 @@ var SCHEMA = [
 var LS_KEY = "logbuch2026";
 var data = {}, setup = {provider:"om", key:"", lat:"", lon:"", ziel:"",
   boot:"Red Twin II", typ:"Lagoon 450F", skipper:"", start:"2026-08-29", ende:"2026-09-12",
-  personen:"6", motBB:"", motSB:"", gen:"", sw:null};
+  personen:"6", motBB:"", motSB:"", gen:"", sw:null, modell:"italia_meteo_arpae_icon_2i", amt:""};
 
 /* Schwellen für die Wettereinstufung – vom Skipper einstellbar */
 var SW_DEF = [
@@ -366,7 +789,15 @@ var SW_DEF = [
   {k:"fBis",       l:"Fenster: spätestens (Std.)", v:20},
   {k:"reff1",      l:"Erstes Reff ab (kn)",      v:14},
   {k:"reff2",      l:"Zweites Reff ab (kn)",     v:18},
-  {k:"motorBis",   l:"Kaum Segelwind bis (kn)",  v:8}
+  {k:"motorBis",   l:"Kaum Segelwind bis (kn)",  v:8},
+  {k:"nachtVon",   l:"Nacht beginnt (Std.)",     v:20},
+  {k:"nachtBis",   l:"Nacht endet (Std.)",       v:7},
+  {k:"ankerGelb",  l:"Anker: Wache ab Böen (kn)", v:22},
+  {k:"ankerRot",   l:"Anker: zu viel ab Böen (kn)", v:30},
+  {k:"bojeRot",    l:"Boje/Muring: Grenze Böen (kn)", v:25},
+  {k:"marinaBoe",  l:"Marina nötig ab Böen (kn)", v:33},
+  {k:"drehWarn",   l:"Winddreher kritisch ab (Grad)", v:60},
+  {k:"schwellWarn",l:"Schwell in Bucht ab (m)",  v:0.8}
 ];
 function swStandard(){
   var o = {};
@@ -395,13 +826,29 @@ function swGridBauen(){
     inp.id = "sw_" + d.k;
     inp.type = "text";
     inp.inputMode = "decimal";
+    inp.setAttribute("autocomplete", "off");
+    inp.setAttribute("autocorrect", "off");
+    inp.setAttribute("name", "schwelle-" + d.k);
+    inp.spellcheck = false;
     inp.placeholder = String(d.v).replace(".", ",");
     inp.value = setup.sw && setup.sw[d.k] != null ? String(setup.sw[d.k]).replace(".", ",") : String(d.v).replace(".", ",");
     inp.addEventListener("input", function(){
+      var sauber = inp.value.replace(/[^0-9.,]/g, "").replace(/[.,]{2,}/g, ",");
+      if(sauber !== inp.value) inp.value = sauber;
       if(!setup.sw) setup.sw = swStandard();
-      setup.sw[d.k] = zahl(inp.value) || d.v;
+      setup.sw[d.k] = zahl(sauber);
       lokalSpeichern();
       swInfo();
+    });
+    inp.addEventListener("blur", function(){
+      var v = zahl(inp.value);
+      var gueltig = inp.value.trim() !== "" && (d.k === "fVon" ? v >= 0 : v > 0) && v < 500;
+      if(!gueltig){
+        setup.sw[d.k] = d.v;
+        inp.value = String(d.v).replace(".", ",");
+        lokalSpeichern();
+        swInfo();
+      }
     });
     box.appendChild(lab); box.appendChild(inp);
     g.appendChild(box);
@@ -411,6 +858,18 @@ function swGridBauen(){
 function swInfo(){
   var i = $("swInfo");
   if(!i) return;
+  var warn = [];
+  if(sw("windGelb") >= sw("windRot")) warn.push("Wind gelb sollte unter Wind rot liegen");
+  if(sw("boeGelb") >= sw("boeRot")) warn.push("Böen gelb sollte unter Böen rot liegen");
+  if(sw("welleGelb") >= sw("welleRot")) warn.push("Welle gelb sollte unter Welle rot liegen");
+  if(sw("druckGelb") >= sw("druckRot")) warn.push("Druckfall gelb sollte unter Druckfall stark liegen");
+  if(sw("reff1") >= sw("reff2")) warn.push("Erstes Reff sollte unter zweitem Reff liegen");
+  if(sw("fVon") >= sw("fBis")) warn.push("Fenster frühestens sollte vor spätestens liegen");
+  if(warn.length){
+    i.className = "note err";
+    i.textContent = "Prüfen: " + warn.join(" · ") + ".";
+    return;
+  }
   i.className = "note";
   i.textContent = "Gelb ab " + sw("windGelb") + " kn Wind, " + sw("boeGelb") + " kn Böen oder " +
     String(sw("welleGelb")).replace(".", ",") + " m Welle. Rot ab " + sw("windRot") + " kn, " + sw("boeRot") + " kn Böen oder " +
@@ -850,6 +1309,17 @@ async function ortSuchen(text){
   var t = j.results[0];
   return {lat:t.latitude, lon:t.longitude, name:t.name};
 }
+/* Zwischenpunkte auf der Strecke Standort -> Ziel */
+function routePunkte(a, b, anzahl){
+  if(!b) return [];
+  var out = [];
+  for(var i=1;i<=anzahl;i++){
+    var f = i / (anzahl + 1);
+    out.push({lat:a.lat + (b.lat - a.lat) * f, lon:a.lon + (b.lon - a.lon) * f,
+      name:"Strecke " + Math.round(f * 100) + " %"});
+  }
+  return out;
+}
 function ringPunkte(p, sm){
   if(!sm) return [];
   var dLat = sm / 60, dLon = sm / (60 * Math.cos(p.lat * Math.PI/180));
@@ -860,13 +1330,14 @@ function ringPunkte(p, sm){
     {lat:p.lat, lon:p.lon - dLon, name:"West"}
   ];
 }
-async function serienHolen(punkte, stunden){
+async function serienHolen(punkte, stunden, modell){
   var tage = Math.min(16, Math.max(1, Math.ceil(stunden / 24) + 1));
+  var mp = (modell && modell !== "best_match") ? "&models=" + modell : "";
   var lats = punkte.map(function(p){ return p.lat.toFixed(3); }).join(",");
   var lons = punkte.map(function(p){ return p.lon.toFixed(3); }).join(",");
   var u = "https://api.open-meteo.com/v1/forecast?latitude=" + lats + "&longitude=" + lons +
     "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m,pressure_msl,temperature_2m,precipitation,weather_code,cape" +
-    "&forecast_days=" + tage + "&wind_speed_unit=kn&timezone=auto";
+    "&forecast_days=" + tage + "&wind_speed_unit=kn&timezone=auto" + mp;
   var r = await fetch(u);
   if(!r.ok) throw new Error("Open-Meteo antwortet nicht (" + r.status + ").");
   var j = await r.json();
@@ -893,11 +1364,156 @@ async function serienHolen(punkte, stunden){
     return s;
   });
 }
+/* Mehrere Modelle für den Standort vergleichen */
+async function streuungHolen(lat, lon, stunden){
+  var ids = ["italia_meteo_arpae_icon_2i","icon_d2","icon_eu","ecmwf_ifs025","gfs_seamless"];
+  var std = Math.min(stunden, 48);
+  var u = "https://api.open-meteo.com/v1/forecast?latitude=" + lat.toFixed(3) + "&longitude=" + lon.toFixed(3) +
+    "&hourly=wind_speed_10m,wind_gusts_10m&forecast_days=3&wind_speed_unit=kn&timezone=auto&models=" + ids.join(",");
+  var r = await fetch(u);
+  if(!r.ok) return null;
+  var j = await r.json(), h = j.hourly || {}, out = [];
+  ids.forEach(function(id){
+    var g = h["wind_gusts_10m_" + id], w = h["wind_speed_10m_" + id];
+    if(!g) return;
+    var mg = 0, mw = 0, treffer = 0;
+    for(var i=0;i<Math.min(std, g.length);i++){
+      if(g[i] == null) continue;
+      treffer++;
+      if(g[i] > mg) mg = g[i];
+      if(w && w[i] != null && w[i] > mw) mw = w[i];
+    }
+    if(treffer >= 6) out.push({id:id, l:modellInfo(id).l, km:modellInfo(id).km, gust:mg, wind:mw, std:treffer});
+  });
+  return out.length ? out : null;
+}
+
+/* Amtlichen Bericht auswerten: höchste genannte Knotenzahl und Schlagworte */
+function amtAuswerten(text){
+  if(!text || text.trim().length < 20) return null;
+  var t = text.toLowerCase();
+  var maxKn = 0, m;
+  var re = /(\d{1,2})\s*(?:-|–|bis|to)?\s*(\d{1,2})?\s*(?:kn|kt|knoten|knots)/g;
+  while((m = re.exec(t)) !== null){
+    var a = parseInt(m[1], 10), b = m[2] ? parseInt(m[2], 10) : a;
+    maxKn = Math.max(maxKn, a, b);
+  }
+  var bft = 0;
+  var re2 = /(?:bft|beaufort|windstärke)\s*(\d{1,2})/g;
+  while((m = re2.exec(t)) !== null) bft = Math.max(bft, parseInt(m[1], 10));
+  var worte = [];
+  [["bura","Bora"],["bora","Bora"],["jugo","Jugo"],["sirocco","Jugo"],["olujno","Sturmwarnung"],
+   ["gale","Sturmwarnung"],["sturm","Sturmwarnung"],["gewitter","Gewitter"],["thunder","Gewitter"],
+   ["grmljavina","Gewitter"],["warnung","Warnung"],["warning","Warnung"],["upozorenje","Warnung"]
+  ].forEach(function(pr){ if(t.indexOf(pr[0]) >= 0 && worte.indexOf(pr[1]) < 0) worte.push(pr[1]); });
+  return {maxKn:maxKn, bft:bft, worte:worte};
+}
+
 function maxV(a){ var m = 0; for(var i=0;i<a.length;i++){ if(nz(a[i]) > m) m = nz(a[i]); } return m; }
 function stundeVon(t){ return parseInt(String(t).slice(11,13), 10); }
 function zeitLabel(t){ return String(t).slice(8,10) + "." + String(t).slice(5,7) + " " + String(t).slice(11,13) + ":00"; }
 
-function analysiere(zentrum, ring, ziel, stunden, umkreis){
+var GRAD = {N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
+  S:180, SSW:202.5, SW:225, WSW:247.5, W:270, WNW:292.5, NW:315, NNW:337.5};
+
+function winkelDiff(a, b){ return Math.abs(((a - b + 540) % 360) - 180); }
+
+/* Erste Nacht im Vorhersagezeitraum herausschneiden */
+function nachtIndizes(serie){
+  var von = sw("nachtVon"), bis = sw("nachtBis"), idx = [], start = -1;
+  for(var i=0;i<serie.zeit.length;i++){
+    var h = stundeVon(serie.zeit[i]);
+    if(start < 0 && h >= von){ start = i; }
+    if(start >= 0){
+      if(h >= von || h <= bis) idx.push(i);
+      else if(idx.length) break;
+    }
+  }
+  /* Läuft der Zeitraum mitten in der Nacht los, diese Nacht nehmen */
+  if(!idx.length){
+    for(var j=0;j<serie.zeit.length;j++){
+      var hh = stundeVon(serie.zeit[j]);
+      if(hh >= von || hh <= bis) idx.push(j);
+      else if(idx.length) break;
+    }
+  }
+  return idx;
+}
+
+function nachtBewertung(serie, offen){
+  var idx = nachtIndizes(serie);
+  if(!idx.length) return null;
+  var wind = 0, gust = 0, welle = 0, dirA = nz(serie.dir[idx[0]]), dirMax = dirA, dreh = 0, gewitter = 0, faktor = 0;
+  idx.forEach(function(i){
+    wind = Math.max(wind, nz(serie.wind[i]));
+    if(nz(serie.gust[i]) > gust){ gust = nz(serie.gust[i]); dirMax = nz(serie.dir[i]); }
+    if(serie.welle.length) welle = Math.max(welle, nz(serie.welle[i]));
+    faktor = Math.max(faktor, nz(serie.gust[i]) / Math.max(3, nz(serie.wind[i])));
+    if(nz(serie.code[i]) >= 95 || nz(serie.cape[i]) >= 1200) gewitter++;
+    dreh = Math.max(dreh, winkelDiff(nz(serie.dir[i]), dirA));
+  });
+  var von = zeitLabel(serie.zeit[idx[0]]), bisZ = zeitLabel(serie.zeit[idx[idx.length-1]]);
+  var mittelDir = dirMax;
+  var dirEnde = nz(serie.dir[idx[idx.length-1]]);
+
+  var stufe = "gruen", liege = "", text = [];
+  text.push("Nacht " + von + " bis " + bisZ + ": bis " + Math.round(wind) + " kn Wind, Böen bis " +
+    Math.round(gust) + " kn aus " + richtungAus(mittelDir) +
+    (winkelDiff(dirA, dirEnde) >= 45 ? " (abends " + richtungAus(dirA) + ", früh " + richtungAus(dirEnde) + ")" : "") +
+    (welle ? ", Welle " + welle.toFixed(1).replace(".", ",") + " m" : "") + ".");
+
+  if(gewitter || gust >= sw("marinaBoe")){
+    stufe = "rot";
+    liege = "Marina";
+    text.push(gewitter
+      ? "Für die Nacht sind Gewitter im Modell. Böen aus wechselnder Richtung sind an der Boje und am freien Anker das Hauptrisiko – rein in die Marina, sonst Wache mit laufender Maschinenbereitschaft."
+      : "Über " + sw("marinaBoe") + " kn Böen gehört das Boot an einen festen Steg. Freier Anker und Boje sind dann Glückssache.");
+  }else if(gust >= sw("ankerRot")){
+    stufe = "rot";
+    liege = "Marina oder sehr gut geschützte Bucht";
+    text.push("Ab " + sw("ankerRot") + " kn Böen ist freies Ankern in offener Bucht nichts mehr für eine Nacht mit Kind an Bord. Wenn keine Marina erreichbar ist: rundum geschützte Bucht, Kette 6:1, Bridle mit Scheuerschutz, Landleinen doppelt, Ankerwache.");
+  }else if(gust >= sw("bojeRot")){
+    stufe = "gelb";
+    liege = "Anker mit Wache, Boje nur bei bekanntem Zustand";
+    text.push("Über " + sw("bojeRot") + " kn Böen ist die Boje das schwächste Glied: In Kroatien kennst du weder Gewicht noch Kettenzustand. Eigener Anker mit 5:1 und Bridle ist berechenbarer. Ankeralarm setzen, Wachplan festlegen.");
+  }else if(gust >= sw("ankerGelb")){
+    stufe = "gelb";
+    liege = "Anker gut, mit Ankeralarm";
+    text.push("Zwischen " + sw("ankerGelb") + " und " + sw("bojeRot") + " kn Böen hält guter Sandgrund problemlos, wenn genug Kette liegt. Kette 5:1, Bridle, Ankeralarm an, Schwoikreis vor dem Dunkelwerden prüfen.");
+  }else{
+    liege = "freier Anker unkritisch";
+    text.push("Ruhige Nacht: freier Anker mit 4:1 bis 5:1 reicht, Boje unkritisch. Ankeralarm trotzdem setzen.");
+  }
+
+  if(dreh >= sw("drehWarn")){
+    if(stufe === "gruen"){ stufe = "gelb"; liege = "Anker mit Ankerwache, Schwoiraum prüfen"; }
+    text.push("Der Wind dreht in der Nacht um bis zu " + Math.round(dreh) + " Grad. Das ist der klassische Grund, warum man morgens auf Land zutreibt: Bucht muss aus beiden Richtungen Schutz geben, sonst vor dem Dreher umlegen.");
+  }
+  if(faktor >= sw("faktorRot") && (mittelDir >= 20 && mittelDir <= 90)){
+    if(stufe === "gruen") stufe = "gelb";
+    text.push("Böig aus NE bei hohem Böenfaktor – das riecht nach Bora-Fallböen. Unter Steilküste ist es dann am schlimmsten, Landleinen können ruckartig belastet werden. Lieber weiter weg von der Felskante ankern.");
+  }
+  if(welle >= sw("schwellWarn")){
+    if(stufe === "gruen") stufe = "gelb";
+    text.push("Schwell von " + welle.toFixed(1).replace(".", ",") + " m: Auch bei wenig Wind rollt der Kat dann unangenehm. Bucht mit Schutz gegen die Wellenrichtung wählen oder Heckanker gegen das Querschlagen setzen.");
+  }
+  if(offen && offen !== "rundum"){
+    var og = GRAD[offen];
+    var trifft = og != null && (winkelDiff(mittelDir, og) <= 50 || winkelDiff(dirEnde, og) <= 50 || winkelDiff(dirA, og) <= 50);
+    if(trifft){
+      stufe = stufe === "rot" ? "rot" : (gust >= sw("ankerGelb") ? "rot" : "gelb");
+      text.push("Deine Bucht ist nach " + offen + " offen und der Nachtwind steht im Laufe der Nacht aus dieser Richtung ein. Dann liegst du im Schwell und mit Ablage aufs Land – anderen Platz oder Marina wählen.");
+    }else{
+      text.push("Deine Bucht ist nach " + offen + " offen, der Nachtwind kommt aus " + richtungAus(mittelDir) + ". Die Öffnung liegt damit im Windschutz.");
+    }
+  }else if(!offen){
+    text.push("Trage oben ein, wohin die geplante Bucht offen ist, dann prüfe ich die Lage gegen die Nachtwindrichtung.");
+  }
+
+  return {stufe:stufe, liege:liege, text:text.join(" "), gust:gust, wind:wind, von:von, bis:bisZ, dreh:dreh};
+}
+
+function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuung, amt){
   var maxWind = maxV(zentrum.wind), maxGust = maxV(zentrum.gust), maxWelle = maxV(zentrum.welle);
   var idxGust = zentrum.gust.indexOf(maxGust), idxWind = zentrum.wind.indexOf(maxWind);
   var boeFaktor = 0, i;
@@ -1013,19 +1629,84 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis){
       zG >= 34 ? "rot" : (zG >= 25 ? "gelb" : "gruen"));
   }
 
-  var fenster = [], offen = null;
+  /* Route: schlechteste Stelle unterwegs */
+  if(route && route.length){
+    var rMax = 0, rOrt = "", rZeit = "";
+    route.forEach(function(rs){
+      for(var q=0;q<rs.gust.length;q++){
+        if(nz(rs.gust[q]) > rMax){ rMax = nz(rs.gust[q]); rOrt = rs.name; rZeit = rs.zeit[q]; }
+      }
+    });
+    var rStufe = rMax >= sw("boeRot") ? "rot" : (rMax >= sw("boeGelb") ? "gelb" : "gruen");
+    B("Route", "Entlang der Strecke treten Böen bis " + Math.round(rMax) + " kn auf, am stärksten " +
+      (rOrt ? "bei " + rOrt + " " : "") + "um " + zeitLabel(rZeit) +
+      ". " + (rMax > maxGust + 5
+        ? "Das ist deutlich mehr als am Startpunkt – der kritische Abschnitt liegt also nicht dort, wo du losfährst, sondern unterwegs."
+        : "Das Feld ist entlang der Route gleichmäßig, keine bösen Überraschungen zwischen Start und Ziel."), rStufe);
+  }
+
+  /* Modellstreuung */
+  if(streuung && streuung.length >= 2){
+    var gMin = 99, gMax = 0, best = "", schlecht = "";
+    streuung.forEach(function(m){
+      if(m.gust > gMax){ gMax = m.gust; schlecht = m.l; }
+      if(m.gust < gMin){ gMin = m.gust; best = m.l; }
+    });
+    var spanne = gMax - gMin;
+    B("Modellstreuung",
+      streuung.map(function(m){ return m.l + ": " + Math.round(m.gust) + " kn"; }).join(" · ") +
+      ". " + (spanne >= 10
+        ? "Die Modelle sind sich mit " + Math.round(spanne) + " kn Unterschied deutlich uneins (" + schlecht + " am pessimistischsten, " + best + " am mildesten). Bei so einer Streuung plane nach dem schlechteren Modell und halte einen Ausweichhafen bereit."
+        : "Die Modelle liegen mit " + Math.round(spanne) + " kn Unterschied nah beieinander, die Lage ist gut vorhersagbar."),
+      spanne >= 10 ? "gelb" : "gruen");
+  }
+
+  /* Amtlicher Seewetterbericht */
+  if(amt){
+    var at = "Aus dem eingefügten Bericht gelesen: " +
+      (amt.maxKn ? "höchste genannte Windangabe " + amt.maxKn + " kn" : "keine Knotenangabe gefunden") +
+      (amt.bft ? ", Beaufort bis " + amt.bft : "") +
+      (amt.worte.length ? ", Schlagworte: " + amt.worte.join(", ") : "") + ". ";
+    var aStufe = "gruen";
+    if(amt.maxKn >= maxGust + 8){
+      aStufe = "rot";
+      at += "Der amtliche Bericht liegt " + Math.round(amt.maxKn - maxGust) + " kn über dem Modell. In Kroatien ist das der Normalfall bei Bora, weil die Düsen an der Küste im Gitter untergehen. Es gilt der amtliche Bericht, nicht das Modell.";
+    }else if(amt.maxKn >= maxGust + 3){
+      aStufe = "gelb";
+      at += "Der amtliche Bericht liegt leicht über dem Modell. Für die Planung den höheren Wert nehmen.";
+    }else if(amt.maxKn){
+      at += "Bericht und Modell passen zusammen, das erhöht das Vertrauen in die Vorhersage.";
+    }
+    if(amt.worte.indexOf("Sturmwarnung") >= 0 || amt.worte.indexOf("Warnung") >= 0){
+      aStufe = "rot";
+      at += " Im Text steht eine Warnung – die überschreibt jede Modellrechnung.";
+    }
+    if(aStufe === "rot") stufe = "rot";
+    else if(aStufe === "gelb" && stufe === "gruen") stufe = "gelb";
+    B("Amtlicher Seewetterbericht", at, aStufe);
+  }
+
+  /* Nacht am Liegeplatz */
+  var nacht = nachtBewertung(zentrum, offen);
+  if(nacht){
+    B("Nacht und Liegeplatz", nacht.text, nacht.stufe);
+    if(nacht.stufe === "rot" && stufe !== "rot") stufe = "rot";
+    else if(nacht.stufe === "gelb" && stufe === "gruen") stufe = "gelb";
+  }
+
+  var fenster = [], fOffen = null;
   for(i=0;i<zentrum.zeit.length;i++){
     var ok = nz(zentrum.wind[i]) <= sw("fWind") && nz(zentrum.gust[i]) <= sw("fBoe") &&
       (!zentrum.welle.length || nz(zentrum.welle[i]) <= sw("fWelle")) && nz(zentrum.code[i]) < 95;
     var std = stundeVon(zentrum.zeit[i]);
     if(ok && std >= sw("fVon") && std <= sw("fBis")){
-      if(!offen) offen = zentrum.zeit[i];
-    }else if(offen){
-      fenster.push([offen, zentrum.zeit[i]]);
-      offen = null;
+      if(!fOffen) fOffen = zentrum.zeit[i];
+    }else if(fOffen){
+      fenster.push([fOffen, zentrum.zeit[i]]);
+      fOffen = null;
     }
   }
-  if(offen) fenster.push([offen, zentrum.zeit[zentrum.zeit.length-1]]);
+  if(fOffen) fenster.push([fOffen, zentrum.zeit[zentrum.zeit.length-1]]);
   fenster = fenster.filter(function(f){ return (new Date(f[1]) - new Date(f[0])) >= 3 * 3600000; }).slice(0, 4);
 
   var empf = fenster.length
@@ -1034,7 +1715,8 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis){
     : "Im gewählten Zeitraum gibt es kein Fenster, das deine Grenzen von " + sw("fWind") + " kn Wind und " + sw("fBoe") +
       " kn Böen zwischen " + sw("fVon") + " und " + sw("fBis") + " Uhr einhält. Etappe verschieben oder deutlich kürzer planen.";
 
-  return {stufe:stufe, bloecke:bloecke, empfehlung:empf, maxWind:maxWind, maxGust:maxGust, maxWelle:maxWelle, fenster:fenster, stunden:stunden};
+  return {stufe:stufe, bloecke:bloecke, empfehlung:empf, maxWind:maxWind, maxGust:maxGust,
+    maxWelle:maxWelle, fenster:fenster, stunden:stunden, nacht:nacht};
 }
 
 function chartSvg(s){
@@ -1103,6 +1785,10 @@ function analyseZeigen(a, zentrum, ortName, zielName){
 
   var html = '<div class="sheet"><h2>' + ortName + (zielName ? " nach " + zielName : "") + '</h2>' +
     '<div class="ampel ' + kl + '"><span class="dot"></span><div><b>' + titel + '</b><div class="txt">' + kurz + '</div></div></div>' +
+    (a.nacht ? '<div class="ampel ' + (a.nacht.stufe === "rot" ? "a-rot" : a.nacht.stufe === "gelb" ? "a-gelb" : "a-gruen") +
+      '"><span class="dot"></span><div><b>Nacht: ' + a.nacht.liege + '</b><div class="txt">' +
+      a.nacht.von + " bis " + a.nacht.bis + ", Böen bis " + Math.round(a.nacht.gust) + " kn" +
+      (a.nacht.dreh >= 45 ? ", Dreher " + Math.round(a.nacht.dreh) + "°" : "") + '</div></div></div>' : "") +
     chartSvg(zentrum) +
     '<p class="legende">Dunkel = Mittelwind, hell = Böen, in Knoten. Zeitachse alle 12 Stunden beschriftet.</p>';
   a.bloecke.forEach(function(b){
@@ -1112,9 +1798,10 @@ function analyseZeigen(a, zentrum, ortName, zielName){
   });
   html += karteHtml();
   html += '<div class="block"><h3>Empfehlung</h3><p>' + a.empfehlung.replace(/\n/g, "<br>") + '</p></div>' +
-    '<p class="legende">Eingestuft nach deinen Stammdaten: gelb ab ' + sw("windGelb") + ' kn / ' + sw("boeGelb") + ' kn Böen / ' +
+    '<p class="legende">Modell: ' + (letzteAnalyse && letzteAnalyse.modell ? letzteAnalyse.modell.l : "") +
+      '. Eingestuft nach deinen Stammdaten: gelb ab ' + sw("windGelb") + ' kn / ' + sw("boeGelb") + ' kn Böen / ' +
       String(sw("welleGelb")).replace(".", ",") + ' m, rot ab ' + sw("windRot") + ' kn / ' + sw("boeRot") + ' kn Böen / ' +
-      String(sw("welleRot")).replace(".", ",") + ' m. Modellauswertung, kein Ersatz für den amtlichen Seewetterbericht und den Blick nach draußen.</p></div>';
+      String(sw("welleRot")).replace(".", ",") + ' m. Unverbindliche Modellauswertung ohne Gewähr, kein Ersatz für den amtlichen Seewetterbericht und den Blick nach draußen. Die Entscheidung trifft der Skipper.</p></div>';
   $("wOut").innerHTML = html;
   Array.prototype.forEach.call(document.querySelectorAll(".kbtn"), function(b){
     b.onclick = function(){ karteSetzen(b.getAttribute("data-o")); };
@@ -1138,25 +1825,38 @@ async function analyseStarten(){
     var ziel = zielTxt ? await ortSuchen(zielTxt) : null;
     var umkreis = parseInt($("w_umkreis").value, 10);
     var stunden = parseInt($("w_dauer").value, 10);
+    var mi = modellInfo(setup.modell);
+    var gekappt = false;
+    if(stunden > mi.max){ stunden = mi.max; gekappt = true; }
 
     var ring = ringPunkte(stand, umkreis);
-    var punkte = [{lat:stand.lat, lon:stand.lon, name:"Standort"}].concat(ring);
+    var strecke = routePunkte(stand, ziel, 3);
+    var punkte = [{lat:stand.lat, lon:stand.lon, name:"Standort"}].concat(ring, strecke);
     if(ziel) punkte.push({lat:ziel.lat, lon:ziel.lon, name:ziel.name});
 
-    var serien = await serienHolen(punkte, stunden);
+    var serien = await serienHolen(punkte, stunden, setup.modell);
     var zentrum = serien[0];
     var ringS = serien.slice(1, 1 + ring.length);
+    var streckeS = serien.slice(1 + ring.length, 1 + ring.length + strecke.length);
     var zielS = ziel ? serien[serien.length - 1] : null;
     if(zielS) zielS.name = ziel.name;
+    var offen = $("w_offen").value;
+    var amtText = $("w_amt").value;
+    setup.amt = amtText;
+    var amt = amtAuswerten(amtText);
+    var streuung = null;
+    try{ streuung = await streuungHolen(stand.lat, stand.lon, stunden); }catch(e){}
 
-    var a = analysiere(zentrum, ringS, zielS, stunden, umkreis);
-    letzteAnalyse = {a:a, ort:stand, ziel:ziel, umkreis:umkreis};
+    var a = analysiere(zentrum, ringS, zielS, stunden, umkreis, streckeS, offen, streuung, amt);
+    letzteAnalyse = {a:a, ort:stand, ziel:ziel, umkreis:umkreis, offen:offen, modell:mi};
     analyseZeigen(a, zentrum, stand.name, ziel ? ziel.name : "");
 
-    setup.lat = stand.lat.toFixed(4); setup.lon = stand.lon.toFixed(4); setup.ziel = zielTxt;
+    setup.lat = stand.lat.toFixed(4); setup.lon = stand.lon.toFixed(4); setup.ziel = zielTxt; setup.offen = offen;
     setupFelder(); lokalSpeichern();
     msg.className = "note ok";
-    msg.textContent = "Analyse " + new Date().toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}) + " · " + punkte.length + " Gitterpunkte · Open-Meteo";
+    msg.textContent = "Analyse " + new Date().toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}) +
+      " · " + mi.l + " · " + punkte.length + " Gitterpunkte" +
+      (gekappt ? " · Zeitraum auf " + stunden + " h gekürzt, weiter rechnet dieses Modell nicht" : "");
   }catch(e){
     msg.className = "note err";
     msg.textContent = e && e.message ? e.message : "Analyse fehlgeschlagen. Ohne Empfang geht es nicht.";
@@ -1164,6 +1864,10 @@ async function analyseStarten(){
   btn.disabled = false;
 }
 
+$("wDhmzDe").onclick = function(){ window.open("https://meteo.hr/prognoze.php?section=prognoze_specp&param=jadran&el=jadran_n", "_blank"); };
+$("wDhmzEn").onclick = function(){ window.open("https://www.meteo.hr/prognoze_e.php?section=prognoze_specp&param=jadran", "_blank"); };
+$("wGekom").onclick = function(){ window.open("https://www.bora.gekom.hr/", "_blank"); };
+$("w_amt").addEventListener("input", function(){ setup.amt = $("w_amt").value; lokalSpeichern(); });
 $("wGo").onclick = analyseStarten;
 $("wGps").onclick = function(){
   var msg = $("wMsg");
@@ -1181,10 +1885,13 @@ $("wUeber").onclick = function(){
   e.vorhersage = (e.vorhersage ? e.vorhersage.trim() + "\n" : "") +
     "Analyse " + new Date().toLocaleString("de-DE", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"}) +
     " · " + letzteAnalyse.ort.name + (letzteAnalyse.ziel ? " nach " + letzteAnalyse.ziel.name : "") +
+    (letzteAnalyse.modell ? " · " + letzteAnalyse.modell.l : "") +
     " · " + a.stunden + " h: bis " + Math.round(a.maxWind) + " kn, Böen " + Math.round(a.maxGust) + " kn" +
     (a.maxWelle ? ", Welle " + a.maxWelle.toFixed(1).replace(".", ",") + " m" : "") +
     " · Bewertung " + (a.stufe === "rot" ? "nicht fahren" : a.stufe === "gelb" ? "mit Auflagen" : "gut") +
-    (a.fenster.length ? "\n  Fenster: " + a.fenster.map(function(f){ return zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("; ") : "");
+    (a.fenster.length ? "\n  Fenster: " + a.fenster.map(function(f){ return zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("; ") : "") +
+    (a.nacht ? "\n  Nacht " + a.nacht.von + " bis " + a.nacht.bis + ": Böen bis " + Math.round(a.nacht.gust) +
+      " kn, Empfehlung " + a.nacht.liege : "");
   lokalSpeichern();
   $("wMsg").className = "note ok";
   $("wMsg").textContent = "In Tag " + aktiv + " übernommen.";
@@ -1208,7 +1915,7 @@ function tagesleiste(){
     var b = document.createElement("button");
     b.className = "day" + (gefuellt(t.n) ? " filled" : "");
     b.setAttribute("aria-current", t.n === aktiv ? "true" : "false");
-    b.innerHTML = '<span class="n">' + String(t.n).padStart(2,"0") + '</span><span class="d">' + t.d.slice(0,6) + '</span>';
+    b.innerHTML = '<span class="n">' + String(t.n).padStart(2,"0") + '</span><span class="d">' + t.wt + " " + t.d.slice(0,6) + '</span>';
     b.onclick = function(){
       if(trk.an){
         if(!confirm("Die GPS-Messung läuft für Tag " + aktiv + ". Trotzdem wechseln? Die Messung wird pausiert.")) return;
@@ -1270,6 +1977,9 @@ function feld(f, e){
     else el.type = "text";
   }
   el.id = id;
+  el.setAttribute("autocomplete", "off");
+  if(f.t !== "area"){ el.setAttribute("autocorrect", "off"); el.spellcheck = false; }
+  el.setAttribute("name", "tag" + aktiv + "-" + f.k);
   el.value = e[f.k] || "";
   el.addEventListener("input", function(){
     e[f.k] = el.value;
@@ -1363,6 +2073,9 @@ function ansichtSetzen(v){
   $("viewLog").classList.toggle("on", v === "log");
   $("viewWetter").classList.toggle("on", v === "wetter");
   $("viewSetup").classList.toggle("on", v === "setup");
+  $("viewWiki").classList.toggle("on", v === "wiki");
+  $("viewInfo").classList.toggle("on", v === "info");
+  if(v === "info") infoBauen();
   $("ruler").classList.toggle("hidden", v !== "log");
   $("navbtns").classList.toggle("hidden", v !== "log");
   Array.prototype.forEach.call($("nav").children, function(b){
@@ -1381,7 +2094,9 @@ function alsText(){
     (setup.skipper ? "\nSkipper: " + setup.skipper : "") +
     (setup.motBB || setup.motSB ? "\nMotorstunden bei Übernahme: BB " + (setup.motBB || "–") + " · SB " + (setup.motSB || "–") +
       (setup.gen ? " · Generator " + setup.gen : "") : "") +
-    "\n========================================================\n";
+    "\n========================================================\n" +
+    "Erstellt mit Logbuch " + APP_VERSION + " (" + APP_AUTOR + "). Privates Hilfsmittel ohne Gewähr,\n" +
+    "kein amtliches Schiffstagebuch.\n";
   TAGE.forEach(function(t){
     if(!gefuellt(t.n)) return;
     var e = data[t.n];
@@ -1742,6 +2457,7 @@ $("btnPrint").onclick = function(){
   $("dkBoot").textContent = (setup.boot || "Logbuch") + (setup.typ ? " · " + setup.typ : "");
   $("dkZeit").textContent = (TAGE.length ? "Törn " + TAGE[0].d + " bis " + TAGE[TAGE.length-1].d : "") +
     (setup.skipper ? " · Skipper " + setup.skipper : "");
+  $("dkHinweis").textContent = "Logbuch " + APP_VERSION + " · " + APP_AUTOR + " · privates Hilfsmittel ohne Gewähr, kein amtliches Schiffstagebuch";
   window.print();
 };
 $("btnClear").onclick = function(){
@@ -1759,7 +2475,21 @@ $("swReset").onclick = function(){
   lokalSpeichern();
 };
 
+function modellFeldBauen(){
+  var sel = $("s_modell");
+  if(!sel || sel.options.length) return;
+  MODELLE.forEach(function(m){
+    var o = document.createElement("option");
+    o.value = m.id;
+    o.textContent = m.l + (m.max < 168 ? " · bis " + m.max + " h" : "");
+    sel.appendChild(o);
+  });
+}
+
 function setupFelder(){
+  modellFeldBauen();
+  if($("s_modell")) $("s_modell").value = setup.modell || "best_match";
+  if($("w_amt") && !$("w_amt").value && setup.amt) $("w_amt").value = setup.amt;
   ["boot","typ","skipper","start","ende","personen","motBB","motSB","gen"].forEach(function(k){
     var el = $("t_" + k);
     if(el) el.value = setup[k] || "";
@@ -1770,7 +2500,12 @@ function setupFelder(){
   $("s_lon").value = setup.lon;
   if(!$("w_stand").value && setup.lat && setup.lon) $("w_stand").value = setup.lat + ", " + setup.lon;
   if(!$("w_ziel").value && setup.ziel) $("w_ziel").value = setup.ziel;
+  if(setup.offen != null && $("w_offen")) $("w_offen").value = setup.offen;
 }
+$("s_modell").addEventListener("change", function(){
+  setup.modell = $("s_modell").value;
+  lokalSpeichern();
+});
 ["provider","key","lat","lon"].forEach(function(k){
   $("s_" + k).addEventListener("input", function(){
     setup[k] = $("s_" + k).value;
@@ -1798,6 +2533,16 @@ window.addEventListener("beforeunload", function(e){
 (async function(){
   lokalLaden();
   if(!setup.sw) setup.sw = swStandard();
+  /* Von der Ausfüllhilfe des Browsers verunreinigte Werte verwerfen */
+  var korrigiert = 0;
+  SW_DEF.forEach(function(d){
+    var roh = setup.sw[d.k];
+    var v = zahl(roh);
+    var ok = roh != null && String(roh).trim() !== "" && !/[^0-9.,\s-]/.test(String(roh)) &&
+      (d.k === "fVon" ? v >= 0 : v > 0) && v < 500;
+    if(!ok){ setup.sw[d.k] = d.v; korrigiert++; }
+  });
+  if(korrigiert) setTimeout(function(){ setStatus(korrigiert + " Schwellenwerte auf Standard zurückgesetzt"); }, 800);
   setupFelder();
   swGridBauen();
   tageBauen();
