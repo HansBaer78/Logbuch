@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E2430">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Logbuch – Red Twin II 2026</title>
+<style>
+:root{
+  --ink:#0E2430;
+  --ink-soft:#3C5663;
+  --paper:#F0F2EC;
+  --card:#FFFFFF;
+  --line:#C6CFC9;
+  --buoy:#B3372B;
+  --seagrass:#2C6A50;
+  --brass:#9A6C16;
+  --r:10px;
+  --f-display:"Arial Narrow","Helvetica Neue Condensed",Impact,system-ui,sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-data:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%;padding-bottom:96px}
+header{position:sticky;top:0;z-index:20;background:var(--ink);color:#EDF1EE;padding:10px 12px 0;box-shadow:0 2px 10px rgba(14,36,48,.25)}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.brand h1{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:19px;margin:0}
+.brand .boat{font-family:var(--f-data);font-size:11px;color:#8FA8AE;letter-spacing:.08em}
+.totals{display:flex;gap:14px;font-family:var(--f-data);font-size:11.5px;color:#9FB8BD;letter-spacing:.05em;margin:4px 0 8px;flex-wrap:wrap}
+.totals b{color:#F4F7F4;font-weight:600}
+.ruler{position:relative;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.ruler::-webkit-scrollbar{display:none}
+.days{display:flex;gap:6px;padding:0 0 10px}
+.day{flex:0 0 auto;min-width:58px;padding:6px 8px 7px;border:1px solid #38525E;border-radius:8px 8px 0 0;background:#16303D;color:#C3D5D8;text-align:center;font-family:var(--f-data);cursor:pointer;position:relative}
+.day .n{display:block;font-size:15px;font-weight:600}
+.day .d{display:block;font-size:10px;color:#87A2A9;margin-top:1px}
+.day.filled{border-color:var(--seagrass)}
+.day.filled::after{content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:3px;width:16px;height:2px;background:#5BB98C;border-radius:2px}
+.day[aria-current="true"]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.day[aria-current="true"] .d{color:var(--ink-soft)}
+main{padding:14px 12px 0;max-width:720px;margin:0 auto}
+.sheet{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 13px 4px;margin-bottom:14px}
+.sheet > h2{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.12em;font-size:12.5px;color:var(--ink-soft);margin:0 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dayhead{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:0 0 12px}
+.dayhead .big{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-size:22px;line-height:1.1;margin:0}
+.dayhead .sub{font-family:var(--f-data);font-size:11.5px;color:var(--ink-soft);text-align:right}
+.hint{font-family:var(--f-data);font-size:11.5px;color:var(--brass);border-left:3px solid var(--brass);padding:2px 0 2px 8px;margin:-4px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px 9px}
+.f{display:flex;flex-direction:column;gap:4px}
+.f.wide{grid-column:1/-1}
+.f label{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-soft);font-weight:600}
+input,select,textarea{font-family:var(--f-body);font-size:16px;color:var(--ink);background:#FBFCFA;border:1px solid var(--line);border-radius:8px;padding:11px 10px;width:100%;min-height:46px;appearance:none}
+input[inputmode="decimal"],input[inputmode="numeric"],input[type="time"]{font-family:var(--f-data)}
+textarea{min-height:88px;resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(14,36,48,.14)}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--ink-soft) 50%),linear-gradient(135deg,var(--ink-soft) 50%,transparent 50%);background-position:calc(100% - 18px) 21px,calc(100% - 13px) 21px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+button{font-family:var(--f-body);font-size:14px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--ink);border-radius:8px;padding:11px 14px;min-height:46px;cursor:pointer}
+button.primary{background:var(--ink);color:#F4F7F4}
+button.warn{border-color:var(--buoy);color:var(--buoy)}
+button.small{min-height:38px;padding:7px 11px;font-size:12.5px;font-family:var(--f-data)}
+button:disabled{opacity:.45}
+button:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+footer{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(240,242,236,.96);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;backdrop-filter:blur(6px)}
+footer .status{flex:1;font-family:var(--f-data);font-size:11px;color:var(--ink-soft)}
+footer .status.err{color:var(--buoy)}
+footer button{padding:10px 13px;font-family:var(--f-data);font-size:13px}
+.banner{background:#FBEEEC;border:1px solid var(--buoy);color:#7E2A21;border-radius:var(--r);padding:10px 12px;font-size:13.5px;margin:0 12px 12px;max-width:720px}
+.banner.hidden{display:none}
+.note{font-family:var(--f-data);font-size:11.5px;color:var(--ink-soft);margin:0 0 12px}
+.note.ok{color:var(--seagrass)}
+.note.err{color:var(--buoy)}
+#exportOut{white-space:pre-wrap;font-family:var(--f-data);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:22px}
+#exportOut.hidden{display:none}
+@media (min-width:560px){.dayhead .big{font-size:26px}}
+@media print{header,footer,.tools,.btnrow,#exportOut,#setup{display:none}body{background:#fff;padding:0}.sheet{break-inside:avoid;border-color:#999}}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:rise .18s ease-out}@keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>Logbuch</h1>
+    <span class="boat">RED TWIN II · LAGOON 450F</span>
+  </div>
+  <div class="totals" id="totals"></div>
+  <div class="ruler"><div class="days" id="days"></div></div>
+</header>
+
+<div class="banner hidden" id="banner"></div>
+
+<main>
+  <div id="form"></div>
+
+  <div class="sheet" id="setup">
+    <h2>Speicherort und Wetterquelle</h2>
+    <p class="note" id="storeInfo"></p>
+    <div class="btnrow">
+      <button class="small" id="btnPick">Speicherort wählen</button>
+      <button class="small" id="btnWriteNow">Jetzt in Datei schreiben</button>
+      <button class="small" id="btnForget">Speicherort lösen</button>
+    </div>
+    <div class="grid">
+      <div class="f"><label for="s_provider">Wetterquelle</label>
+        <select id="s_provider">
+          <option value="om">Open-Meteo (ohne Schlüssel)</option>
+          <option value="windy">Windy Point Forecast (API-Schlüssel)</option>
+        </select>
+      </div>
+      <div class="f"><label for="s_key">Windy API-Schlüssel</label><input id="s_key" type="text" autocomplete="off" placeholder="nur für Windy nötig"></div>
+      <div class="f"><label for="s_lat">Breite (Lat)</label><input id="s_lat" type="text" inputmode="decimal" placeholder="43.5871"></div>
+      <div class="f"><label for="s_lon">Länge (Lon)</label><input id="s_lon" type="text" inputmode="decimal" placeholder="15.9203"></div>
+    </div>
+    <p class="note" id="diag"></p>
+    <p class="note">Die Windy-App selbst gibt ihre Daten nicht an andere Apps weiter. Open-Meteo liefert dieselben Modelle (ECMWF/GFS) frei; mit einem Windy-Schlüssel werden die Windy-Daten direkt geholt.</p>
+  </div>
+
+  <div class="tools">
+    <button class="primary" id="btnBackup">Backup in Downloads</button>
+    <button id="btnRestore">Backup laden</button>
+    <button id="btnText">Als Text anzeigen</button>
+    <button id="btnPrint">Drucken / PDF</button>
+    <button class="warn" id="btnClear">Tag leeren</button>
+    <input type="file" id="file" accept=".json,application/json" hidden>
+  </div>
+
+  <div id="exportOut" class="hidden"></div>
+</main>
+
+<footer>
+  <span class="status" id="status">Wird geladen …</span>
+  <button id="prev">‹ Tag</button>
+  <button id="next">Tag ›</button>
+</footer>
+
+<script>
+/* ================= Törndaten ================= */
+var TAGE = [
+  {n:1, d:"29.08.2026", wt:"Sa", p:5, hint:"Check-in Kremik, Übernahmeprotokoll, Großeinkauf"},
+  {n:2, d:"30.08.2026", wt:"So", p:5, hint:"Ablegen früh"},
+  {n:3, d:"31.08.2026", wt:"Mo", p:5, hint:""},
+  {n:4, d:"01.09.2026", wt:"Di", p:5, hint:"Grillabend Lotusgrill"},
+  {n:5, d:"02.09.2026", wt:"Mi", p:6, hint:"Trogir – 6. Crewmitglied kommt an Bord"},
+  {n:6, d:"03.09.2026", wt:"Do", p:6, hint:""},
+  {n:7, d:"04.09.2026", wt:"Fr", p:6, hint:"Skradin: Wasser und Proviant für die Kornaten bunkern"},
+  {n:8, d:"05.09.2026", wt:"Sa", p:6, hint:"Kornati NP – kein Landstrom, kein Wasser"},
+  {n:9, d:"06.09.2026", wt:"So", p:6, hint:"Kornati NP"},
+  {n:10,d:"07.09.2026", wt:"Mo", p:6, hint:"Kornati NP"},
+  {n:11,d:"08.09.2026", wt:"Di", p:6, hint:"Kornati NP"},
+  {n:12,d:"09.09.2026", wt:"Mi", p:6, hint:"Split – Grillabend"},
+  {n:13,d:"10.09.2026", wt:"Do", p:6, hint:"Tanken Milna / Brač"},
+  {n:14,d:"11.09.2026", wt:"Fr", p:6, hint:"Rückkehr Kremik, letzter Abend an Bord"},
+  {n:15,d:"12.09.2026", wt:"Sa", p:6, hint:"Rückgabe 09:00, Zählerstände dokumentieren"}
+];
+var KOMPASS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+var HIMMEL = [""].concat(KOMPASS);
+var BFT = ["","0 – spiegelglatt","1 – leichter Zug","2 – leichte Brise","3 – schwache Brise","4 – mäßige Brise","5 – frische Brise","6 – starker Wind","7 – steifer Wind","8 – stürmisch","9 – Sturm","10+ – schwerer Sturm"];
+var SEEGANG = ["","glatt","leichte Wellen","0,5 m","1 m","1,5 m","2 m und mehr"];
+
+var SCHEMA = [
+ {titel:"Etappe", felder:[
+   {k:"von", l:"Von", t:"text"},
+   {k:"nach", l:"Nach", t:"text"},
+   {k:"liegeplatz", l:"Liegeplatz", t:"select", o:["","Marina","Boje / Muring","Anker frei","Ankern mit Landleine","Steg im Ort","Werft / Basis"]},
+   {k:"ablegen", l:"Ablegen", t:"time"},
+   {k:"anlegen", l:"Anlegen", t:"time"},
+   {k:"distanz", l:"Distanz (sm)", t:"dec"},
+   {k:"logstand", l:"Logstand (sm)", t:"dec"},
+   {k:"segelstd", l:"Std. unter Segel", t:"dec"},
+   {k:"motorBB", l:"Motorstd. BB", t:"dec"},
+   {k:"motorSB", l:"Motorstd. SB", t:"dec"},
+   {k:"route", l:"Route, Buchten, Position", t:"area", wide:true}
+ ]},
+ {titel:"Wetter und See", wetter:true, felder:[
+   {k:"windRi", l:"Windrichtung", t:"select", o:HIMMEL},
+   {k:"windBft", l:"Windstärke", t:"select", o:BFT},
+   {k:"windKn", l:"Wind (kn)", t:"num"},
+   {k:"boen", l:"Böen (kn)", t:"num"},
+   {k:"seegang", l:"Seegang", t:"select", o:SEEGANG},
+   {k:"sicht", l:"Sicht", t:"select", o:["","klar","gut","mäßig","Dunst","Regen / schlecht"]},
+   {k:"wetterlage", l:"Wetter", t:"select", o:["","sonnig","heiter","wechselnd","bedeckt","Regen","Gewitter","Bora","Maestral","Jugo"]},
+   {k:"druck", l:"Luftdruck (hPa)", t:"num"},
+   {k:"tempLuft", l:"Luft (°C)", t:"num"},
+   {k:"tempWasser", l:"Wasser (°C)", t:"num"},
+   {k:"vorhersage", l:"Vorhersage und Quelle", t:"area", wide:true}
+ ]},
+ {titel:"Schiffsbetrieb", felder:[
+   {k:"diesel", l:"Diesel (%)", t:"num"},
+   {k:"wasser", l:"Wasser (%)", t:"num"},
+   {k:"faekal", l:"Fäkalientank", t:"select", o:["","leer","halb","fast voll","entleert"]},
+   {k:"strom", l:"Strom", t:"select", o:["","Landstrom","Generator","Motor laden","nur Batterie","Solar"]},
+   {k:"generator", l:"Generator (Std.)", t:"dec"},
+   {k:"gebuehr", l:"Liegegebühr (€)", t:"dec"},
+   {k:"bordkasse", l:"Weitere Ausgaben (€)", t:"dec"},
+   {k:"technik", l:"Technik, Kontrollen, Schäden", t:"area", wide:true}
+ ]},
+ {titel:"Crew", felder:[
+   {k:"personen", l:"Personen an Bord", t:"num"},
+   {k:"wache", l:"Rudergänger / Wache", t:"text"},
+   {k:"crewNotiz", l:"An- und Abmusterungen, Befinden", t:"area", wide:true}
+ ]},
+ {titel:"Eintrag des Skippers", felder:[
+   {k:"besonderheiten", l:"Besonderheiten und Manöver", t:"area", wide:true},
+   {k:"vorfaelle", l:"Vorfälle, Beinahe-Unfälle, Entscheidungen", t:"area", wide:true},
+   {k:"erinnerung", l:"Der Moment des Tages", t:"area", wide:true},
+   {k:"offen", l:"Offen für morgen", t:"area", wide:true}
+ ]}
+];
+
+/* ================= Zustand ================= */
+var LS_KEY = "logbuch2026";
+var data = {};
+var setup = {provider:"om", key:"", lat:"", lon:""};
+var aktiv = 1;
+var lsOk = true;
+var dateiHandle = null;
+var tLocal = null, tDatei = null;
+
+var $ = function(id){ return document.getElementById(id); };
+function setStatus(t, err){ var s=$("status"); s.textContent=t; s.className="status"+(err?" err":""); }
+function banner(t){ var b=$("banner"); b.textContent=t; b.classList.remove("hidden"); }
+
+/* ---------- 1. Ebene: Gerätespeicher (immer) ---------- */
+function lokalSpeichern(){
+  clearTimeout(tLocal);
+  tLocal = setTimeout(function(){
+    try{
+      localStorage.setItem(LS_KEY, JSON.stringify({eintraege:data, setup:setup}));
+      lsOk = true;
+      var t = new Date();
+      setStatus("Gespeichert " + String(t.getHours()).padStart(2,"0") + ":" + String(t.getMinutes()).padStart(2,"0") + (dateiHandle ? " · Datei" : ""));
+    }catch(e){
+      lsOk = false;
+      setStatus("Gerätespeicher nicht verfügbar", true);
+      banner("Dieser Browser lässt keinen dauerhaften Speicher zu. Öffne die Datei direkt in Chrome auf dem Handy, nicht in einer Vorschau, und wähle zusätzlich einen Speicherort.");
+    }
+  }, 350);
+  dateiSpeichern();
+}
+
+function lokalLaden(){
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(raw){
+      var o = JSON.parse(raw);
+      data = o.eintraege || {};
+      if(o.setup) setup = Object.assign(setup, o.setup);
+    }
+  }catch(e){
+    lsOk = false;
+    banner("Der Gerätespeicher ist in dieser Umgebung gesperrt. Speichere die Datei auf dem Handy und öffne sie in Chrome, dann funktioniert das automatische Sichern.");
+  }
+}
+
+/* ---------- 2. Ebene: eigene Datei am gewählten Ort ---------- */
+var IDB_NAME = "logbuch-handles";
+function idb(){
+  return new Promise(function(res, rej){
+    var r = indexedDB.open(IDB_NAME, 1);
+    r.onupgradeneeded = function(){ r.result.createObjectStore("h"); };
+    r.onsuccess = function(){ res(r.result); };
+    r.onerror = function(){ rej(r.error); };
+  });
+}
+async function handleSpeichern(h){
+  try{ var db = await idb(); var tx = db.transaction("h","readwrite"); tx.objectStore("h").put(h,"ziel"); }catch(e){}
+}
+async function handleLaden(){
+  try{
+    var db = await idb();
+    return await new Promise(function(res){
+      var rq = db.transaction("h","readonly").objectStore("h").get("ziel");
+      rq.onsuccess = function(){ res(rq.result || null); };
+      rq.onerror = function(){ res(null); };
+    });
+  }catch(e){ return null; }
+}
+async function handleLoeschen(){
+  try{ var db = await idb(); db.transaction("h","readwrite").objectStore("h").delete("ziel"); }catch(e){}
+}
+
+async function ortWaehlen(){
+  try{
+    if(window.showSaveFilePicker){
+      var h = await window.showSaveFilePicker({
+        suggestedName: "Logbuch_RedTwinII.json",
+        types:[{description:"Logbuch", accept:{"application/json":[".json"]}}]
+      });
+      dateiHandle = h;
+      await handleSpeichern(h);
+      await dateiSchreiben();
+      storeInfo("Ziel: " + h.name + " · wird bei jeder Eingabe mitgeschrieben", "ok");
+    }else if(window.showDirectoryPicker){
+      var dir = await window.showDirectoryPicker({mode:"readwrite"});
+      dateiHandle = await dir.getFileHandle("Logbuch_RedTwinII.json", {create:true});
+      await handleSpeichern(dateiHandle);
+      await dateiSchreiben();
+      storeInfo("Ziel: Ordner " + dir.name + " / Logbuch_RedTwinII.json", "ok");
+    }else{
+      storeInfo("Dieser Browser kann keinen Ordner öffnen. Die Einträge liegen im Gerätespeicher; nutze zusätzlich „Backup in Downloads“ und stelle in Chrome „Speicherort vor jedem Download erfragen“ ein.", "err");
+    }
+  }catch(e){
+    if(e && e.name === "AbortError") return;
+    storeInfo("Speicherort nicht gesetzt: " + (e && e.message ? e.message : "unbekannter Fehler"), "err");
+  }
+}
+
+async function dateiSchreiben(){
+  if(!dateiHandle) return;
+  try{
+    if(dateiHandle.queryPermission){
+      var p = await dateiHandle.queryPermission({mode:"readwrite"});
+      if(p !== "granted") return;
+    }
+    var w = await dateiHandle.createWritable();
+    await w.write(JSON.stringify({eintraege:data, setup:setup}, null, 1));
+    await w.close();
+  }catch(e){
+    storeInfo("Schreiben in die Datei fehlgeschlagen. Tippe „Jetzt in Datei schreiben“ und bestätige den Zugriff.", "err");
+  }
+}
+function dateiSpeichern(){
+  if(!dateiHandle) return;
+  clearTimeout(tDatei);
+  tDatei = setTimeout(dateiSchreiben, 2500);
+}
+function storeInfo(text, kl){
+  var p = $("storeInfo");
+  p.textContent = text;
+  p.className = "note" + (kl ? " " + kl : "");
+}
+
+/* ================= Wetter ================= */
+function bftAus(kn){
+  var g = [1,4,7,11,17,22,28,34,41,48,56];
+  var b = 0;
+  for(var i=0;i<g.length;i++){ if(kn >= g[i]) b = i+1; }
+  return Math.min(b, 10);
+}
+function richtungAus(grad){ return KOMPASS[Math.round(((grad%360)/22.5))%16]; }
+function seegangAus(m){
+  if(m == null) return "";
+  if(m < 0.15) return "glatt";
+  if(m < 0.35) return "leichte Wellen";
+  if(m < 0.75) return "0,5 m";
+  if(m < 1.25) return "1 m";
+  if(m < 1.75) return "1,5 m";
+  return "2 m und mehr";
+}
+function lageAus(code){
+  if(code === 0) return ["sonnig","klar"];
+  if(code === 1) return ["heiter","klar"];
+  if(code === 2) return ["wechselnd","gut"];
+  if(code === 3) return ["bedeckt","gut"];
+  if(code === 45 || code === 48) return ["bedeckt","Dunst"];
+  if(code >= 95) return ["Gewitter","Regen / schlecht"];
+  if(code >= 51) return ["Regen","mäßig"];
+  return ["",""];
+}
+
+/* Koordinaten aus Text: 43.5871, 15.9203 · 43°35'13"N 15°55'13"E · 43 35.2 N · Maps-Link */
+function parseKoord(text){
+  if(!text) return null;
+  var s = String(text).replace(/\u00a0/g," ").trim();
+  var m = s.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) || s.match(/[?&]q=(-?\d+\.\d+),\s*(-?\d+\.\d+)/);
+  if(m) return {lat:parseFloat(m[1]), lon:parseFloat(m[2])};
+
+  var teile = s.match(/(\d{1,3})[°\s:]+(\d{1,2}(?:[.,]\d+)?)['′\s:]*(\d{1,2}(?:[.,]\d+)?)?["″]?\s*([NSEWOnsewo])/g);
+  if(teile && teile.length >= 2){
+    var w = teile.slice(0,2).map(function(t){
+      var p = t.match(/(\d{1,3})[°\s:]+(\d{1,2}(?:[.,]\d+)?)['′\s:]*(\d{1,2}(?:[.,]\d+)?)?["″]?\s*([NSEWOnsewo])/);
+      var g = parseFloat(p[1]) + parseFloat(p[2].replace(",",".")) / 60 + (p[3] ? parseFloat(p[3].replace(",",".")) / 3600 : 0);
+      var h = p[4].toUpperCase();
+      if(h === "S" || h === "W") g = -g;
+      return {g:g, h:h};
+    });
+    var la = w.find(function(x){ return x.h === "N" || x.h === "S"; });
+    var lo = w.find(function(x){ return x.h === "E" || x.h === "W" || x.h === "O"; });
+    if(la && lo) return {lat:la.g, lon:lo.g};
+  }
+
+  var d = s.match(/(-?\d{1,2}[.,]\d+)\s*[,;\s]\s*(-?\d{1,3}[.,]\d+)/);
+  if(d) return {lat:parseFloat(d[1].replace(",",".")), lon:parseFloat(d[2].replace(",","."))};
+  return null;
+}
+function koordUebernehmen(text){
+  var k = parseKoord(text);
+  if(!k || isNaN(k.lat) || isNaN(k.lon) || Math.abs(k.lat) > 90 || Math.abs(k.lon) > 180) return null;
+  setup.lat = k.lat.toFixed(4);
+  setup.lon = k.lon.toFixed(4);
+  setupFelder();
+  lokalSpeichern();
+  return k;
+}
+function gpsGrund(err){
+  var lokal = location.protocol === "file:";
+  if(err && err.code === 1){
+    return lokal
+      ? "Der Standort ist gesperrt, weil die Datei lokal geöffnet ist (file://). Edge und Chrome geben GPS nur an Seiten mit echter Web-Adresse frei. Nutze „Koordinaten einfügen“ – aus Maps kopieren, hier einsetzen."
+      : "Standortzugriff abgelehnt. In Edge: Menü → Einstellungen → Website-Berechtigungen → Standort für diese Seite erlauben, außerdem Edge in den Android-App-Berechtigungen den Standort geben.";
+  }
+  if(err && err.code === 2) return "Position nicht ermittelbar. Kurz an Deck gehen oder Koordinaten einfügen.";
+  if(err && err.code === 3) return "GPS-Zeitüberschreitung. Nochmal antippen oder Koordinaten einfügen.";
+  return "GPS nicht verfügbar. Nutze „Koordinaten einfügen“.";
+}
+
+function position(){
+  return new Promise(function(res, rej){
+    if(setup.lat && setup.lon){
+      res({lat: parseFloat(String(setup.lat).replace(",",".")), lon: parseFloat(String(setup.lon).replace(",","."))});
+      return;
+    }
+    if(!navigator.geolocation){ rej(new Error("Kein GPS in diesem Browser. Nutze „Koordinaten einfügen“.")); return; }
+    navigator.geolocation.getCurrentPosition(
+      function(p){
+        setup.lat = p.coords.latitude.toFixed(4);
+        setup.lon = p.coords.longitude.toFixed(4);
+        setupFelder();
+        res({lat:p.coords.latitude, lon:p.coords.longitude});
+      },
+      function(err){ rej(new Error(gpsGrund(err))); },
+      {timeout:15000, maximumAge:600000, enableHighAccuracy:false}
+    );
+  });
+}
+
+async function openMeteo(lat, lon){
+  var u = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon +
+    "&current=temperature_2m,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code" +
+    "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m&forecast_days=2&wind_speed_unit=kn&timezone=auto";
+  var r = await fetch(u);
+  if(!r.ok) throw new Error("Open-Meteo antwortet nicht (" + r.status + ")");
+  var j = await r.json();
+  var c = j.current;
+  var out = {
+    kn: Math.round(c.wind_speed_10m),
+    gust: Math.round(c.wind_gusts_10m),
+    dir: c.wind_direction_10m,
+    hpa: Math.round(c.pressure_msl),
+    luft: Math.round(c.temperature_2m),
+    code: c.weather_code,
+    quelle: "Open-Meteo",
+    zeit: c.time
+  };
+  var maxKn = 0, maxG = 0;
+  if(j.hourly && j.hourly.wind_speed_10m){
+    for(var i=0;i<Math.min(13, j.hourly.wind_speed_10m.length);i++){
+      maxKn = Math.max(maxKn, j.hourly.wind_speed_10m[i]);
+      maxG = Math.max(maxG, j.hourly.wind_gusts_10m[i]);
+    }
+  }
+  out.trend = "12 h: bis " + Math.round(maxKn) + " kn, Böen bis " + Math.round(maxG) + " kn";
+  try{
+    var m = await fetch("https://marine-api.open-meteo.com/v1/marine?latitude=" + lat + "&longitude=" + lon + "&current=wave_height,sea_surface_temperature");
+    if(m.ok){
+      var mj = await m.json();
+      if(mj.current){
+        out.welle = mj.current.wave_height;
+        if(mj.current.sea_surface_temperature != null) out.wasser = Math.round(mj.current.sea_surface_temperature);
+      }
+    }
+  }catch(e){}
+  return out;
+}
+
+async function windy(lat, lon){
+  if(!setup.key) throw new Error("Kein Windy-Schlüssel eingetragen.");
+  var r = await fetch("https://api.windy.com/api/point-forecast/v2", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({lat:lat, lon:lon, model:"gfs", parameters:["wind","windGust","pressure","temp"], levels:["surface"], key:setup.key})
+  });
+  if(!r.ok) throw new Error("Windy antwortet nicht (" + r.status + "). Schlüssel prüfen.");
+  var j = await r.json();
+  var u = j["wind_u-surface"][0], v = j["wind_v-surface"][0];
+  var ms = Math.sqrt(u*u + v*v);
+  var dir = (Math.atan2(-u, -v) * 180 / Math.PI + 360) % 360;
+  var out = {
+    kn: Math.round(ms * 1.9438),
+    gust: Math.round((j["gust-surface"] ? j["gust-surface"][0] : ms) * 1.9438),
+    dir: dir,
+    hpa: Math.round(j["pressure-surface"][0] / 100),
+    luft: Math.round(j["temp-surface"][0] - 273.15),
+    code: null,
+    quelle: "Windy GFS",
+    zeit: new Date(j.ts[0]).toISOString()
+  };
+  var maxKn = 0, maxG = 0;
+  for(var i=0;i<Math.min(5, j.ts.length);i++){
+    var s = Math.sqrt(Math.pow(j["wind_u-surface"][i],2) + Math.pow(j["wind_v-surface"][i],2)) * 1.9438;
+    maxKn = Math.max(maxKn, s);
+    if(j["gust-surface"]) maxG = Math.max(maxG, j["gust-surface"][i] * 1.9438);
+  }
+  out.trend = "nächste Stunden: bis " + Math.round(maxKn) + " kn, Böen bis " + Math.round(maxG) + " kn";
+  return out;
+}
+
+async function wetterHolen(btn){
+  var e = eintrag(aktiv);
+  var msg = $("wetterMsg");
+  btn.disabled = true;
+  msg.className = "note";
+  msg.textContent = "Position und Wetter werden geholt …";
+  try{
+    var pos = await position();
+    var w = setup.provider === "windy" ? await windy(pos.lat, pos.lon) : await openMeteo(pos.lat, pos.lon);
+
+    var belegt = e.windKn || e.windBft || e.druck;
+    if(belegt && !confirm("Die Wetterfelder von Tag " + aktiv + " sind gefüllt. Mit neuen Werten überschreiben?")){
+      btn.disabled = false; msg.textContent = "Nichts geändert."; return;
+    }
+    e.windRi = richtungAus(w.dir);
+    e.windKn = String(w.kn);
+    e.windBft = BFT[bftAus(w.kn) + 1];
+    e.boen = String(w.gust);
+    e.druck = String(w.hpa);
+    e.tempLuft = String(w.luft);
+    if(w.wasser != null) e.tempWasser = String(w.wasser);
+    if(w.welle != null) e.seegang = seegangAus(w.welle);
+    if(w.code != null){
+      var l = lageAus(w.code);
+      if(l[0]) e.wetterlage = l[0];
+      if(l[1]) e.sicht = l[1];
+    }
+    var zeile = w.quelle + " " + new Date().toLocaleString("de-DE", {hour:"2-digit", minute:"2-digit", day:"2-digit", month:"2-digit"}) +
+      " · " + pos.lat.toFixed(3) + " / " + pos.lon.toFixed(3) + " · " + w.trend;
+    e.vorhersage = (e.vorhersage ? e.vorhersage.trim() + "\n" : "") + zeile;
+    if(!setup.lat){ setup.lat = pos.lat.toFixed(4); setup.lon = pos.lon.toFixed(4); }
+
+    lokalSpeichern();
+    zeichne();
+    var m2 = $("wetterMsg");
+    m2.className = "note ok";
+    m2.textContent = "Übernommen: " + w.quelle + " · " + w.kn + " kn aus " + e.windRi;
+  }catch(err){
+    msg.className = "note err";
+    msg.textContent = err && err.message ? err.message : "Wetter konnte nicht geholt werden.";
+    btn.disabled = false;
+  }
+}
+
+/* ================= Oberfläche ================= */
+function eintrag(n){ if(!data[n]) data[n] = {}; return data[n]; }
+function gefuellt(n){
+  var e = data[n];
+  if(!e) return false;
+  for(var k in e){ if(String(e[k]).trim() !== "") return true; }
+  return false;
+}
+function tagesleiste(){
+  var wrap = $("days");
+  wrap.innerHTML = "";
+  TAGE.forEach(function(t){
+    var b = document.createElement("button");
+    b.className = "day" + (gefuellt(t.n) ? " filled" : "");
+    b.setAttribute("aria-current", t.n === aktiv ? "true" : "false");
+    b.innerHTML = '<span class="n">' + String(t.n).padStart(2,"0") + '</span><span class="d">' + t.d.slice(0,6) + '</span>';
+    b.onclick = function(){ aktiv = t.n; zeichne(); window.scrollTo({top:0}); };
+    wrap.appendChild(b);
+  });
+  var akt = wrap.children[aktiv-1];
+  if(akt) akt.scrollIntoView({block:"nearest", inline:"center"});
+}
+function summen(){
+  var sm = 0, mot = 0, tage = 0;
+  TAGE.forEach(function(t){
+    var e = data[t.n] || {};
+    sm += parseFloat(String(e.distanz||"").replace(",",".")) || 0;
+    mot += (parseFloat(String(e.motorBB||"").replace(",",".")) || 0) + (parseFloat(String(e.motorSB||"").replace(",",".")) || 0);
+    if(gefuellt(t.n)) tage++;
+  });
+  $("totals").innerHTML = "GEFAHREN <b>" + sm.toFixed(1) + " sm</b><span>MOTOR <b>" + mot.toFixed(1) + " h</b></span><span>EINGETRAGEN <b>" + tage + "/15</b></span>";
+}
+function marker(){
+  var k = $("days").children;
+  for(var i=0;i<k.length;i++){ k[i].classList.toggle("filled", gefuellt(i+1)); }
+}
+function feld(f, e){
+  var box = document.createElement("div");
+  box.className = "f" + (f.wide ? " wide" : "");
+  var id = "f_" + f.k;
+  var lab = document.createElement("label");
+  lab.setAttribute("for", id); lab.textContent = f.l;
+  box.appendChild(lab);
+  var el;
+  if(f.t === "select"){
+    el = document.createElement("select");
+    f.o.forEach(function(o){
+      var opt = document.createElement("option");
+      opt.value = o; opt.textContent = o === "" ? "–" : o;
+      el.appendChild(opt);
+    });
+  }else if(f.t === "area"){
+    el = document.createElement("textarea"); el.rows = 3;
+  }else{
+    el = document.createElement("input");
+    if(f.t === "time") el.type = "time";
+    else if(f.t === "num"){ el.type = "text"; el.inputMode = "numeric"; }
+    else if(f.t === "dec"){ el.type = "text"; el.inputMode = "decimal"; }
+    else el.type = "text";
+  }
+  el.id = id;
+  el.value = e[f.k] || "";
+  el.addEventListener("input", function(){
+    e[f.k] = el.value;
+    lokalSpeichern(); summen(); marker();
+  });
+  box.appendChild(el);
+  return box;
+}
+function zeichne(){
+  var t = TAGE[aktiv-1];
+  var e = eintrag(aktiv);
+  if(!e.personen) e.personen = String(t.p);
+  var form = $("form");
+  form.innerHTML = "";
+
+  var kopf = document.createElement("div");
+  kopf.className = "sheet";
+  kopf.innerHTML = '<div class="dayhead"><h2 class="big">Tag ' + t.n + ' · ' + t.wt + '</h2>' +
+    '<span class="sub">' + t.d + '<br>' + t.p + ' Personen geplant</span></div>' +
+    (t.hint ? '<div class="hint">' + t.hint + '</div>' : '');
+  form.appendChild(kopf);
+
+  SCHEMA.forEach(function(g){
+    var s = document.createElement("div");
+    s.className = "sheet";
+    var h = document.createElement("h2");
+    h.textContent = g.titel;
+    s.appendChild(h);
+    if(g.wetter){
+      var row = document.createElement("div");
+      row.className = "btnrow";
+      var b = document.createElement("button");
+      b.className = "small primary";
+      b.textContent = "Wetter jetzt übernehmen";
+      b.onclick = function(){ wetterHolen(b); };
+      var b2 = document.createElement("button");
+      b2.className = "small";
+      b2.textContent = "Position vom GPS";
+      b2.onclick = function(){
+        var m = $("wetterMsg");
+        m.className = "note"; m.textContent = "GPS wird abgefragt …";
+        setup.lat = ""; setup.lon = "";
+        if(!navigator.geolocation){ m.className = "note err"; m.textContent = gpsGrund(null); return; }
+        navigator.geolocation.getCurrentPosition(function(p){
+          setup.lat = p.coords.latitude.toFixed(4);
+          setup.lon = p.coords.longitude.toFixed(4);
+          var e2 = eintrag(aktiv);
+          e2.route = (e2.route ? e2.route.trim() + "\n" : "") + "Position " + setup.lat + " / " + setup.lon;
+          lokalSpeichern(); zeichne();
+          $("wetterMsg").className = "note ok";
+          $("wetterMsg").textContent = "Position übernommen: " + setup.lat + " / " + setup.lon;
+        }, function(err){
+          var m2 = $("wetterMsg");
+          m2.className = "note err";
+          m2.textContent = gpsGrund(err);
+        }, {timeout:15000, maximumAge:600000});
+      };
+      var b3 = document.createElement("button");
+      b3.className = "small";
+      b3.textContent = "Koordinaten einfügen";
+      b3.onclick = function(){
+        var v = prompt("Koordinaten aus Maps, Navionics oder Plotter einsetzen:\n43.5871, 15.9203  oder  43°35.2'N 15°55.2'E", (setup.lat && setup.lon) ? setup.lat + ", " + setup.lon : "");
+        if(v === null) return;
+        var k = koordUebernehmen(v);
+        var m = $("wetterMsg");
+        if(k){
+          var e3 = eintrag(aktiv);
+          e3.route = (e3.route ? e3.route.trim() + "\n" : "") + "Position " + setup.lat + " / " + setup.lon;
+          lokalSpeichern(); zeichne();
+          $("wetterMsg").className = "note ok";
+          $("wetterMsg").textContent = "Position gesetzt: " + setup.lat + " / " + setup.lon;
+        }else{
+          m.className = "note err";
+          m.textContent = "Die Eingabe war nicht lesbar. Format: 43.5871, 15.9203";
+        }
+      };
+      row.appendChild(b); row.appendChild(b2); row.appendChild(b3);
+      s.appendChild(row);
+      var msg = document.createElement("p");
+      msg.className = "note"; msg.id = "wetterMsg";
+      var quelle = setup.provider === "windy" ? "Quelle: Windy Point Forecast" : "Quelle: Open-Meteo, ohne Schlüssel";
+      if(setup.lat && setup.lon) quelle += " · Position " + setup.lat + " / " + setup.lon;
+      else if(location.protocol === "file:") quelle += " · GPS gesperrt bei lokal geöffneter Datei, Koordinaten einfügen";
+      msg.textContent = quelle;
+      s.appendChild(msg);
+    }
+    var grid = document.createElement("div");
+    grid.className = "grid";
+    g.felder.forEach(function(f){ grid.appendChild(feld(f, e)); });
+    s.appendChild(grid);
+    form.appendChild(s);
+  });
+  tagesleiste(); summen();
+}
+
+/* ================= Export ================= */
+function alsText(){
+  var out = "LOGBUCH · Red Twin II · Lagoon 450F · Törn 29.08.–12.09.2026\n========================================================\n";
+  TAGE.forEach(function(t){
+    if(!gefuellt(t.n)) return;
+    var e = data[t.n];
+    out += "\nTAG " + t.n + " · " + t.wt + " " + t.d + "\n";
+    SCHEMA.forEach(function(g){
+      var z = [];
+      g.felder.forEach(function(f){
+        var v = (e[f.k] || "").toString().trim();
+        if(v) z.push("  " + f.l + ": " + v);
+      });
+      if(z.length) out += " " + g.titel.toUpperCase() + "\n" + z.join("\n") + "\n";
+    });
+  });
+  return out;
+}
+function download(name, inhalt, typ){
+  var blob = new Blob([inhalt], {type:typ});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name; a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+}
+
+/* ================= Bedienung ================= */
+$("btnPick").onclick = ortWaehlen;
+$("btnWriteNow").onclick = async function(){
+  if(!dateiHandle){ storeInfo("Noch kein Speicherort gewählt.", "err"); return; }
+  try{
+    if(dateiHandle.requestPermission){
+      var p = await dateiHandle.requestPermission({mode:"readwrite"});
+      if(p !== "granted"){ storeInfo("Zugriff auf die Datei abgelehnt.", "err"); return; }
+    }
+    await dateiSchreiben();
+    storeInfo("In " + dateiHandle.name + " geschrieben.", "ok");
+  }catch(e){ storeInfo("Schreiben fehlgeschlagen.", "err"); }
+};
+$("btnForget").onclick = async function(){
+  dateiHandle = null;
+  await handleLoeschen();
+  storeInfo("Nur Gerätespeicher aktiv. Kein Dateiziel gesetzt.");
+};
+$("btnBackup").onclick = function(){
+  download("Logbuch_RedTwinII_" + new Date().toISOString().slice(0,10) + ".json", JSON.stringify({eintraege:data, setup:setup}, null, 1), "application/json");
+  setStatus("Backup abgelegt");
+};
+$("btnRestore").onclick = function(){ $("file").click(); };
+$("file").onchange = function(ev){
+  var f = ev.target.files[0];
+  if(!f) return;
+  var r = new FileReader();
+  r.onload = function(){
+    try{
+      var o = JSON.parse(r.result);
+      var neu = o.eintraege || o;
+      Object.keys(neu).forEach(function(k){ data[k] = neu[k]; });
+      if(o.setup) setup = Object.assign(setup, o.setup);
+      lokalSpeichern(); zeichne(); setupFelder();
+      setStatus("Backup geladen");
+    }catch(e){ setStatus("Datei nicht lesbar", true); }
+  };
+  r.readAsText(f);
+  ev.target.value = "";
+};
+$("btnText").onclick = function(){
+  var o = $("exportOut");
+  o.textContent = alsText() || "Noch keine Einträge.";
+  o.classList.remove("hidden");
+  o.scrollIntoView({behavior:"smooth", block:"start"});
+};
+$("btnPrint").onclick = function(){ window.print(); };
+$("btnClear").onclick = function(){
+  if(!confirm("Alle Felder von Tag " + aktiv + " löschen?")) return;
+  data[aktiv] = {};
+  lokalSpeichern(); zeichne();
+};
+$("prev").onclick = function(){ if(aktiv>1){ aktiv--; zeichne(); window.scrollTo({top:0}); } };
+$("next").onclick = function(){ if(aktiv<15){ aktiv++; zeichne(); window.scrollTo({top:0}); } };
+
+function setupFelder(){
+  $("s_provider").value = setup.provider;
+  $("s_key").value = setup.key;
+  $("s_lat").value = setup.lat;
+  $("s_lon").value = setup.lon;
+}
+["provider","key","lat","lon"].forEach(function(k){
+  $("s_" + k).addEventListener("input", function(){
+    setup[k] = $("s_" + k).value;
+    lokalSpeichern();
+    if(k === "provider") zeichne();
+  });
+});
+
+/* ================= Start ================= */
+(async function(){
+  lokalLaden();
+  setupFelder();
+  dateiHandle = await handleLaden();
+  if(dateiHandle){
+    var p = dateiHandle.queryPermission ? await dateiHandle.queryPermission({mode:"readwrite"}) : "granted";
+    storeInfo(p === "granted"
+      ? "Ziel: " + dateiHandle.name + " · wird automatisch mitgeschrieben"
+      : "Ziel: " + dateiHandle.name + " · tippe „Jetzt in Datei schreiben“, um den Zugriff zu bestätigen",
+      p === "granted" ? "ok" : "err");
+  }else{
+    storeInfo(window.showSaveFilePicker || window.showDirectoryPicker
+      ? "Aktuell nur Gerätespeicher. Mit „Speicherort wählen“ eine eigene Datei festlegen, in die jede Eingabe mitgeschrieben wird."
+      : "Aktuell nur Gerätespeicher. Dieser Browser bietet keine Ordnerauswahl – nutze „Backup in Downloads“.");
+  }
+  var lokal = location.protocol === "file:";
+  $("diag").textContent = "Diagnose: " + (lokal ? "lokal geöffnete Datei (file://) – GPS und Ordnerauswahl sind hier gesperrt" : location.protocol + "// – GPS möglich, wenn der Browser den Standort freigibt") +
+    " · GPS-Schnittstelle " + (navigator.geolocation ? "vorhanden" : "fehlt") +
+    " · Dateiziel " + (window.showSaveFilePicker || window.showDirectoryPicker ? "wählbar" : "nicht wählbar");
+  $("diag").className = "note" + (lokal ? " err" : "");
+
+  var heute = new Date();
+  TAGE.forEach(function(t){
+    var p2 = t.d.split(".");
+    if(new Date(p2[2], p2[1]-1, p2[0]).toDateString() === heute.toDateString()) aktiv = t.n;
+  });
+  zeichne();
+  if(lsOk) setStatus("Bereit · Gerätespeicher aktiv");
+})();
+
+/* ---------- Offline-Betrieb ---------- */
+if("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("./sw.js").then(function(){
+      var d = document.getElementById("diag");
+      if(d) d.textContent += " · Offline-Betrieb aktiv";
+    }).catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
