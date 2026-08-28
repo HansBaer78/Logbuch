@@ -10,15 +10,8 @@
 <title>Logbuch – Red Twin II 2026</title>
 <style>
 :root{
-  --ink:#0E2430;
-  --ink-soft:#3C5663;
-  --paper:#F0F2EC;
-  --card:#FFFFFF;
-  --line:#C6CFC9;
-  --buoy:#B3372B;
-  --seagrass:#2C6A50;
-  --brass:#9A6C16;
-  --r:10px;
+  --ink:#0E2430;--ink-soft:#3C5663;--paper:#F0F2EC;--card:#FFFFFF;--line:#C6CFC9;
+  --buoy:#B3372B;--seagrass:#2C6A50;--brass:#9A6C16;--r:10px;
   --f-display:"Arial Narrow","Helvetica Neue Condensed",Impact,system-ui,sans-serif;
   --f-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --f-data:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
@@ -32,9 +25,13 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);color:#EDF1EE;padd
 .brand .boat{font-family:var(--f-data);font-size:11px;color:#8FA8AE;letter-spacing:.08em}
 .totals{display:flex;gap:14px;font-family:var(--f-data);font-size:11.5px;color:#9FB8BD;letter-spacing:.05em;margin:4px 0 8px;flex-wrap:wrap}
 .totals b{color:#F4F7F4;font-weight:600}
+nav{display:flex;gap:4px;margin:2px 0 0}
+nav button{flex:1;background:transparent;border:0;border-bottom:2px solid transparent;color:#8FA8AE;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:12.5px;padding:9px 4px;min-height:40px}
+nav button[aria-selected="true"]{color:#F4F7F4;border-bottom-color:var(--brass)}
 .ruler{position:relative;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .ruler::-webkit-scrollbar{display:none}
-.days{display:flex;gap:6px;padding:0 0 10px}
+.ruler.hidden{display:none}
+.days{display:flex;gap:6px;padding:6px 0 10px}
 .day{flex:0 0 auto;min-width:58px;padding:6px 8px 7px;border:1px solid #38525E;border-radius:8px 8px 0 0;background:#16303D;color:#C3D5D8;text-align:center;font-family:var(--f-data);cursor:pointer;position:relative}
 .day .n{display:block;font-size:15px;font-weight:600}
 .day .d{display:block;font-size:10px;color:#87A2A9;margin-top:1px}
@@ -43,8 +40,10 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);color:#EDF1EE;padd
 .day[aria-current="true"]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 .day[aria-current="true"] .d{color:var(--ink-soft)}
 main{padding:14px 12px 0;max-width:720px;margin:0 auto}
+.view{display:none}
+.view.on{display:block}
 .sheet{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 13px 4px;margin-bottom:14px}
-.sheet > h2{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.12em;font-size:12.5px;color:var(--ink-soft);margin:0 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sheet > h2{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.12em;font-size:12.5px;color:var(--ink-soft);margin:0 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
 .dayhead{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:0 0 12px}
 .dayhead .big{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-size:22px;line-height:1.1;margin:0}
 .dayhead .sub{font-family:var(--f-data);font-size:11.5px;color:var(--ink-soft);text-align:right}
@@ -70,15 +69,39 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(240,242
 footer .status{flex:1;font-family:var(--f-data);font-size:11px;color:var(--ink-soft)}
 footer .status.err{color:var(--buoy)}
 footer button{padding:10px 13px;font-family:var(--f-data);font-size:13px}
+footer .navbtns{display:flex;gap:8px}
+footer .navbtns.hidden{display:none}
 .banner{background:#FBEEEC;border:1px solid var(--buoy);color:#7E2A21;border-radius:var(--r);padding:10px 12px;font-size:13.5px;margin:0 12px 12px;max-width:720px}
 .banner.hidden{display:none}
 .note{font-family:var(--f-data);font-size:11.5px;color:var(--ink-soft);margin:0 0 12px}
 .note.ok{color:var(--seagrass)}
 .note.err{color:var(--buoy)}
+.track{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 12px}
+.track div{background:#F5F7F3;border:1px solid var(--line);border-radius:8px;padding:7px 6px;text-align:center}
+.track span{display:block;font-family:var(--f-data);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase}
+.track b{display:block;font-family:var(--f-data);font-size:17px;font-weight:600;margin-top:2px}
+.live{border-color:var(--seagrass)!important;box-shadow:inset 0 0 0 1px var(--seagrass)}
+.ampel{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:var(--r);margin:0 0 12px;border:1px solid}
+.ampel .dot{width:16px;height:16px;border-radius:50%;flex:0 0 auto}
+.ampel b{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.09em;font-size:15px}
+.ampel .txt{font-size:13.5px;line-height:1.4}
+.a-gruen{background:#EAF4EE;border-color:var(--seagrass);color:#1E4E3A}
+.a-gruen .dot{background:var(--seagrass)}
+.a-gelb{background:#FBF3E2;border-color:var(--brass);color:#6E4E10}
+.a-gelb .dot{background:var(--brass)}
+.a-rot{background:#FBEEEC;border-color:var(--buoy);color:#7E2A21}
+.a-rot .dot{background:var(--buoy)}
+.block{border-top:1px solid var(--line);padding:10px 0 2px}
+.block h3{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:11.5px;color:var(--ink-soft);margin:0 0 4px}
+.block p{margin:0 0 6px;font-size:14.5px}
+.block .stufe{font-family:var(--f-data);font-size:10.5px;letter-spacing:.06em;padding:1px 6px;border-radius:20px;border:1px solid currentColor;margin-left:6px}
+.s-rot{color:var(--buoy)}.s-gelb{color:var(--brass)}.s-gruen{color:var(--seagrass)}
+.wchart{width:100%;height:120px;display:block;margin:2px 0 8px}
+.legende{font-family:var(--f-data);font-size:10.5px;color:var(--ink-soft);margin:0 0 12px}
 #exportOut{white-space:pre-wrap;font-family:var(--f-data);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:22px}
 #exportOut.hidden{display:none}
 @media (min-width:560px){.dayhead .big{font-size:26px}}
-@media print{header,footer,.tools,.btnrow,#exportOut,#setup{display:none}body{background:#fff;padding:0}.sheet{break-inside:avoid;border-color:#999}}
+@media print{header,footer,.tools,.btnrow,#exportOut,#viewSetup{display:none}body{background:#fff;padding:0}.view{display:block!important}.sheet{break-inside:avoid;border-color:#999}}
 @media (prefers-reduced-motion:no-preference){.sheet{animation:rise .18s ease-out}@keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
 </style>
 </head>
@@ -90,53 +113,114 @@ footer button{padding:10px 13px;font-family:var(--f-data);font-size:13px}
     <span class="boat">RED TWIN II · LAGOON 450F</span>
   </div>
   <div class="totals" id="totals"></div>
-  <div class="ruler"><div class="days" id="days"></div></div>
+  <nav id="nav">
+    <button data-v="log" aria-selected="true">Logbuch</button>
+    <button data-v="wetter" aria-selected="false">Wetter</button>
+    <button data-v="setup" aria-selected="false">Speicher</button>
+  </nav>
+  <div class="ruler" id="ruler"><div class="days" id="days"></div></div>
 </header>
 
 <div class="banner hidden" id="banner"></div>
 
 <main>
-  <div id="form"></div>
-
-  <div class="sheet" id="setup">
-    <h2>Speicherort und Wetterquelle</h2>
-    <p class="note" id="storeInfo"></p>
-    <div class="btnrow">
-      <button class="small" id="btnPick">Speicherort wählen</button>
-      <button class="small" id="btnWriteNow">Jetzt in Datei schreiben</button>
-      <button class="small" id="btnForget">Speicherort lösen</button>
-    </div>
-    <div class="grid">
-      <div class="f"><label for="s_provider">Wetterquelle</label>
-        <select id="s_provider">
-          <option value="om">Open-Meteo (ohne Schlüssel)</option>
-          <option value="windy">Windy Point Forecast (API-Schlüssel)</option>
-        </select>
+  <section class="view on" id="viewLog">
+    <div class="sheet">
+      <h2>Strecke messen</h2>
+      <div class="track">
+        <div id="tCell0"><span>Distanz sm</span><b id="tSm">0,0</b></div>
+        <div id="tCell1"><span>Dauer</span><b id="tDauer">0:00</b></div>
+        <div id="tCell2"><span>Fahrt kn</span><b id="tKn">–</b></div>
+        <div id="tCell3"><span>Ø kn</span><b id="tAvg">–</b></div>
       </div>
-      <div class="f"><label for="s_key">Windy API-Schlüssel</label><input id="s_key" type="text" autocomplete="off" placeholder="nur für Windy nötig"></div>
-      <div class="f"><label for="s_lat">Breite (Lat)</label><input id="s_lat" type="text" inputmode="decimal" placeholder="43.5871"></div>
-      <div class="f"><label for="s_lon">Länge (Lon)</label><input id="s_lon" type="text" inputmode="decimal" placeholder="15.9203"></div>
+      <div class="btnrow">
+        <button class="small primary" id="tStart">Start ab hier</button>
+        <button class="small" id="tStop" disabled>Etappe beenden</button>
+        <button class="small warn" id="tReset">Messung verwerfen</button>
+      </div>
+      <p class="note" id="tMsg"></p>
     </div>
-    <p class="note" id="diag"></p>
-    <p class="note">Die Windy-App selbst gibt ihre Daten nicht an andere Apps weiter. Open-Meteo liefert dieselben Modelle (ECMWF/GFS) frei; mit einem Windy-Schlüssel werden die Windy-Daten direkt geholt.</p>
-  </div>
+    <div id="form"></div>
+  </section>
 
-  <div class="tools">
-    <button class="primary" id="btnBackup">Backup in Downloads</button>
-    <button id="btnRestore">Backup laden</button>
-    <button id="btnText">Als Text anzeigen</button>
-    <button id="btnPrint">Drucken / PDF</button>
-    <button class="warn" id="btnClear">Tag leeren</button>
-    <input type="file" id="file" accept=".json,application/json" hidden>
-  </div>
+  <section class="view" id="viewWetter">
+    <div class="sheet">
+      <h2>Wetteranalyse für Segler</h2>
+      <div class="grid">
+        <div class="f wide"><label for="w_stand">Standort</label><input id="w_stand" type="text" placeholder="43.5871, 15.9203 oder Ortsname"></div>
+        <div class="f wide"><label for="w_ziel">Ziel (optional)</label><input id="w_ziel" type="text" placeholder="z. B. Zut oder 43.90, 15.30"></div>
+        <div class="f"><label for="w_umkreis">Umkreis</label>
+          <select id="w_umkreis">
+            <option value="0">nur Punkt</option>
+            <option value="5">5 sm</option>
+            <option value="10" selected>10 sm</option>
+            <option value="20">20 sm</option>
+            <option value="30">30 sm</option>
+          </select>
+        </div>
+        <div class="f"><label for="w_dauer">Zeitraum</label>
+          <select id="w_dauer">
+            <option value="12">12 Stunden</option>
+            <option value="24" selected>24 Stunden</option>
+            <option value="48">2 Tage</option>
+            <option value="72">3 Tage</option>
+            <option value="120">5 Tage</option>
+            <option value="168">7 Tage</option>
+          </select>
+        </div>
+      </div>
+      <div class="btnrow">
+        <button class="small primary" id="wGo">Analyse starten</button>
+        <button class="small" id="wGps">Standort vom GPS</button>
+        <button class="small" id="wUeber" disabled>In Logbuch übernehmen</button>
+      </div>
+      <p class="note" id="wMsg">Open-Meteo mit ECMWF und GFS. Der Abruf braucht Empfang, die Auswertung läuft im Gerät.</p>
+    </div>
+    <div id="wOut"></div>
+  </section>
 
-  <div id="exportOut" class="hidden"></div>
+  <section class="view" id="viewSetup">
+    <div class="sheet" id="setup">
+      <h2>Speicherort und Wetterquelle</h2>
+      <p class="note" id="storeInfo"></p>
+      <div class="btnrow">
+        <button class="small" id="btnPick">Speicherort wählen</button>
+        <button class="small" id="btnWriteNow">Jetzt in Datei schreiben</button>
+        <button class="small" id="btnForget">Speicherort lösen</button>
+      </div>
+      <div class="grid">
+        <div class="f"><label for="s_provider">Wetterquelle</label>
+          <select id="s_provider">
+            <option value="om">Open-Meteo (empfohlen)</option>
+            <option value="windy">Windy Point Forecast (Schlüssel)</option>
+          </select>
+        </div>
+        <div class="f"><label for="s_key">Windy API-Schlüssel</label><input id="s_key" type="text" autocomplete="off" placeholder="nur für Windy nötig"></div>
+        <div class="f"><label for="s_lat">Breite (Lat)</label><input id="s_lat" type="text" inputmode="decimal" placeholder="43.5871"></div>
+        <div class="f"><label for="s_lon">Länge (Lon)</label><input id="s_lon" type="text" inputmode="decimal" placeholder="15.9203"></div>
+      </div>
+      <p class="note" id="diag"></p>
+      <p class="note">Der freie Windy-Schlüssel liefert nur Testdaten von zufälligen Koordinaten. Für den Törn ist Open-Meteo die brauchbare Quelle.</p>
+    </div>
+
+    <div class="tools">
+      <button class="primary" id="btnBackup">Backup in Downloads</button>
+      <button id="btnRestore">Backup laden</button>
+      <button id="btnText">Logbuch als Text</button>
+      <button id="btnPrint">Drucken / PDF</button>
+      <button class="warn" id="btnClear">Aktuellen Tag leeren</button>
+      <input type="file" id="file" accept=".json,application/json" hidden>
+    </div>
+    <div id="exportOut" class="hidden"></div>
+  </section>
 </main>
 
 <footer>
   <span class="status" id="status">Wird geladen …</span>
-  <button id="prev">‹ Tag</button>
-  <button id="next">Tag ›</button>
+  <div class="navbtns" id="navbtns">
+    <button id="prev">‹ Tag</button>
+    <button id="next">Tag ›</button>
+  </div>
 </footer>
 
 <script>
@@ -154,7 +238,7 @@ var TAGE = [
   {n:10,d:"07.09.2026", wt:"Mo", p:6, hint:"Kornati NP"},
   {n:11,d:"08.09.2026", wt:"Di", p:6, hint:"Kornati NP"},
   {n:12,d:"09.09.2026", wt:"Mi", p:6, hint:"Split – Grillabend"},
-  {n:13,d:"10.09.2026", wt:"Do", p:6, hint:"Tanken Milna / Brač"},
+  {n:13,d:"10.09.2026", wt:"Do", p:6, hint:"Tanken Milna / Brac"},
   {n:14,d:"11.09.2026", wt:"Fr", p:6, hint:"Rückkehr Kremik, letzter Abend an Bord"},
   {n:15,d:"12.09.2026", wt:"Sa", p:6, hint:"Rückgabe 09:00, Zählerstände dokumentieren"}
 ];
@@ -215,18 +299,17 @@ var SCHEMA = [
 
 /* ================= Zustand ================= */
 var LS_KEY = "logbuch2026";
-var data = {};
-var setup = {provider:"om", key:"", lat:"", lon:""};
-var aktiv = 1;
-var lsOk = true;
-var dateiHandle = null;
-var tLocal = null, tDatei = null;
+var data = {}, setup = {provider:"om", key:"", lat:"", lon:"", ziel:""};
+var aktiv = 1, ansicht = "log";
+var lsOk = true, dateiHandle = null, tLocal = null, tDatei = null;
+var letzteAnalyse = null;
 
 var $ = function(id){ return document.getElementById(id); };
-function setStatus(t, err){ var s=$("status"); s.textContent=t; s.className="status"+(err?" err":""); }
-function banner(t){ var b=$("banner"); b.textContent=t; b.classList.remove("hidden"); }
+function setStatus(t, err){ var s = $("status"); s.textContent = t; s.className = "status" + (err ? " err" : ""); }
+function banner(t){ var b = $("banner"); b.textContent = t; b.classList.remove("hidden"); }
+function nz(v){ return v == null || isNaN(v) ? 0 : v; }
 
-/* ---------- 1. Ebene: Gerätespeicher (immer) ---------- */
+/* ---------- Gerätespeicher ---------- */
 function lokalSpeichern(){
   clearTimeout(tLocal);
   tLocal = setTimeout(function(){
@@ -238,12 +321,11 @@ function lokalSpeichern(){
     }catch(e){
       lsOk = false;
       setStatus("Gerätespeicher nicht verfügbar", true);
-      banner("Dieser Browser lässt keinen dauerhaften Speicher zu. Öffne die Datei direkt in Chrome auf dem Handy, nicht in einer Vorschau, und wähle zusätzlich einen Speicherort.");
+      banner("Dieser Browser lässt keinen dauerhaften Speicher zu. Öffne die Seite über die GitHub-Adresse, nicht als lokale Datei.");
     }
   }, 350);
   dateiSpeichern();
 }
-
 function lokalLaden(){
   try{
     var raw = localStorage.getItem(LS_KEY);
@@ -254,11 +336,11 @@ function lokalLaden(){
     }
   }catch(e){
     lsOk = false;
-    banner("Der Gerätespeicher ist in dieser Umgebung gesperrt. Speichere die Datei auf dem Handy und öffne sie in Chrome, dann funktioniert das automatische Sichern.");
+    banner("Der Gerätespeicher ist in dieser Umgebung gesperrt.");
   }
 }
 
-/* ---------- 2. Ebene: eigene Datei am gewählten Ort ---------- */
+/* ---------- Datei am gewählten Ort ---------- */
 var IDB_NAME = "logbuch-handles";
 function idb(){
   return new Promise(function(res, rej){
@@ -268,9 +350,7 @@ function idb(){
     r.onerror = function(){ rej(r.error); };
   });
 }
-async function handleSpeichern(h){
-  try{ var db = await idb(); var tx = db.transaction("h","readwrite"); tx.objectStore("h").put(h,"ziel"); }catch(e){}
-}
+async function handleSpeichern(h){ try{ var db = await idb(); db.transaction("h","readwrite").objectStore("h").put(h,"ziel"); }catch(e){} }
 async function handleLaden(){
   try{
     var db = await idb();
@@ -281,36 +361,27 @@ async function handleLaden(){
     });
   }catch(e){ return null; }
 }
-async function handleLoeschen(){
-  try{ var db = await idb(); db.transaction("h","readwrite").objectStore("h").delete("ziel"); }catch(e){}
-}
+async function handleLoeschen(){ try{ var db = await idb(); db.transaction("h","readwrite").objectStore("h").delete("ziel"); }catch(e){} }
 
 async function ortWaehlen(){
   try{
     if(window.showSaveFilePicker){
-      var h = await window.showSaveFilePicker({
-        suggestedName: "Logbuch_RedTwinII.json",
-        types:[{description:"Logbuch", accept:{"application/json":[".json"]}}]
-      });
-      dateiHandle = h;
-      await handleSpeichern(h);
-      await dateiSchreiben();
+      var h = await window.showSaveFilePicker({suggestedName:"Logbuch_RedTwinII.json", types:[{description:"Logbuch", accept:{"application/json":[".json"]}}]});
+      dateiHandle = h; await handleSpeichern(h); await dateiSchreiben();
       storeInfo("Ziel: " + h.name + " · wird bei jeder Eingabe mitgeschrieben", "ok");
     }else if(window.showDirectoryPicker){
       var dir = await window.showDirectoryPicker({mode:"readwrite"});
       dateiHandle = await dir.getFileHandle("Logbuch_RedTwinII.json", {create:true});
-      await handleSpeichern(dateiHandle);
-      await dateiSchreiben();
+      await handleSpeichern(dateiHandle); await dateiSchreiben();
       storeInfo("Ziel: Ordner " + dir.name + " / Logbuch_RedTwinII.json", "ok");
     }else{
-      storeInfo("Dieser Browser kann keinen Ordner öffnen. Die Einträge liegen im Gerätespeicher; nutze zusätzlich „Backup in Downloads“ und stelle in Chrome „Speicherort vor jedem Download erfragen“ ein.", "err");
+      storeInfo("Dieser Browser kann keinen Ordner öffnen. Nutze „Backup in Downloads“ und aktiviere in Edge „Speicherort vor jedem Download erfragen“.", "err");
     }
   }catch(e){
     if(e && e.name === "AbortError") return;
-    storeInfo("Speicherort nicht gesetzt: " + (e && e.message ? e.message : "unbekannter Fehler"), "err");
+    storeInfo("Speicherort nicht gesetzt: " + (e && e.message ? e.message : "Fehler"), "err");
   }
 }
-
 async function dateiSchreiben(){
   if(!dateiHandle) return;
   try{
@@ -321,25 +392,203 @@ async function dateiSchreiben(){
     var w = await dateiHandle.createWritable();
     await w.write(JSON.stringify({eintraege:data, setup:setup}, null, 1));
     await w.close();
-  }catch(e){
-    storeInfo("Schreiben in die Datei fehlgeschlagen. Tippe „Jetzt in Datei schreiben“ und bestätige den Zugriff.", "err");
+  }catch(e){ storeInfo("Schreiben fehlgeschlagen. Tippe „Jetzt in Datei schreiben“ und bestätige den Zugriff.", "err"); }
+}
+function dateiSpeichern(){ if(!dateiHandle) return; clearTimeout(tDatei); tDatei = setTimeout(dateiSchreiben, 2500); }
+function storeInfo(text, kl){ var p = $("storeInfo"); p.textContent = text; p.className = "note" + (kl ? " " + kl : ""); }
+
+/* ================= Koordinaten ================= */
+function parseKoord(text){
+  if(!text) return null;
+  var s = String(text).replace(/\u00a0/g," ").trim();
+  var m = s.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) || s.match(/[?&]q=(-?\d+\.\d+),\s*(-?\d+\.\d+)/);
+  if(m) return {lat:parseFloat(m[1]), lon:parseFloat(m[2])};
+  var teile = s.match(/(\d{1,3})[°\s:]+(\d{1,2}(?:[.,]\d+)?)['′\s:]*(\d{1,2}(?:[.,]\d+)?)?["″]?\s*([NSEWOnsewo])/g);
+  if(teile && teile.length >= 2){
+    var w = teile.slice(0,2).map(function(t){
+      var p = t.match(/(\d{1,3})[°\s:]+(\d{1,2}(?:[.,]\d+)?)['′\s:]*(\d{1,2}(?:[.,]\d+)?)?["″]?\s*([NSEWOnsewo])/);
+      var g = parseFloat(p[1]) + parseFloat(p[2].replace(",",".")) / 60 + (p[3] ? parseFloat(p[3].replace(",",".")) / 3600 : 0);
+      var h = p[4].toUpperCase();
+      if(h === "S" || h === "W") g = -g;
+      return {g:g, h:h};
+    });
+    var la = w.filter(function(x){ return x.h === "N" || x.h === "S"; })[0];
+    var lo = w.filter(function(x){ return x.h === "E" || x.h === "W" || x.h === "O"; })[0];
+    if(la && lo) return {lat:la.g, lon:lo.g};
   }
+  var d = s.match(/(-?\d{1,2}[.,]\d+)\s*[,;\s]\s*(-?\d{1,3}[.,]\d+)/);
+  if(d) return {lat:parseFloat(d[1].replace(",",".")), lon:parseFloat(d[2].replace(",","."))};
+  return null;
 }
-function dateiSpeichern(){
-  if(!dateiHandle) return;
-  clearTimeout(tDatei);
-  tDatei = setTimeout(dateiSchreiben, 2500);
+function gpsGrund(err){
+  var lokal = location.protocol === "file:";
+  if(err && err.code === 1){
+    return lokal
+      ? "Standort gesperrt, weil die Datei lokal geöffnet ist. Öffne die GitHub-Adresse oder nutze „Koordinaten einfügen“."
+      : "Standortzugriff abgelehnt. Adresszeile → Schloss → Berechtigungen → Standort erlauben, und Edge in den Android-Berechtigungen den Standort geben.";
+  }
+  if(err && err.code === 2) return "Position nicht ermittelbar. Kurz an Deck gehen oder Koordinaten einfügen.";
+  if(err && err.code === 3) return "GPS-Zeitüberschreitung. Nochmal antippen oder Koordinaten einfügen.";
+  return "GPS nicht verfügbar. Nutze „Koordinaten einfügen“.";
 }
-function storeInfo(text, kl){
-  var p = $("storeInfo");
-  p.textContent = text;
-  p.className = "note" + (kl ? " " + kl : "");
+function gpsEinmal(opt){
+  return new Promise(function(res, rej){
+    if(!navigator.geolocation){ rej(new Error(gpsGrund(null))); return; }
+    navigator.geolocation.getCurrentPosition(
+      function(p){ res(p.coords); },
+      function(e){ rej(new Error(gpsGrund(e))); },
+      opt || {timeout:15000, maximumAge:60000, enableHighAccuracy:true}
+    );
+  });
+}
+function position(){
+  return new Promise(function(res, rej){
+    if(setup.lat && setup.lon){
+      res({lat: parseFloat(String(setup.lat).replace(",",".")), lon: parseFloat(String(setup.lon).replace(",","."))});
+      return;
+    }
+    gpsEinmal().then(function(c){
+      setup.lat = c.latitude.toFixed(4); setup.lon = c.longitude.toFixed(4);
+      setupFelder(); lokalSpeichern();
+      res({lat:c.latitude, lon:c.longitude});
+    }, rej);
+  });
+}
+function meter(a, b){
+  var R = 6371000, t = Math.PI/180;
+  var dLat = (b.lat - a.lat) * t, dLon = (b.lon - a.lon) * t;
+  var s = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return 2 * R * Math.asin(Math.sqrt(s));
 }
 
-/* ================= Wetter ================= */
+/* ================= GPS-Streckenmessung ================= */
+var trk = {an:false, watch:null, wake:null, punkte:[], sm:0, start:null, letzte:null, kn:null};
+
+function trkLaden(){
+  var e = data[aktiv];
+  trk.punkte = []; trk.sm = 0; trk.start = null; trk.letzte = null; trk.kn = null;
+  if(e && e.trackLaufend && e.trackDaten){
+    trk.punkte = e.trackDaten.punkte || [];
+    trk.sm = e.trackDaten.sm || 0;
+    trk.start = e.trackDaten.start || null;
+    if(trk.punkte.length){
+      var p = trk.punkte[trk.punkte.length-1];
+      trk.letzte = {lat:p[1], lon:p[2]};
+    }
+    $("tMsg").className = "note";
+    $("tMsg").textContent = "Eine Messung dieses Tages ist offen: " + trk.sm.toFixed(1) + " sm. „Start ab hier“ setzt sie fort.";
+  }else{
+    $("tMsg").className = "note";
+    $("tMsg").textContent = "";
+  }
+  trkAnzeige();
+}
+function trkSichern(laufend){
+  var e = eintrag(aktiv);
+  e.trackLaufend = laufend ? 1 : 0;
+  e.trackDaten = {punkte: trk.punkte.slice(-2000), sm: trk.sm, start: trk.start};
+  lokalSpeichern();
+}
+function trkAnzeige(){
+  $("tSm").textContent = trk.sm.toFixed(1).replace(".", ",");
+  var dauer = trk.start ? (Date.now() - trk.start) / 3600000 : 0;
+  var h = Math.floor(dauer), min = Math.round((dauer - h) * 60);
+  $("tDauer").textContent = trk.start ? h + ":" + String(min).padStart(2,"0") : "0:00";
+  $("tKn").textContent = trk.kn != null ? trk.kn.toFixed(1).replace(".", ",") : "–";
+  $("tAvg").textContent = (dauer > 0.02 && trk.sm > 0) ? (trk.sm / dauer).toFixed(1).replace(".", ",") : "–";
+  for(var i=0;i<4;i++) $("tCell"+i).classList.toggle("live", trk.an);
+}
+async function trkStart(){
+  if(trk.an) return;
+  if(!navigator.geolocation){ $("tMsg").className = "note err"; $("tMsg").textContent = gpsGrund(null); return; }
+  $("tMsg").className = "note";
+  $("tMsg").textContent = "Warte auf GPS-Fix …";
+  if(!trk.start) trk.start = Date.now();
+  trk.an = true;
+  $("tStart").disabled = true; $("tStop").disabled = false;
+  try{ if(navigator.wakeLock) trk.wake = await navigator.wakeLock.request("screen"); }catch(e){}
+  trk.watch = navigator.geolocation.watchPosition(function(p){
+    var c = p.coords;
+    if(c.accuracy != null && c.accuracy > 60) return;
+    var jetzt = {lat:c.latitude, lon:c.longitude};
+    if(trk.letzte){
+      var m = meter(trk.letzte, jetzt);
+      var vor = trk.punkte.length ? trk.punkte[trk.punkte.length-1][0] : p.timestamp;
+      var dt = (p.timestamp - vor) / 1000;
+      var kn = dt > 0 ? (m / 1852) / (dt / 3600) : 0;
+      if(m < 8) return;
+      if(kn > 25) return;
+      trk.sm += m / 1852;
+      trk.kn = (c.speed != null && c.speed >= 0) ? c.speed * 1.9438 : kn;
+    }else{
+      trk.kn = (c.speed != null && c.speed >= 0) ? c.speed * 1.9438 : null;
+    }
+    trk.letzte = jetzt;
+    trk.punkte.push([p.timestamp, +jetzt.lat.toFixed(5), +jetzt.lon.toFixed(5)]);
+    trkAnzeige();
+    $("tMsg").className = "note ok";
+    $("tMsg").textContent = "Messung läuft · " + trk.punkte.length + " Punkte · Bildschirm bleibt an, im Hintergrund stoppt Android das GPS.";
+    if(trk.punkte.length % 8 === 0) trkSichern(true);
+  }, function(err){
+    $("tMsg").className = "note err";
+    $("tMsg").textContent = gpsGrund(err);
+  }, {enableHighAccuracy:true, maximumAge:5000, timeout:30000});
+  trkSichern(true);
+}
+function trkPause(){
+  if(trk.watch != null){ navigator.geolocation.clearWatch(trk.watch); trk.watch = null; }
+  if(trk.wake){ try{ trk.wake.release(); }catch(e){} trk.wake = null; }
+  trk.an = false;
+  $("tStart").disabled = false; $("tStop").disabled = true;
+  trkAnzeige();
+}
+function trkStop(){
+  var e = eintrag(aktiv);
+  var p0 = trk.punkte[0], p1 = trk.punkte[trk.punkte.length-1];
+  var sm = trk.sm;
+  trkPause();
+  if(!p0 || sm <= 0){
+    $("tMsg").className = "note err";
+    $("tMsg").textContent = "Keine verwertbare Strecke aufgezeichnet.";
+    trkSichern(false);
+    return;
+  }
+  var alt = parseFloat(String(e.distanz || "0").replace(",", ".")) || 0;
+  var neu = sm;
+  if(alt > 0 && confirm("Im Tagesfeld stehen bereits " + alt.toFixed(1) + " sm. Neue Strecke dazuaddieren?")) neu = alt + sm;
+  e.distanz = neu.toFixed(1).replace(".", ",");
+  var f = function(ts){ var d = new Date(ts); return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0"); };
+  if(!e.ablegen) e.ablegen = f(p0[0]);
+  e.anlegen = f(p1[0]);
+  var std = (p1[0] - p0[0]) / 3600000;
+  e.route = (e.route ? e.route.trim() + "\n" : "") +
+    "GPS-Etappe " + f(p0[0]) + "–" + f(p1[0]) + " · " + sm.toFixed(1) + " sm · Ø " +
+    (std > 0.05 ? (sm / std).toFixed(1) : "–") + " kn\n  Start " + p0[1].toFixed(4) + " / " + p0[2].toFixed(4) +
+    "\n  Ende  " + p1[1].toFixed(4) + " / " + p1[2].toFixed(4);
+  setup.lat = p1[1].toFixed(4); setup.lon = p1[2].toFixed(4);
+  trk.punkte = []; trk.sm = 0; trk.start = null; trk.letzte = null; trk.kn = null;
+  trkSichern(false);
+  setupFelder();
+  zeichne();
+  trkAnzeige();
+  $("tMsg").className = "note ok";
+  $("tMsg").textContent = "Etappe übernommen: " + e.distanz + " sm in Tag " + aktiv + ".";
+}
+function trkReset(){
+  if(!confirm("Laufende Messung verwerfen?")) return;
+  trkPause();
+  trk.punkte = []; trk.sm = 0; trk.start = null; trk.letzte = null; trk.kn = null;
+  trkSichern(false); trkAnzeige();
+  $("tMsg").className = "note"; $("tMsg").textContent = "Messung verworfen.";
+}
+$("tStart").onclick = trkStart;
+$("tStop").onclick = trkStop;
+$("tReset").onclick = trkReset;
+setInterval(function(){ if(trk.an) trkAnzeige(); }, 20000);
+
+/* ================= Wetter: Umrechnung ================= */
 function bftAus(kn){
-  var g = [1,4,7,11,17,22,28,34,41,48,56];
-  var b = 0;
+  var g = [1,4,7,11,17,22,28,34,41,48,56], b = 0;
   for(var i=0;i<g.length;i++){ if(kn >= g[i]) b = i+1; }
   return Math.min(b, 10);
 }
@@ -364,98 +613,23 @@ function lageAus(code){
   return ["",""];
 }
 
-/* Koordinaten aus Text: 43.5871, 15.9203 · 43°35'13"N 15°55'13"E · 43 35.2 N · Maps-Link */
-function parseKoord(text){
-  if(!text) return null;
-  var s = String(text).replace(/\u00a0/g," ").trim();
-  var m = s.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) || s.match(/[?&]q=(-?\d+\.\d+),\s*(-?\d+\.\d+)/);
-  if(m) return {lat:parseFloat(m[1]), lon:parseFloat(m[2])};
-
-  var teile = s.match(/(\d{1,3})[°\s:]+(\d{1,2}(?:[.,]\d+)?)['′\s:]*(\d{1,2}(?:[.,]\d+)?)?["″]?\s*([NSEWOnsewo])/g);
-  if(teile && teile.length >= 2){
-    var w = teile.slice(0,2).map(function(t){
-      var p = t.match(/(\d{1,3})[°\s:]+(\d{1,2}(?:[.,]\d+)?)['′\s:]*(\d{1,2}(?:[.,]\d+)?)?["″]?\s*([NSEWOnsewo])/);
-      var g = parseFloat(p[1]) + parseFloat(p[2].replace(",",".")) / 60 + (p[3] ? parseFloat(p[3].replace(",",".")) / 3600 : 0);
-      var h = p[4].toUpperCase();
-      if(h === "S" || h === "W") g = -g;
-      return {g:g, h:h};
-    });
-    var la = w.find(function(x){ return x.h === "N" || x.h === "S"; });
-    var lo = w.find(function(x){ return x.h === "E" || x.h === "W" || x.h === "O"; });
-    if(la && lo) return {lat:la.g, lon:lo.g};
-  }
-
-  var d = s.match(/(-?\d{1,2}[.,]\d+)\s*[,;\s]\s*(-?\d{1,3}[.,]\d+)/);
-  if(d) return {lat:parseFloat(d[1].replace(",",".")), lon:parseFloat(d[2].replace(",","."))};
-  return null;
-}
-function koordUebernehmen(text){
-  var k = parseKoord(text);
-  if(!k || isNaN(k.lat) || isNaN(k.lon) || Math.abs(k.lat) > 90 || Math.abs(k.lon) > 180) return null;
-  setup.lat = k.lat.toFixed(4);
-  setup.lon = k.lon.toFixed(4);
-  setupFelder();
-  lokalSpeichern();
-  return k;
-}
-function gpsGrund(err){
-  var lokal = location.protocol === "file:";
-  if(err && err.code === 1){
-    return lokal
-      ? "Der Standort ist gesperrt, weil die Datei lokal geöffnet ist (file://). Edge und Chrome geben GPS nur an Seiten mit echter Web-Adresse frei. Nutze „Koordinaten einfügen“ – aus Maps kopieren, hier einsetzen."
-      : "Standortzugriff abgelehnt. In Edge: Menü → Einstellungen → Website-Berechtigungen → Standort für diese Seite erlauben, außerdem Edge in den Android-App-Berechtigungen den Standort geben.";
-  }
-  if(err && err.code === 2) return "Position nicht ermittelbar. Kurz an Deck gehen oder Koordinaten einfügen.";
-  if(err && err.code === 3) return "GPS-Zeitüberschreitung. Nochmal antippen oder Koordinaten einfügen.";
-  return "GPS nicht verfügbar. Nutze „Koordinaten einfügen“.";
-}
-
-function position(){
-  return new Promise(function(res, rej){
-    if(setup.lat && setup.lon){
-      res({lat: parseFloat(String(setup.lat).replace(",",".")), lon: parseFloat(String(setup.lon).replace(",","."))});
-      return;
-    }
-    if(!navigator.geolocation){ rej(new Error("Kein GPS in diesem Browser. Nutze „Koordinaten einfügen“.")); return; }
-    navigator.geolocation.getCurrentPosition(
-      function(p){
-        setup.lat = p.coords.latitude.toFixed(4);
-        setup.lon = p.coords.longitude.toFixed(4);
-        setupFelder();
-        res({lat:p.coords.latitude, lon:p.coords.longitude});
-      },
-      function(err){ rej(new Error(gpsGrund(err))); },
-      {timeout:15000, maximumAge:600000, enableHighAccuracy:false}
-    );
-  });
-}
-
-async function openMeteo(lat, lon){
+async function openMeteoJetzt(lat, lon){
   var u = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon +
     "&current=temperature_2m,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code" +
-    "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m&forecast_days=2&wind_speed_unit=kn&timezone=auto";
+    "&hourly=wind_speed_10m,wind_gusts_10m&forecast_days=2&wind_speed_unit=kn&timezone=auto";
   var r = await fetch(u);
   if(!r.ok) throw new Error("Open-Meteo antwortet nicht (" + r.status + ")");
-  var j = await r.json();
-  var c = j.current;
-  var out = {
-    kn: Math.round(c.wind_speed_10m),
-    gust: Math.round(c.wind_gusts_10m),
-    dir: c.wind_direction_10m,
-    hpa: Math.round(c.pressure_msl),
-    luft: Math.round(c.temperature_2m),
-    code: c.weather_code,
-    quelle: "Open-Meteo",
-    zeit: c.time
-  };
-  var maxKn = 0, maxG = 0;
-  if(j.hourly && j.hourly.wind_speed_10m){
+  var j = await r.json(), c = j.current;
+  var out = {kn:Math.round(c.wind_speed_10m), gust:Math.round(c.wind_gusts_10m), dir:c.wind_direction_10m,
+    hpa:Math.round(c.pressure_msl), luft:Math.round(c.temperature_2m), code:c.weather_code, quelle:"Open-Meteo"};
+  var mx = 0, mg = 0;
+  if(j.hourly){
     for(var i=0;i<Math.min(13, j.hourly.wind_speed_10m.length);i++){
-      maxKn = Math.max(maxKn, j.hourly.wind_speed_10m[i]);
-      maxG = Math.max(maxG, j.hourly.wind_gusts_10m[i]);
+      mx = Math.max(mx, j.hourly.wind_speed_10m[i]);
+      mg = Math.max(mg, j.hourly.wind_gusts_10m[i]);
     }
   }
-  out.trend = "12 h: bis " + Math.round(maxKn) + " kn, Böen bis " + Math.round(maxG) + " kn";
+  out.trend = "12 h: bis " + Math.round(mx) + " kn, Böen bis " + Math.round(mg) + " kn";
   try{
     var m = await fetch("https://marine-api.open-meteo.com/v1/marine?latitude=" + lat + "&longitude=" + lon + "&current=wave_height,sea_surface_temperature");
     if(m.ok){
@@ -468,53 +642,33 @@ async function openMeteo(lat, lon){
   }catch(e){}
   return out;
 }
-
-async function windy(lat, lon){
+async function windyJetzt(lat, lon){
   if(!setup.key) throw new Error("Kein Windy-Schlüssel eingetragen.");
   var r = await fetch("https://api.windy.com/api/point-forecast/v2", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
+    method:"POST", headers:{"Content-Type":"application/json"},
     body: JSON.stringify({lat:lat, lon:lon, model:"gfs", parameters:["wind","windGust","pressure","temp"], levels:["surface"], key:setup.key})
   });
-  if(!r.ok) throw new Error("Windy antwortet nicht (" + r.status + "). Schlüssel prüfen.");
+  if(!r.ok) throw new Error("Windy antwortet nicht (" + r.status + ").");
   var j = await r.json();
   var u = j["wind_u-surface"][0], v = j["wind_v-surface"][0];
   var ms = Math.sqrt(u*u + v*v);
-  var dir = (Math.atan2(-u, -v) * 180 / Math.PI + 360) % 360;
-  var out = {
+  return {
     kn: Math.round(ms * 1.9438),
     gust: Math.round((j["gust-surface"] ? j["gust-surface"][0] : ms) * 1.9438),
-    dir: dir,
+    dir: (Math.atan2(-u, -v) * 180 / Math.PI + 360) % 360,
     hpa: Math.round(j["pressure-surface"][0] / 100),
     luft: Math.round(j["temp-surface"][0] - 273.15),
-    code: null,
-    quelle: "Windy GFS",
-    zeit: new Date(j.ts[0]).toISOString()
+    code: null, quelle: "Windy GFS", trend: "Modell GFS"
   };
-  var maxKn = 0, maxG = 0;
-  for(var i=0;i<Math.min(5, j.ts.length);i++){
-    var s = Math.sqrt(Math.pow(j["wind_u-surface"][i],2) + Math.pow(j["wind_v-surface"][i],2)) * 1.9438;
-    maxKn = Math.max(maxKn, s);
-    if(j["gust-surface"]) maxG = Math.max(maxG, j["gust-surface"][i] * 1.9438);
-  }
-  out.trend = "nächste Stunden: bis " + Math.round(maxKn) + " kn, Böen bis " + Math.round(maxG) + " kn";
-  return out;
 }
-
 async function wetterHolen(btn){
-  var e = eintrag(aktiv);
-  var msg = $("wetterMsg");
+  var e = eintrag(aktiv), msg = $("wetterMsg");
   btn.disabled = true;
-  msg.className = "note";
-  msg.textContent = "Position und Wetter werden geholt …";
+  msg.className = "note"; msg.textContent = "Position und Wetter werden geholt …";
   try{
     var pos = await position();
-    var w = setup.provider === "windy" ? await windy(pos.lat, pos.lon) : await openMeteo(pos.lat, pos.lon);
-
-    var belegt = e.windKn || e.windBft || e.druck;
-    if(belegt && !confirm("Die Wetterfelder von Tag " + aktiv + " sind gefüllt. Mit neuen Werten überschreiben?")){
-      btn.disabled = false; msg.textContent = "Nichts geändert."; return;
-    }
+    var w = setup.provider === "windy" ? await windyJetzt(pos.lat, pos.lon) : await openMeteoJetzt(pos.lat, pos.lon);
+    if((e.windKn || e.druck) && !confirm("Wetterfelder von Tag " + aktiv + " überschreiben?")){ btn.disabled = false; msg.textContent = "Nichts geändert."; return; }
     e.windRi = richtungAus(w.dir);
     e.windKn = String(w.kn);
     e.windBft = BFT[bftAus(w.kn) + 1];
@@ -528,16 +682,12 @@ async function wetterHolen(btn){
       if(l[0]) e.wetterlage = l[0];
       if(l[1]) e.sicht = l[1];
     }
-    var zeile = w.quelle + " " + new Date().toLocaleString("de-DE", {hour:"2-digit", minute:"2-digit", day:"2-digit", month:"2-digit"}) +
+    e.vorhersage = (e.vorhersage ? e.vorhersage.trim() + "\n" : "") + w.quelle + " " +
+      new Date().toLocaleString("de-DE", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"}) +
       " · " + pos.lat.toFixed(3) + " / " + pos.lon.toFixed(3) + " · " + w.trend;
-    e.vorhersage = (e.vorhersage ? e.vorhersage.trim() + "\n" : "") + zeile;
-    if(!setup.lat){ setup.lat = pos.lat.toFixed(4); setup.lon = pos.lon.toFixed(4); }
-
-    lokalSpeichern();
-    zeichne();
-    var m2 = $("wetterMsg");
-    m2.className = "note ok";
-    m2.textContent = "Übernommen: " + w.quelle + " · " + w.kn + " kn aus " + e.windRi;
+    lokalSpeichern(); zeichne();
+    $("wetterMsg").className = "note ok";
+    $("wetterMsg").textContent = "Übernommen: " + w.quelle + " · " + w.kn + " kn aus " + e.windRi;
   }catch(err){
     msg.className = "note err";
     msg.textContent = err && err.message ? err.message : "Wetter konnte nicht geholt werden.";
@@ -545,12 +695,323 @@ async function wetterHolen(btn){
   }
 }
 
-/* ================= Oberfläche ================= */
+/* ================= Wetteranalyse ================= */
+async function ortSuchen(text){
+  var k = parseKoord(text);
+  if(k) return {lat:k.lat, lon:k.lon, name:k.lat.toFixed(3) + " / " + k.lon.toFixed(3)};
+  var r = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=de&name=" + encodeURIComponent(text));
+  if(!r.ok) throw new Error("Ortssuche nicht erreichbar.");
+  var j = await r.json();
+  if(!j.results || !j.results.length) throw new Error("Ort „" + text + "“ nicht gefunden. Nutze Koordinaten.");
+  var t = j.results[0];
+  return {lat:t.latitude, lon:t.longitude, name:t.name};
+}
+function ringPunkte(p, sm){
+  if(!sm) return [];
+  var dLat = sm / 60, dLon = sm / (60 * Math.cos(p.lat * Math.PI/180));
+  return [
+    {lat:p.lat + dLat, lon:p.lon, name:"Nord"},
+    {lat:p.lat, lon:p.lon + dLon, name:"Ost"},
+    {lat:p.lat - dLat, lon:p.lon, name:"Süd"},
+    {lat:p.lat, lon:p.lon - dLon, name:"West"}
+  ];
+}
+async function serienHolen(punkte, stunden){
+  var tage = Math.min(16, Math.max(1, Math.ceil(stunden / 24) + 1));
+  var lats = punkte.map(function(p){ return p.lat.toFixed(3); }).join(",");
+  var lons = punkte.map(function(p){ return p.lon.toFixed(3); }).join(",");
+  var u = "https://api.open-meteo.com/v1/forecast?latitude=" + lats + "&longitude=" + lons +
+    "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m,pressure_msl,temperature_2m,precipitation,weather_code,cape" +
+    "&forecast_days=" + tage + "&wind_speed_unit=kn&timezone=auto";
+  var r = await fetch(u);
+  if(!r.ok) throw new Error("Open-Meteo antwortet nicht (" + r.status + ").");
+  var j = await r.json();
+  var liste = Array.isArray(j) ? j : [j];
+
+  var mar = null;
+  try{
+    var rm = await fetch("https://marine-api.open-meteo.com/v1/marine?latitude=" + lats + "&longitude=" + lons +
+      "&hourly=wave_height,wave_period&forecast_days=" + tage + "&timezone=auto");
+    if(rm.ok){ var jm = await rm.json(); mar = Array.isArray(jm) ? jm : [jm]; }
+  }catch(e){}
+
+  return liste.map(function(o, i){
+    var h = o.hourly, n = Math.min(stunden, h.time.length);
+    var s = {name:punkte[i].name, zeit:h.time.slice(0,n),
+      wind:h.wind_speed_10m.slice(0,n), gust:h.wind_gusts_10m.slice(0,n), dir:h.wind_direction_10m.slice(0,n),
+      press:h.pressure_msl.slice(0,n), temp:h.temperature_2m.slice(0,n),
+      regen:h.precipitation.slice(0,n), code:h.weather_code.slice(0,n), cape:(h.cape || []).slice(0,n),
+      welle:[], periode:[]};
+    if(mar && mar[i] && mar[i].hourly){
+      s.welle = (mar[i].hourly.wave_height || []).slice(0,n);
+      s.periode = (mar[i].hourly.wave_period || []).slice(0,n);
+    }
+    return s;
+  });
+}
+function maxV(a){ var m = 0; for(var i=0;i<a.length;i++){ if(nz(a[i]) > m) m = nz(a[i]); } return m; }
+function stundeVon(t){ return parseInt(String(t).slice(11,13), 10); }
+function zeitLabel(t){ return String(t).slice(8,10) + "." + String(t).slice(5,7) + " " + String(t).slice(11,13) + ":00"; }
+
+function analysiere(zentrum, ring, ziel, stunden, umkreis){
+  var maxWind = maxV(zentrum.wind), maxGust = maxV(zentrum.gust), maxWelle = maxV(zentrum.welle);
+  var idxGust = zentrum.gust.indexOf(maxGust), idxWind = zentrum.wind.indexOf(maxWind);
+  var boeFaktor = 0, i;
+  for(i=0;i<zentrum.wind.length;i++){
+    boeFaktor = Math.max(boeFaktor, nz(zentrum.gust[i]) / Math.max(3, nz(zentrum.wind[i])));
+  }
+  var druckAb = 0;
+  for(i=0;i+3<zentrum.press.length;i++){ druckAb = Math.min(druckAb, nz(zentrum.press[i+3]) - nz(zentrum.press[i])); }
+  var gewitter = [];
+  for(i=0;i<zentrum.code.length;i++){
+    if(nz(zentrum.code[i]) >= 95 || nz(zentrum.cape[i]) >= 1200) gewitter.push(zentrum.zeit[i]);
+  }
+  var dreh = 0, drehZeit = null;
+  for(i=0;i+3<zentrum.dir.length;i++){
+    var d = Math.abs(((nz(zentrum.dir[i+3]) - nz(zentrum.dir[i]) + 540) % 360) - 180);
+    if(d > dreh && Math.max(nz(zentrum.wind[i]), nz(zentrum.wind[i+3])) >= 8){ dreh = d; drehZeit = zentrum.zeit[i]; }
+  }
+  var sektor = {NE:0, NW:0, SE:0, SW:0};
+  for(i=0;i<zentrum.dir.length;i++){
+    if(nz(zentrum.wind[i]) < 6) continue;
+    var g = nz(zentrum.dir[i]);
+    if(g >= 20 && g < 90) sektor.NE++;
+    else if(g >= 270 || g < 20) sektor.NW++;
+    else if(g >= 90 && g < 180) sektor.SE++;
+    else sektor.SW++;
+  }
+  var domi = Object.keys(sektor).sort(function(a,b){ return sektor[b] - sektor[a]; })[0];
+
+  var ringMax = 0, ringOrt = "";
+  ring.forEach(function(s){
+    var m = maxV(s.gust);
+    if(m > ringMax){ ringMax = m; ringOrt = s.name; }
+  });
+
+  var stufe = "gruen";
+  if(maxGust >= 25 || maxWind >= 18 || maxWelle >= 1.5 || gewitter.length || druckAb <= -3) stufe = "gelb";
+  if(maxGust >= 34 || maxWind >= 25 || maxWelle >= 2.5 || (gewitter.length && maxGust >= 30)) stufe = "rot";
+
+  var bloecke = [];
+  function B(titel, text, s){ bloecke.push({titel:titel, text:text, stufe:s}); }
+
+  var wt = "Bis " + Math.round(maxWind) + " kn Mittelwind (" + bftAus(maxWind) + " Bft) aus " +
+    richtungAus(nz(zentrum.dir[idxWind >= 0 ? idxWind : 0])) + ", stärkster Abschnitt um " +
+    zeitLabel(zentrum.zeit[idxWind >= 0 ? idxWind : 0]) + ". ";
+  if(maxWind < 8) wt += "Für einen 20-Tonnen-Kat heißt das über weite Strecken Motor oder sehr geduldiges Segeln.";
+  else if(maxWind < 14) wt += "Angenehmes Katamaran-Wetter, volle Segelfläche, Crew entspannt.";
+  else if(maxWind < 18) wt += "Erstes Reff am Groß einplanen, dann läuft der 450F ruhig und schnell.";
+  else if(maxWind < 25) wt += "Zweites Reff und deutlich reduzierte Genua. Bei diesem Wind wird das Anlegen mit 7,8 m Breite zur Hauptaufgabe des Tages.";
+  else wt += "Das ist kein Etappenwetter mehr. Sicheren Hafen oder gut geschützte Bucht wählen und liegen bleiben.";
+  B("Wind", wt, maxWind >= 25 ? "rot" : (maxWind >= 18 ? "gelb" : "gruen"));
+
+  var bt = "Böenspitzen bis " + Math.round(maxGust) + " kn" + (idxGust >= 0 ? " um " + zeitLabel(zentrum.zeit[idxGust]) : "") +
+    ", Böenfaktor " + boeFaktor.toFixed(1).replace(".", ",") + ". ";
+  if(boeFaktor >= 1.8) bt += "Der Faktor ist hier der eigentliche Risikoträger: Der Kat krängt nicht als Vorwarnung, die Böe geht voll auf Rigg und Ruder. Früh reffen, Großschot nie festklemmen.";
+  else if(boeFaktor >= 1.5) bt += "Deutlich böig, typisch für Leeseiten der Inseln und Kanalausgänge. Vor der Fallwindstrecke reffen, nicht danach.";
+  else bt += "Gleichmäßiger Wind, Böen im normalen Rahmen.";
+  B("Böen", bt, maxGust >= 34 ? "rot" : (maxGust >= 25 ? "gelb" : "gruen"));
+
+  var st = maxWelle > 0
+    ? "Signifikante Wellenhöhe bis " + maxWelle.toFixed(1).replace(".", ",") + " m" + (maxV(zentrum.periode) ? ", Periode um " + Math.round(maxV(zentrum.periode)) + " s" : "") + ". "
+    : "Für diesen Punkt liefert das Seemodell keine Wellendaten, das ist in engen Inselgewässern normal. Rechne mit lokaler Windsee entsprechend Stärke und Streichlänge. ";
+  if(maxWelle >= 2.5) st += "Für eine Crew mit Kind unangenehm bis riskant, Bewegungen an Deck stark einschränken.";
+  else if(maxWelle >= 1.5) st += "Die kurze Adriawelle stampft in dieser Höhe im Kat spürbar. Seekrankheit vorbeugen, Luken dicht, alles verstauen.";
+  else if(maxWelle > 0) st += "Gut fahrbar, das Brückendeck bleibt trocken.";
+  B("See", st, maxWelle >= 2.5 ? "rot" : (maxWelle >= 1.5 ? "gelb" : "gruen"));
+
+  if(gewitter.length){
+    var maxCape = Math.round(maxV(zentrum.cape));
+    B("Gewitter", "Gewittersignale in " + gewitter.length + " Stunden des Zeitraums, erstmals " + zeitLabel(gewitter[0]) +
+      (maxCape ? ", Labilität bis " + maxCape + " J/kg" : "") +
+      ". Adriagewitter bringen kurzzeitig 35 bis 45 kn aus wechselnder Richtung. Vor Anker heißt das: Kette lang, Ankeralarm an, Bridle geprüft, Wache einteilen. Nicht in einer nach Süden offenen Bucht liegen bleiben.", "rot");
+  }else{
+    B("Gewitter", "Keine Gewittersignale im Zeitraum.", "gruen");
+  }
+
+  var dt2 = "Stärkste Druckänderung " + druckAb.toFixed(1).replace(".", ",") + " hPa je 3 Stunden. ";
+  if(druckAb <= -4) dt2 += "Das ist ein klarer Frontdurchgang, mit Winddreher und Böenlinie rechnen.";
+  else if(druckAb <= -2) dt2 += "Leicht fallend, ein Wetterwechsel ist im Anmarsch.";
+  else dt2 += "Stabile Druckverhältnisse.";
+  var rt = {
+    NE:"Vorherrschend NE bis E, das ist die Bora-Richtung. Bora fällt böig von den Bergen, ist unter Land am stärksten und baut in den Kanälen schnell steile Welle auf. Ankerbuchten mit Schutz nach NE wählen, Landleinen doppelt nehmen.",
+    NW:"Vorherrschend NW, also Maestral-Charakter. Setzt gegen Mittag ein, Maximum am Nachmittag, abends flaut es ab. Strategie: früh los, Etappe bis 15 Uhr fahren, dann Bucht.",
+    SE:"Vorherrschend SE, also Jugo-Charakter. Hält länger an, baut mit Vorlaufstrecke lange Welle auf und bringt Feuchte. Buchten mit Schutz nach SE sind knapp, im Zweifel Marina.",
+    SW:"Vorherrschend SW, meist vorfrontal oder thermisch, oft mit Regen und Sichtverlust."
+  }[domi];
+  B("Druck und Wetterlage", dt2 + " " + (rt || ""), druckAb <= -4 ? "gelb" : "gruen");
+
+  if(dreh >= 60){
+    B("Winddreher", "Der Wind dreht innerhalb von 3 Stunden um bis zu " + Math.round(dreh) + " Grad, etwa ab " + zeitLabel(drehZeit) +
+      ". Für die Ankerplanung entscheidend: eine Bucht, die jetzt Schutz gibt, kann dann offen liegen. Schwoiraum prüfen oder Platz mit Rundumschutz suchen.", "gelb");
+  }
+
+  if(ring.length){
+    var diff = ringMax - maxGust;
+    B("Umkreis " + umkreis + " sm",
+      diff >= 6
+        ? "Im Umkreis erreichen die Böen bis " + Math.round(ringMax) + " kn, also " + Math.round(diff) + " kn mehr als am Standort, am stärksten im Sektor " + ringOrt +
+          ". So entstehen Düsenlagen zwischen den Inseln. Unterwegs mit mehr Wind rechnen als am Ankerplatz gemessen."
+        : "Die Werte im Umkreis liegen mit maximal " + Math.round(ringMax) + " kn Böen nah am Standort, das Feld ist einheitlich.",
+      diff >= 6 ? "gelb" : "gruen");
+  }
+
+  if(ziel){
+    var zW = maxV(ziel.wind), zG = maxV(ziel.gust), zWe = maxV(ziel.welle);
+    var d1 = Math.round(zW - maxWind);
+    B("Ziel " + ziel.name,
+      "Dort bis " + Math.round(zW) + " kn Wind und " + Math.round(zG) + " kn Böen" +
+      (zWe ? ", Welle bis " + zWe.toFixed(1).replace(".", ",") + " m" : "") + ". " +
+      (Math.abs(d1) < 3 ? "Praktisch gleiche Bedingungen wie hier."
+        : (d1 > 0 ? d1 + " kn mehr als am Standort, die Etappe wird auf der zweiten Hälfte ungemütlicher."
+                  : Math.abs(d1) + " kn weniger als hier, es lohnt sich, dort hinzukommen.")),
+      zG >= 34 ? "rot" : (zG >= 25 ? "gelb" : "gruen"));
+  }
+
+  var fenster = [], offen = null;
+  for(i=0;i<zentrum.zeit.length;i++){
+    var ok = nz(zentrum.wind[i]) <= 17 && nz(zentrum.gust[i]) <= 24 &&
+      (!zentrum.welle.length || nz(zentrum.welle[i]) <= 1.3) && nz(zentrum.code[i]) < 95;
+    var std = stundeVon(zentrum.zeit[i]);
+    if(ok && std >= 6 && std <= 20){
+      if(!offen) offen = zentrum.zeit[i];
+    }else if(offen){
+      fenster.push([offen, zentrum.zeit[i]]);
+      offen = null;
+    }
+  }
+  if(offen) fenster.push([offen, zentrum.zeit[zentrum.zeit.length-1]]);
+  fenster = fenster.filter(function(f){ return (new Date(f[1]) - new Date(f[0])) >= 3 * 3600000; }).slice(0, 4);
+
+  var empf = fenster.length
+    ? "Fahrbare Fenster bei Tageslicht, bis 17 kn Wind und 24 kn Böen:\n" + fenster.map(function(f){ return "· " + zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("\n")
+    : "Im gewählten Zeitraum gibt es kein Fenster, das 17 kn Wind und 24 kn Böen bei Tageslicht einhält. Etappe verschieben oder deutlich kürzer planen.";
+
+  return {stufe:stufe, bloecke:bloecke, empfehlung:empf, maxWind:maxWind, maxGust:maxGust, maxWelle:maxWelle, fenster:fenster, stunden:stunden};
+}
+
+function chartSvg(s){
+  var n = s.zeit.length, schritt = Math.max(1, Math.round(n / 40)), punkte = [];
+  for(var i=0;i<n;i+=schritt) punkte.push(i);
+  var maxY = Math.max(20, Math.ceil(maxV(s.gust) / 5) * 5);
+  var W = 320, H = 110, pl = 24, pb = 16, bw = (W - pl - 4) / Math.max(1, punkte.length);
+  var svg = '<svg class="wchart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="Wind und Boen im Zeitraum">';
+  [0, 0.5, 1].forEach(function(f){
+    var y = 4 + (H - pb - 4) * (1 - f);
+    svg += '<line x1="' + pl + '" y1="' + y + '" x2="' + W + '" y2="' + y + '" stroke="#C6CFC9" stroke-width="0.5"/>' +
+      '<text x="2" y="' + (y + 3) + '" font-size="7" fill="#3C5663" font-family="monospace">' + Math.round(maxY * f) + '</text>';
+  });
+  punkte.forEach(function(idx, k){
+    var x = pl + k * bw;
+    var hg = (H - pb - 4) * Math.min(1, nz(s.gust[idx]) / maxY);
+    var hw = (H - pb - 4) * Math.min(1, nz(s.wind[idx]) / maxY);
+    svg += '<rect x="' + x.toFixed(1) + '" y="' + (H - pb - hg).toFixed(1) + '" width="' + (bw * 0.86).toFixed(1) + '" height="' + hg.toFixed(1) + '" fill="#9A6C16" opacity="0.35"/>' +
+           '<rect x="' + x.toFixed(1) + '" y="' + (H - pb - hw).toFixed(1) + '" width="' + (bw * 0.86).toFixed(1) + '" height="' + hw.toFixed(1) + '" fill="#0E2430"/>';
+    if(stundeVon(s.zeit[idx]) % 12 === 0){
+      svg += '<text x="' + x.toFixed(1) + '" y="' + (H - 4) + '" font-size="7" fill="#3C5663" font-family="monospace">' +
+        String(s.zeit[idx]).slice(8,10) + "." + String(s.zeit[idx]).slice(11,13) + 'h</text>';
+    }
+  });
+  return svg + '</svg>';
+}
+
+function analyseZeigen(a, zentrum, ortName, zielName){
+  var kl = a.stufe === "rot" ? "a-rot" : (a.stufe === "gelb" ? "a-gelb" : "a-gruen");
+  var titel = a.stufe === "rot" ? "Nicht fahren" : (a.stufe === "gelb" ? "Fahrbar mit Auflagen" : "Gute Bedingungen");
+  var kurz = "Bis " + Math.round(a.maxWind) + " kn, Böen " + Math.round(a.maxGust) + " kn" +
+    (a.maxWelle ? ", Welle " + a.maxWelle.toFixed(1).replace(".", ",") + " m" : "") + " in den nächsten " + a.stunden + " Stunden.";
+
+  var html = '<div class="sheet"><h2>' + ortName + (zielName ? " nach " + zielName : "") + '</h2>' +
+    '<div class="ampel ' + kl + '"><span class="dot"></span><div><b>' + titel + '</b><div class="txt">' + kurz + '</div></div></div>' +
+    chartSvg(zentrum) +
+    '<p class="legende">Dunkel = Mittelwind, hell = Böen, in Knoten. Zeitachse alle 12 Stunden beschriftet.</p>';
+  a.bloecke.forEach(function(b){
+    var s = b.stufe === "rot" ? "s-rot" : (b.stufe === "gelb" ? "s-gelb" : "s-gruen");
+    var wort = b.stufe === "rot" ? "kritisch" : (b.stufe === "gelb" ? "beachten" : "unkritisch");
+    html += '<div class="block"><h3>' + b.titel + '<span class="stufe ' + s + '">' + wort + '</span></h3><p>' + b.text + '</p></div>';
+  });
+  html += '<div class="block"><h3>Empfehlung</h3><p>' + a.empfehlung.replace(/\n/g, "<br>") + '</p></div>' +
+    '<p class="legende">Modellauswertung, kein Ersatz für den amtlichen Seewetterbericht und den Blick nach draußen.</p></div>';
+  $("wOut").innerHTML = html;
+  $("wUeber").disabled = false;
+}
+
+async function analyseStarten(){
+  var btn = $("wGo"), msg = $("wMsg");
+  btn.disabled = true;
+  msg.className = "note"; msg.textContent = "Modelldaten werden geholt …";
+  try{
+    var standTxt = $("w_stand").value.trim(), stand;
+    if(standTxt) stand = await ortSuchen(standTxt);
+    else{
+      var p = await position();
+      stand = {lat:p.lat, lon:p.lon, name:"Standort " + p.lat.toFixed(3) + " / " + p.lon.toFixed(3)};
+    }
+    var zielTxt = $("w_ziel").value.trim();
+    var ziel = zielTxt ? await ortSuchen(zielTxt) : null;
+    var umkreis = parseInt($("w_umkreis").value, 10);
+    var stunden = parseInt($("w_dauer").value, 10);
+
+    var ring = ringPunkte(stand, umkreis);
+    var punkte = [{lat:stand.lat, lon:stand.lon, name:"Standort"}].concat(ring);
+    if(ziel) punkte.push({lat:ziel.lat, lon:ziel.lon, name:ziel.name});
+
+    var serien = await serienHolen(punkte, stunden);
+    var zentrum = serien[0];
+    var ringS = serien.slice(1, 1 + ring.length);
+    var zielS = ziel ? serien[serien.length - 1] : null;
+    if(zielS) zielS.name = ziel.name;
+
+    var a = analysiere(zentrum, ringS, zielS, stunden, umkreis);
+    letzteAnalyse = {a:a, ort:stand, ziel:ziel};
+    analyseZeigen(a, zentrum, stand.name, ziel ? ziel.name : "");
+
+    setup.lat = stand.lat.toFixed(4); setup.lon = stand.lon.toFixed(4); setup.ziel = zielTxt;
+    setupFelder(); lokalSpeichern();
+    msg.className = "note ok";
+    msg.textContent = "Analyse " + new Date().toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}) + " · " + punkte.length + " Gitterpunkte · Open-Meteo";
+  }catch(e){
+    msg.className = "note err";
+    msg.textContent = e && e.message ? e.message : "Analyse fehlgeschlagen. Ohne Empfang geht es nicht.";
+  }
+  btn.disabled = false;
+}
+
+$("wGo").onclick = analyseStarten;
+$("wGps").onclick = function(){
+  var msg = $("wMsg");
+  msg.className = "note"; msg.textContent = "GPS wird abgefragt …";
+  gpsEinmal().then(function(c){
+    $("w_stand").value = c.latitude.toFixed(4) + ", " + c.longitude.toFixed(4);
+    setup.lat = c.latitude.toFixed(4); setup.lon = c.longitude.toFixed(4);
+    setupFelder(); lokalSpeichern();
+    msg.className = "note ok"; msg.textContent = "Standort gesetzt.";
+  }, function(e){ msg.className = "note err"; msg.textContent = e.message; });
+};
+$("wUeber").onclick = function(){
+  if(!letzteAnalyse) return;
+  var a = letzteAnalyse.a, e = eintrag(aktiv);
+  e.vorhersage = (e.vorhersage ? e.vorhersage.trim() + "\n" : "") +
+    "Analyse " + new Date().toLocaleString("de-DE", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"}) +
+    " · " + letzteAnalyse.ort.name + (letzteAnalyse.ziel ? " nach " + letzteAnalyse.ziel.name : "") +
+    " · " + a.stunden + " h: bis " + Math.round(a.maxWind) + " kn, Böen " + Math.round(a.maxGust) + " kn" +
+    (a.maxWelle ? ", Welle " + a.maxWelle.toFixed(1).replace(".", ",") + " m" : "") +
+    " · Bewertung " + (a.stufe === "rot" ? "nicht fahren" : a.stufe === "gelb" ? "mit Auflagen" : "gut") +
+    (a.fenster.length ? "\n  Fenster: " + a.fenster.map(function(f){ return zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("; ") : "");
+  lokalSpeichern();
+  $("wMsg").className = "note ok";
+  $("wMsg").textContent = "In Tag " + aktiv + " übernommen.";
+};
+
+/* ================= Logbuch-Oberfläche ================= */
 function eintrag(n){ if(!data[n]) data[n] = {}; return data[n]; }
 function gefuellt(n){
   var e = data[n];
   if(!e) return false;
-  for(var k in e){ if(String(e[k]).trim() !== "") return true; }
+  for(var k in e){
+    if(k === "trackDaten" || k === "trackLaufend") continue;
+    if(String(e[k]).trim() !== "") return true;
+  }
   return false;
 }
 function tagesleiste(){
@@ -561,7 +1022,13 @@ function tagesleiste(){
     b.className = "day" + (gefuellt(t.n) ? " filled" : "");
     b.setAttribute("aria-current", t.n === aktiv ? "true" : "false");
     b.innerHTML = '<span class="n">' + String(t.n).padStart(2,"0") + '</span><span class="d">' + t.d.slice(0,6) + '</span>';
-    b.onclick = function(){ aktiv = t.n; zeichne(); window.scrollTo({top:0}); };
+    b.onclick = function(){
+      if(trk.an){
+        if(!confirm("Die GPS-Messung läuft für Tag " + aktiv + ". Trotzdem wechseln? Die Messung wird pausiert.")) return;
+        trkPause();
+      }
+      aktiv = t.n; zeichne(); trkLaden(); window.scrollTo({top:0});
+    };
     wrap.appendChild(b);
   });
   var akt = wrap.children[aktiv-1];
@@ -579,7 +1046,7 @@ function summen(){
 }
 function marker(){
   var k = $("days").children;
-  for(var i=0;i<k.length;i++){ k[i].classList.toggle("filled", gefuellt(i+1)); }
+  for(var i=0;i<k.length;i++) k[i].classList.toggle("filled", gefuellt(i+1));
 }
 function feld(f, e){
   var box = document.createElement("div");
@@ -615,8 +1082,7 @@ function feld(f, e){
   return box;
 }
 function zeichne(){
-  var t = TAGE[aktiv-1];
-  var e = eintrag(aktiv);
+  var t = TAGE[aktiv-1], e = eintrag(aktiv);
   if(!e.personen) e.personen = String(t.p);
   var form = $("form");
   form.innerHTML = "";
@@ -647,49 +1113,42 @@ function zeichne(){
       b2.onclick = function(){
         var m = $("wetterMsg");
         m.className = "note"; m.textContent = "GPS wird abgefragt …";
-        setup.lat = ""; setup.lon = "";
-        if(!navigator.geolocation){ m.className = "note err"; m.textContent = gpsGrund(null); return; }
-        navigator.geolocation.getCurrentPosition(function(p){
-          setup.lat = p.coords.latitude.toFixed(4);
-          setup.lon = p.coords.longitude.toFixed(4);
+        gpsEinmal().then(function(c){
+          setup.lat = c.latitude.toFixed(4); setup.lon = c.longitude.toFixed(4);
           var e2 = eintrag(aktiv);
           e2.route = (e2.route ? e2.route.trim() + "\n" : "") + "Position " + setup.lat + " / " + setup.lon;
-          lokalSpeichern(); zeichne();
+          setupFelder(); lokalSpeichern(); zeichne();
           $("wetterMsg").className = "note ok";
           $("wetterMsg").textContent = "Position übernommen: " + setup.lat + " / " + setup.lon;
-        }, function(err){
-          var m2 = $("wetterMsg");
-          m2.className = "note err";
-          m2.textContent = gpsGrund(err);
-        }, {timeout:15000, maximumAge:600000});
+        }, function(err){ m.className = "note err"; m.textContent = err.message; });
       };
       var b3 = document.createElement("button");
       b3.className = "small";
       b3.textContent = "Koordinaten einfügen";
       b3.onclick = function(){
-        var v = prompt("Koordinaten aus Maps, Navionics oder Plotter einsetzen:\n43.5871, 15.9203  oder  43°35.2'N 15°55.2'E", (setup.lat && setup.lon) ? setup.lat + ", " + setup.lon : "");
+        var v = prompt("Koordinaten aus Maps, Navionics oder Plotter:\n43.5871, 15.9203  oder  43°35.2'N 15°55.2'E", (setup.lat && setup.lon) ? setup.lat + ", " + setup.lon : "");
         if(v === null) return;
-        var k = koordUebernehmen(v);
-        var m = $("wetterMsg");
-        if(k){
+        var k = parseKoord(v), m = $("wetterMsg");
+        if(k && Math.abs(k.lat) <= 90 && Math.abs(k.lon) <= 180){
+          setup.lat = k.lat.toFixed(4); setup.lon = k.lon.toFixed(4);
           var e3 = eintrag(aktiv);
           e3.route = (e3.route ? e3.route.trim() + "\n" : "") + "Position " + setup.lat + " / " + setup.lon;
-          lokalSpeichern(); zeichne();
+          setupFelder(); lokalSpeichern(); zeichne();
           $("wetterMsg").className = "note ok";
           $("wetterMsg").textContent = "Position gesetzt: " + setup.lat + " / " + setup.lon;
         }else{
           m.className = "note err";
-          m.textContent = "Die Eingabe war nicht lesbar. Format: 43.5871, 15.9203";
+          m.textContent = "Eingabe nicht lesbar. Format: 43.5871, 15.9203";
         }
       };
       row.appendChild(b); row.appendChild(b2); row.appendChild(b3);
       s.appendChild(row);
       var msg = document.createElement("p");
       msg.className = "note"; msg.id = "wetterMsg";
-      var quelle = setup.provider === "windy" ? "Quelle: Windy Point Forecast" : "Quelle: Open-Meteo, ohne Schlüssel";
-      if(setup.lat && setup.lon) quelle += " · Position " + setup.lat + " / " + setup.lon;
-      else if(location.protocol === "file:") quelle += " · GPS gesperrt bei lokal geöffneter Datei, Koordinaten einfügen";
-      msg.textContent = quelle;
+      var q = setup.provider === "windy" ? "Quelle: Windy Point Forecast" : "Quelle: Open-Meteo";
+      if(setup.lat && setup.lon) q += " · Position " + setup.lat + " / " + setup.lon;
+      else if(location.protocol === "file:") q += " · GPS gesperrt bei lokaler Datei";
+      msg.textContent = q;
       s.appendChild(msg);
     }
     var grid = document.createElement("div");
@@ -700,6 +1159,23 @@ function zeichne(){
   });
   tagesleiste(); summen();
 }
+
+/* ================= Ansichten ================= */
+function ansichtSetzen(v){
+  ansicht = v;
+  $("viewLog").classList.toggle("on", v === "log");
+  $("viewWetter").classList.toggle("on", v === "wetter");
+  $("viewSetup").classList.toggle("on", v === "setup");
+  $("ruler").classList.toggle("hidden", v !== "log");
+  $("navbtns").classList.toggle("hidden", v !== "log");
+  Array.prototype.forEach.call($("nav").children, function(b){
+    b.setAttribute("aria-selected", b.getAttribute("data-v") === v ? "true" : "false");
+  });
+  window.scrollTo({top:0});
+}
+Array.prototype.forEach.call($("nav").children, function(b){
+  b.onclick = function(){ ansichtSetzen(b.getAttribute("data-v")); };
+});
 
 /* ================= Export ================= */
 function alsText(){
@@ -734,16 +1210,15 @@ $("btnWriteNow").onclick = async function(){
   try{
     if(dateiHandle.requestPermission){
       var p = await dateiHandle.requestPermission({mode:"readwrite"});
-      if(p !== "granted"){ storeInfo("Zugriff auf die Datei abgelehnt.", "err"); return; }
+      if(p !== "granted"){ storeInfo("Zugriff abgelehnt.", "err"); return; }
     }
     await dateiSchreiben();
     storeInfo("In " + dateiHandle.name + " geschrieben.", "ok");
   }catch(e){ storeInfo("Schreiben fehlgeschlagen.", "err"); }
 };
 $("btnForget").onclick = async function(){
-  dateiHandle = null;
-  await handleLoeschen();
-  storeInfo("Nur Gerätespeicher aktiv. Kein Dateiziel gesetzt.");
+  dateiHandle = null; await handleLoeschen();
+  storeInfo("Nur Gerätespeicher aktiv.");
 };
 $("btnBackup").onclick = function(){
   download("Logbuch_RedTwinII_" + new Date().toISOString().slice(0,10) + ".json", JSON.stringify({eintraege:data, setup:setup}, null, 1), "application/json");
@@ -756,11 +1231,10 @@ $("file").onchange = function(ev){
   var r = new FileReader();
   r.onload = function(){
     try{
-      var o = JSON.parse(r.result);
-      var neu = o.eintraege || o;
+      var o = JSON.parse(r.result), neu = o.eintraege || o;
       Object.keys(neu).forEach(function(k){ data[k] = neu[k]; });
       if(o.setup) setup = Object.assign(setup, o.setup);
-      lokalSpeichern(); zeichne(); setupFelder();
+      lokalSpeichern(); zeichne(); setupFelder(); trkLaden();
       setStatus("Backup geladen");
     }catch(e){ setStatus("Datei nicht lesbar", true); }
   };
@@ -777,16 +1251,18 @@ $("btnPrint").onclick = function(){ window.print(); };
 $("btnClear").onclick = function(){
   if(!confirm("Alle Felder von Tag " + aktiv + " löschen?")) return;
   data[aktiv] = {};
-  lokalSpeichern(); zeichne();
+  lokalSpeichern(); zeichne(); trkLaden();
 };
-$("prev").onclick = function(){ if(aktiv>1){ aktiv--; zeichne(); window.scrollTo({top:0}); } };
-$("next").onclick = function(){ if(aktiv<15){ aktiv++; zeichne(); window.scrollTo({top:0}); } };
+$("prev").onclick = function(){ if(aktiv > 1){ if(trk.an) trkPause(); aktiv--; zeichne(); trkLaden(); window.scrollTo({top:0}); } };
+$("next").onclick = function(){ if(aktiv < 15){ if(trk.an) trkPause(); aktiv++; zeichne(); trkLaden(); window.scrollTo({top:0}); } };
 
 function setupFelder(){
   $("s_provider").value = setup.provider;
   $("s_key").value = setup.key;
   $("s_lat").value = setup.lat;
   $("s_lon").value = setup.lon;
+  if(!$("w_stand").value && setup.lat && setup.lon) $("w_stand").value = setup.lat + ", " + setup.lon;
+  if(!$("w_ziel").value && setup.ziel) $("w_ziel").value = setup.ziel;
 }
 ["provider","key","lat","lon"].forEach(function(k){
   $("s_" + k).addEventListener("input", function(){
@@ -794,6 +1270,9 @@ function setupFelder(){
     lokalSpeichern();
     if(k === "provider") zeichne();
   });
+});
+window.addEventListener("beforeunload", function(e){
+  if(trk.an){ e.preventDefault(); e.returnValue = ""; }
 });
 
 /* ================= Start ================= */
@@ -803,18 +1282,18 @@ function setupFelder(){
   dateiHandle = await handleLaden();
   if(dateiHandle){
     var p = dateiHandle.queryPermission ? await dateiHandle.queryPermission({mode:"readwrite"}) : "granted";
-    storeInfo(p === "granted"
-      ? "Ziel: " + dateiHandle.name + " · wird automatisch mitgeschrieben"
+    storeInfo(p === "granted" ? "Ziel: " + dateiHandle.name + " · wird automatisch mitgeschrieben"
       : "Ziel: " + dateiHandle.name + " · tippe „Jetzt in Datei schreiben“, um den Zugriff zu bestätigen",
       p === "granted" ? "ok" : "err");
   }else{
     storeInfo(window.showSaveFilePicker || window.showDirectoryPicker
-      ? "Aktuell nur Gerätespeicher. Mit „Speicherort wählen“ eine eigene Datei festlegen, in die jede Eingabe mitgeschrieben wird."
+      ? "Aktuell nur Gerätespeicher. Mit „Speicherort wählen“ eine eigene Datei festlegen."
       : "Aktuell nur Gerätespeicher. Dieser Browser bietet keine Ordnerauswahl – nutze „Backup in Downloads“.");
   }
   var lokal = location.protocol === "file:";
-  $("diag").textContent = "Diagnose: " + (lokal ? "lokal geöffnete Datei (file://) – GPS und Ordnerauswahl sind hier gesperrt" : location.protocol + "// – GPS möglich, wenn der Browser den Standort freigibt") +
-    " · GPS-Schnittstelle " + (navigator.geolocation ? "vorhanden" : "fehlt") +
+  $("diag").textContent = "Diagnose: " + (lokal ? "lokale Datei (file://) – GPS und Ordnerauswahl gesperrt" : location.protocol + "// – GPS möglich") +
+    " · GPS " + (navigator.geolocation ? "vorhanden" : "fehlt") +
+    " · Displaysperre-Schutz " + (navigator.wakeLock ? "verfügbar" : "fehlt") +
     " · Dateiziel " + (window.showSaveFilePicker || window.showDirectoryPicker ? "wählbar" : "nicht wählbar");
   $("diag").className = "note" + (lokal ? " err" : "");
 
@@ -824,6 +1303,7 @@ function setupFelder(){
     if(new Date(p2[2], p2[1]-1, p2[0]).toDateString() === heute.toDateString()) aktiv = t.n;
   });
   zeichne();
+  trkLaden();
   if(lsOk) setStatus("Bereit · Gerätespeicher aktiv");
 })();
 
@@ -831,7 +1311,7 @@ function setupFelder(){
 if("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
   window.addEventListener("load", function(){
     navigator.serviceWorker.register("./sw.js").then(function(){
-      var d = document.getElementById("diag");
+      var d = $("diag");
       if(d) d.textContent += " · Offline-Betrieb aktiv";
     }).catch(function(){});
   });
