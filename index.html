@@ -20,9 +20,11 @@
 html,body{margin:0;padding:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%;padding-bottom:96px}
 header{position:sticky;top:0;z-index:20;background:var(--ink);color:#EDF1EE;padding:10px 12px 0;box-shadow:0 2px 10px rgba(14,36,48,.25)}
-.brand{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:42px;height:42px;flex:0 0 auto;display:block}
+.brand .titel{flex:1;min-width:0}
 .brand h1{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:19px;margin:0}
-.brand .boat{font-family:var(--f-data);font-size:11px;color:#8FA8AE;letter-spacing:.08em}
+.brand .boat{display:block;font-family:var(--f-data);font-size:11px;color:#8FA8AE;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .totals{display:flex;gap:14px;font-family:var(--f-data);font-size:11.5px;color:#9FB8BD;letter-spacing:.05em;margin:4px 0 8px;flex-wrap:wrap}
 .totals b{color:#F4F7F4;font-weight:600}
 nav{display:flex;gap:4px;margin:2px 0 0}
@@ -97,11 +99,18 @@ footer .navbtns.hidden{display:none}
 .block .stufe{font-family:var(--f-data);font-size:10.5px;letter-spacing:.06em;padding:1px 6px;border-radius:20px;border:1px solid currentColor;margin-left:6px}
 .s-rot{color:var(--buoy)}.s-gelb{color:var(--brass)}.s-gruen{color:var(--seagrass)}
 .wchart{width:100%;height:120px;display:block;margin:2px 0 8px}
+.karte{width:100%;height:330px;border:1px solid var(--line);border-radius:8px;display:block;background:#E3E8E4;margin:0 0 8px}
 .legende{font-family:var(--f-data);font-size:10.5px;color:var(--ink-soft);margin:0 0 12px}
 #exportOut{white-space:pre-wrap;font-family:var(--f-data);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:22px}
 #exportOut.hidden{display:none}
+#druckkopf{display:none}
 @media (min-width:560px){.dayhead .big{font-size:26px}}
-@media print{header,footer,.tools,.btnrow,#exportOut,#viewSetup{display:none}body{background:#fff;padding:0}.view{display:block!important}.sheet{break-inside:avoid;border-color:#999}}
+@media print{
+  header,footer,.tools,.btnrow,#exportOut,#viewSetup{display:none}
+  #druckkopf{display:flex;align-items:center;gap:12px;padding:0 0 10px;border-bottom:1px solid #999;margin:0 0 12px}
+  #druckkopf img{width:54px;height:54px}
+  #druckkopf b{display:block;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.08em;font-size:16px}
+  #druckkopf span{font-family:var(--f-data);font-size:11px}body{background:#fff;padding:0}.view{display:block!important}.sheet{break-inside:avoid;border-color:#999}}
 @media (prefers-reduced-motion:no-preference){.sheet{animation:rise .18s ease-out}@keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
 </style>
 </head>
@@ -109,19 +118,27 @@ footer .navbtns.hidden{display:none}
 
 <header>
   <div class="brand">
-    <h1>Logbuch</h1>
-    <span class="boat">RED TWIN II · LAGOON 450F</span>
+    <img class="logo" src="./logo.png" alt="Meer geht immer – The Buttons">
+    <div class="titel">
+      <h1>Logbuch</h1>
+      <span class="boat" id="brandBoot">RED TWIN II · LAGOON 450F</span>
+    </div>
   </div>
   <div class="totals" id="totals"></div>
   <nav id="nav">
     <button data-v="log" aria-selected="true">Logbuch</button>
     <button data-v="wetter" aria-selected="false">Wetter</button>
-    <button data-v="setup" aria-selected="false">Speicher</button>
+    <button data-v="setup" aria-selected="false">Stammdaten</button>
   </nav>
   <div class="ruler" id="ruler"><div class="days" id="days"></div></div>
 </header>
 
 <div class="banner hidden" id="banner"></div>
+
+<div id="druckkopf">
+  <img src="./logo.png" alt="">
+  <div><b id="dkBoot"></b><span id="dkZeit"></span></div>
+</div>
 
 <main>
   <section class="view on" id="viewLog">
@@ -180,6 +197,29 @@ footer .navbtns.hidden{display:none}
   </section>
 
   <section class="view" id="viewSetup">
+    <div class="sheet">
+      <h2>Törn und Schiff</h2>
+      <div class="grid">
+        <div class="f"><label for="t_boot">Bootsname</label><input id="t_boot" type="text" placeholder="Red Twin II"></div>
+        <div class="f"><label for="t_typ">Bootstyp</label><input id="t_typ" type="text" placeholder="Lagoon 450F"></div>
+        <div class="f wide"><label for="t_skipper">Skipper</label><input id="t_skipper" type="text" placeholder="Name des Skippers"></div>
+        <div class="f"><label for="t_start">Reise von</label><input id="t_start" type="date"></div>
+        <div class="f"><label for="t_ende">Reise bis</label><input id="t_ende" type="date"></div>
+        <div class="f"><label for="t_personen">Personen an Bord</label><input id="t_personen" type="text" inputmode="numeric" placeholder="6"></div>
+        <div class="f"><label for="t_motBB">Motorstunden BB bei Übernahme</label><input id="t_motBB" type="text" inputmode="decimal" placeholder="z. B. 1842,5"></div>
+        <div class="f"><label for="t_motSB">Motorstunden SB bei Übernahme</label><input id="t_motSB" type="text" inputmode="decimal" placeholder="z. B. 1798,0"></div>
+        <div class="f"><label for="t_gen">Generatorstunden bei Übernahme</label><input id="t_gen" type="text" inputmode="decimal" placeholder="z. B. 640,0"></div>
+      </div>
+      <p class="note" id="tornInfo"></p>
+    </div>
+
+    <div class="sheet">
+      <h2>Wetterschwellen – ab wann kritisch</h2>
+      <div class="grid" id="swGrid"></div>
+      <div class="btnrow"><button class="small" id="swReset">Auf Standardwerte zurück</button></div>
+      <p class="note" id="swInfo"></p>
+    </div>
+
     <div class="sheet" id="setup">
       <h2>Speicherort und Wetterquelle</h2>
       <p class="note" id="storeInfo"></p>
@@ -206,6 +246,7 @@ footer .navbtns.hidden{display:none}
     <div class="tools">
       <button class="primary" id="btnBackup">Backup in Downloads</button>
       <button id="btnRestore">Backup laden</button>
+      <button id="btnExcel">Excel-Export (.xlsx)</button>
       <button id="btnText">Logbuch als Text</button>
       <button id="btnPrint">Drucken / PDF</button>
       <button class="warn" id="btnClear">Aktuellen Tag leeren</button>
@@ -225,23 +266,26 @@ footer .navbtns.hidden{display:none}
 
 <script>
 /* ================= Törndaten ================= */
-var TAGE = [
-  {n:1, d:"29.08.2026", wt:"Sa", p:5, hint:"Check-in Kremik, Übernahmeprotokoll, Großeinkauf"},
-  {n:2, d:"30.08.2026", wt:"So", p:5, hint:"Ablegen früh"},
-  {n:3, d:"31.08.2026", wt:"Mo", p:5, hint:""},
-  {n:4, d:"01.09.2026", wt:"Di", p:5, hint:"Grillabend Lotusgrill"},
-  {n:5, d:"02.09.2026", wt:"Mi", p:6, hint:"Trogir – 6. Crewmitglied kommt an Bord"},
-  {n:6, d:"03.09.2026", wt:"Do", p:6, hint:""},
-  {n:7, d:"04.09.2026", wt:"Fr", p:6, hint:"Skradin: Wasser und Proviant für die Kornaten bunkern"},
-  {n:8, d:"05.09.2026", wt:"Sa", p:6, hint:"Kornati NP – kein Landstrom, kein Wasser"},
-  {n:9, d:"06.09.2026", wt:"So", p:6, hint:"Kornati NP"},
-  {n:10,d:"07.09.2026", wt:"Mo", p:6, hint:"Kornati NP"},
-  {n:11,d:"08.09.2026", wt:"Di", p:6, hint:"Kornati NP"},
-  {n:12,d:"09.09.2026", wt:"Mi", p:6, hint:"Split – Grillabend"},
-  {n:13,d:"10.09.2026", wt:"Do", p:6, hint:"Tanken Milna / Brac"},
-  {n:14,d:"11.09.2026", wt:"Fr", p:6, hint:"Rückkehr Kremik, letzter Abend an Bord"},
-  {n:15,d:"12.09.2026", wt:"Sa", p:6, hint:"Rückgabe 09:00, Zählerstände dokumentieren"}
-];
+var PLAN = {
+  "29.08.2026":{p:5, hint:"Check-in Kremik, Übernahmeprotokoll, Großeinkauf"},
+  "30.08.2026":{p:5, hint:"Ablegen früh"},
+  "31.08.2026":{p:5, hint:""},
+  "01.09.2026":{p:5, hint:"Grillabend Lotusgrill"},
+  "02.09.2026":{p:6, hint:"Trogir – 6. Crewmitglied kommt an Bord"},
+  "03.09.2026":{p:6, hint:""},
+  "04.09.2026":{p:6, hint:"Skradin: Wasser und Proviant für die Kornaten bunkern"},
+  "05.09.2026":{p:6, hint:"Kornati NP – kein Landstrom, kein Wasser"},
+  "06.09.2026":{p:6, hint:"Kornati NP"},
+  "07.09.2026":{p:6, hint:"Kornati NP"},
+  "08.09.2026":{p:6, hint:"Kornati NP"},
+  "09.09.2026":{p:6, hint:"Split – Grillabend"},
+  "10.09.2026":{p:6, hint:"Tanken Milna / Brac"},
+  "11.09.2026":{p:6, hint:"Rückkehr Kremik, letzter Abend an Bord"},
+  "12.09.2026":{p:6, hint:"Rückgabe 09:00, Zählerstände dokumentieren"}
+};
+var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+var TAGE = [];
+
 var KOMPASS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
 var HIMMEL = [""].concat(KOMPASS);
 var BFT = ["","0 – spiegelglatt","1 – leichter Zug","2 – leichte Brise","3 – schwache Brise","4 – mäßige Brise","5 – frische Brise","6 – starker Wind","7 – steifer Wind","8 – stürmisch","9 – Sturm","10+ – schwerer Sturm"];
@@ -299,7 +343,107 @@ var SCHEMA = [
 
 /* ================= Zustand ================= */
 var LS_KEY = "logbuch2026";
-var data = {}, setup = {provider:"om", key:"", lat:"", lon:"", ziel:""};
+var data = {}, setup = {provider:"om", key:"", lat:"", lon:"", ziel:"",
+  boot:"Red Twin II", typ:"Lagoon 450F", skipper:"", start:"2026-08-29", ende:"2026-09-12",
+  personen:"6", motBB:"", motSB:"", gen:"", sw:null};
+
+/* Schwellen für die Wettereinstufung – vom Skipper einstellbar */
+var SW_DEF = [
+  {k:"windGelb",   l:"Wind gelb ab (kn)",        v:18},
+  {k:"windRot",    l:"Wind rot ab (kn)",         v:25},
+  {k:"boeGelb",    l:"Böen gelb ab (kn)",        v:25},
+  {k:"boeRot",     l:"Böen rot ab (kn)",         v:34},
+  {k:"welleGelb",  l:"Welle gelb ab (m)",        v:1.5},
+  {k:"welleRot",   l:"Welle rot ab (m)",         v:2.5},
+  {k:"faktorGelb", l:"Böenfaktor auffällig ab",  v:1.5},
+  {k:"faktorRot",  l:"Böenfaktor kritisch ab",   v:1.8},
+  {k:"druckGelb",  l:"Druckfall gelb ab (hPa/3h)", v:3},
+  {k:"druckRot",   l:"Druckfall stark ab (hPa/3h)", v:4},
+  {k:"fWind",      l:"Fenster: Wind bis (kn)",   v:17},
+  {k:"fBoe",       l:"Fenster: Böen bis (kn)",   v:24},
+  {k:"fWelle",     l:"Fenster: Welle bis (m)",   v:1.3},
+  {k:"fVon",       l:"Fenster: frühestens (Std.)", v:6},
+  {k:"fBis",       l:"Fenster: spätestens (Std.)", v:20},
+  {k:"reff1",      l:"Erstes Reff ab (kn)",      v:14},
+  {k:"reff2",      l:"Zweites Reff ab (kn)",     v:18},
+  {k:"motorBis",   l:"Kaum Segelwind bis (kn)",  v:8}
+];
+function swStandard(){
+  var o = {};
+  SW_DEF.forEach(function(d){ o[d.k] = d.v; });
+  return o;
+}
+function sw(k){
+  var d = SW_DEF.filter(function(x){ return x.k === k; })[0];
+  var std = d ? d.v : 0;
+  if(!setup.sw || setup.sw[k] == null || setup.sw[k] === "") return std;
+  var v = zahl(setup.sw[k]);
+  if(k === "fVon") return v >= 0 ? v : std;
+  return v > 0 ? v : std;
+}
+function swGridBauen(){
+  var g = $("swGrid");
+  if(!g) return;
+  g.innerHTML = "";
+  SW_DEF.forEach(function(d){
+    var box = document.createElement("div");
+    box.className = "f";
+    var lab = document.createElement("label");
+    lab.setAttribute("for", "sw_" + d.k);
+    lab.textContent = d.l;
+    var inp = document.createElement("input");
+    inp.id = "sw_" + d.k;
+    inp.type = "text";
+    inp.inputMode = "decimal";
+    inp.placeholder = String(d.v).replace(".", ",");
+    inp.value = setup.sw && setup.sw[d.k] != null ? String(setup.sw[d.k]).replace(".", ",") : String(d.v).replace(".", ",");
+    inp.addEventListener("input", function(){
+      if(!setup.sw) setup.sw = swStandard();
+      setup.sw[d.k] = zahl(inp.value) || d.v;
+      lokalSpeichern();
+      swInfo();
+    });
+    box.appendChild(lab); box.appendChild(inp);
+    g.appendChild(box);
+  });
+  swInfo();
+}
+function swInfo(){
+  var i = $("swInfo");
+  if(!i) return;
+  i.className = "note";
+  i.textContent = "Gelb ab " + sw("windGelb") + " kn Wind, " + sw("boeGelb") + " kn Böen oder " +
+    String(sw("welleGelb")).replace(".", ",") + " m Welle. Rot ab " + sw("windRot") + " kn, " + sw("boeRot") + " kn Böen oder " +
+    String(sw("welleRot")).replace(".", ",") + " m. Fahrbare Fenster bis " + sw("fWind") + " kn und " + sw("fBoe") + " kn Böen zwischen " +
+    sw("fVon") + " und " + sw("fBis") + " Uhr.";
+}
+
+function zahl(v){ var x = parseFloat(String(v == null ? "" : v).replace(",", ".")); return isNaN(x) ? 0 : x; }
+
+/* Tagesliste aus dem eingestellten Reisezeitraum */
+function tageBauen(){
+  var a = new Date(setup.start + "T12:00:00"), b = new Date(setup.ende + "T12:00:00");
+  if(isNaN(a) || isNaN(b) || b < a){ a = new Date("2026-08-29T12:00:00"); b = new Date("2026-09-12T12:00:00"); }
+  var n = Math.round((b - a) / 86400000) + 1;
+  if(n > 120) n = 120;
+  TAGE = [];
+  for(var i=0;i<n;i++){
+    var d = new Date(a.getTime() + i * 86400000);
+    var ds = String(d.getDate()).padStart(2,"0") + "." + String(d.getMonth()+1).padStart(2,"0") + "." + d.getFullYear();
+    var pl = PLAN[ds];
+    TAGE.push({n:i+1, d:ds, wt:WT[d.getDay()], p: pl ? pl.p : (parseInt(setup.personen, 10) || 6), hint: pl ? pl.hint : ""});
+  }
+  if(aktiv > TAGE.length) aktiv = TAGE.length;
+  if(aktiv < 1) aktiv = 1;
+  var info = $("tornInfo");
+  if(info){
+    info.className = "note";
+    info.textContent = TAGE.length + " Reisetage von " + TAGE[0].d + " bis " + TAGE[TAGE.length-1].d +
+      ". Einträge hängen an der Tagesnummer: verschiebst du den Zeitraum, wandern vorhandene Einträge mit der Nummer, nicht mit dem Datum.";
+  }
+  var bb = $("brandBoot");
+  if(bb) bb.textContent = ((setup.boot || "Boot") + " · " + (setup.typ || "")).toUpperCase().trim().replace(/·\s*$/, "");
+}
 var aktiv = 1, ansicht = "log";
 var lsOk = true, dateiHandle = null, tLocal = null, tDatei = null;
 var letzteAnalyse = null;
@@ -789,8 +933,9 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis){
   });
 
   var stufe = "gruen";
-  if(maxGust >= 25 || maxWind >= 18 || maxWelle >= 1.5 || gewitter.length || druckAb <= -3) stufe = "gelb";
-  if(maxGust >= 34 || maxWind >= 25 || maxWelle >= 2.5 || (gewitter.length && maxGust >= 30)) stufe = "rot";
+  if(maxGust >= sw("boeGelb") || maxWind >= sw("windGelb") || maxWelle >= sw("welleGelb") || gewitter.length || druckAb <= -sw("druckGelb")) stufe = "gelb";
+  if(maxGust >= sw("boeRot") || maxWind >= sw("windRot") || maxWelle >= sw("welleRot") ||
+     (gewitter.length && maxGust >= Math.min(sw("boeRot"), sw("boeGelb") + 5))) stufe = "rot";
 
   var bloecke = [];
   function B(titel, text, s){ bloecke.push({titel:titel, text:text, stufe:s}); }
@@ -798,27 +943,27 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis){
   var wt = "Bis " + Math.round(maxWind) + " kn Mittelwind (" + bftAus(maxWind) + " Bft) aus " +
     richtungAus(nz(zentrum.dir[idxWind >= 0 ? idxWind : 0])) + ", stärkster Abschnitt um " +
     zeitLabel(zentrum.zeit[idxWind >= 0 ? idxWind : 0]) + ". ";
-  if(maxWind < 8) wt += "Für einen 20-Tonnen-Kat heißt das über weite Strecken Motor oder sehr geduldiges Segeln.";
-  else if(maxWind < 14) wt += "Angenehmes Katamaran-Wetter, volle Segelfläche, Crew entspannt.";
-  else if(maxWind < 18) wt += "Erstes Reff am Groß einplanen, dann läuft der 450F ruhig und schnell.";
-  else if(maxWind < 25) wt += "Zweites Reff und deutlich reduzierte Genua. Bei diesem Wind wird das Anlegen mit 7,8 m Breite zur Hauptaufgabe des Tages.";
-  else wt += "Das ist kein Etappenwetter mehr. Sicheren Hafen oder gut geschützte Bucht wählen und liegen bleiben.";
-  B("Wind", wt, maxWind >= 25 ? "rot" : (maxWind >= 18 ? "gelb" : "gruen"));
+  if(maxWind < sw("motorBis")) wt += "Unter " + sw("motorBis") + " kn heißt das über weite Strecken Motor oder sehr geduldiges Segeln.";
+  else if(maxWind < sw("reff1")) wt += "Angenehmes Katamaran-Wetter, volle Segelfläche, Crew entspannt.";
+  else if(maxWind < sw("reff2")) wt += "Ab deiner Marke von " + sw("reff1") + " kn das erste Reff am Groß einplanen, dann läuft der Kat ruhig und schnell.";
+  else if(maxWind < sw("windRot")) wt += "Über " + sw("reff2") + " kn zweites Reff und deutlich reduzierte Genua. Bei diesem Wind wird das Anlegen mit 7,8 m Breite zur Hauptaufgabe des Tages.";
+  else wt += "Über deiner Grenze von " + sw("windRot") + " kn ist das kein Etappenwetter mehr. Sicheren Hafen oder gut geschützte Bucht wählen und liegen bleiben.";
+  B("Wind", wt, maxWind >= sw("windRot") ? "rot" : (maxWind >= sw("windGelb") ? "gelb" : "gruen"));
 
   var bt = "Böenspitzen bis " + Math.round(maxGust) + " kn" + (idxGust >= 0 ? " um " + zeitLabel(zentrum.zeit[idxGust]) : "") +
     ", Böenfaktor " + boeFaktor.toFixed(1).replace(".", ",") + ". ";
-  if(boeFaktor >= 1.8) bt += "Der Faktor ist hier der eigentliche Risikoträger: Der Kat krängt nicht als Vorwarnung, die Böe geht voll auf Rigg und Ruder. Früh reffen, Großschot nie festklemmen.";
-  else if(boeFaktor >= 1.5) bt += "Deutlich böig, typisch für Leeseiten der Inseln und Kanalausgänge. Vor der Fallwindstrecke reffen, nicht danach.";
+  if(boeFaktor >= sw("faktorRot")) bt += "Der Faktor ist hier der eigentliche Risikoträger: Der Kat krängt nicht als Vorwarnung, die Böe geht voll auf Rigg und Ruder. Früh reffen, Großschot nie festklemmen.";
+  else if(boeFaktor >= sw("faktorGelb")) bt += "Deutlich böig, typisch für Leeseiten der Inseln und Kanalausgänge. Vor der Fallwindstrecke reffen, nicht danach.";
   else bt += "Gleichmäßiger Wind, Böen im normalen Rahmen.";
-  B("Böen", bt, maxGust >= 34 ? "rot" : (maxGust >= 25 ? "gelb" : "gruen"));
+  B("Böen", bt, maxGust >= sw("boeRot") ? "rot" : (maxGust >= sw("boeGelb") ? "gelb" : "gruen"));
 
   var st = maxWelle > 0
     ? "Signifikante Wellenhöhe bis " + maxWelle.toFixed(1).replace(".", ",") + " m" + (maxV(zentrum.periode) ? ", Periode um " + Math.round(maxV(zentrum.periode)) + " s" : "") + ". "
     : "Für diesen Punkt liefert das Seemodell keine Wellendaten, das ist in engen Inselgewässern normal. Rechne mit lokaler Windsee entsprechend Stärke und Streichlänge. ";
-  if(maxWelle >= 2.5) st += "Für eine Crew mit Kind unangenehm bis riskant, Bewegungen an Deck stark einschränken.";
-  else if(maxWelle >= 1.5) st += "Die kurze Adriawelle stampft in dieser Höhe im Kat spürbar. Seekrankheit vorbeugen, Luken dicht, alles verstauen.";
+  if(maxWelle >= sw("welleRot")) st += "Für eine Crew mit Kind unangenehm bis riskant, Bewegungen an Deck stark einschränken.";
+  else if(maxWelle >= sw("welleGelb")) st += "Die kurze Adriawelle stampft in dieser Höhe im Kat spürbar. Seekrankheit vorbeugen, Luken dicht, alles verstauen.";
   else if(maxWelle > 0) st += "Gut fahrbar, das Brückendeck bleibt trocken.";
-  B("See", st, maxWelle >= 2.5 ? "rot" : (maxWelle >= 1.5 ? "gelb" : "gruen"));
+  B("See", st, maxWelle >= sw("welleRot") ? "rot" : (maxWelle >= sw("welleGelb") ? "gelb" : "gruen"));
 
   if(gewitter.length){
     var maxCape = Math.round(maxV(zentrum.cape));
@@ -830,8 +975,8 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis){
   }
 
   var dt2 = "Stärkste Druckänderung " + druckAb.toFixed(1).replace(".", ",") + " hPa je 3 Stunden. ";
-  if(druckAb <= -4) dt2 += "Das ist ein klarer Frontdurchgang, mit Winddreher und Böenlinie rechnen.";
-  else if(druckAb <= -2) dt2 += "Leicht fallend, ein Wetterwechsel ist im Anmarsch.";
+  if(druckAb <= -sw("druckRot")) dt2 += "Das ist ein klarer Frontdurchgang, mit Winddreher und Böenlinie rechnen.";
+  else if(druckAb <= -sw("druckGelb") / 1.5) dt2 += "Leicht fallend, ein Wetterwechsel ist im Anmarsch.";
   else dt2 += "Stabile Druckverhältnisse.";
   var rt = {
     NE:"Vorherrschend NE bis E, das ist die Bora-Richtung. Bora fällt böig von den Bergen, ist unter Land am stärksten und baut in den Kanälen schnell steile Welle auf. Ankerbuchten mit Schutz nach NE wählen, Landleinen doppelt nehmen.",
@@ -839,7 +984,7 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis){
     SE:"Vorherrschend SE, also Jugo-Charakter. Hält länger an, baut mit Vorlaufstrecke lange Welle auf und bringt Feuchte. Buchten mit Schutz nach SE sind knapp, im Zweifel Marina.",
     SW:"Vorherrschend SW, meist vorfrontal oder thermisch, oft mit Regen und Sichtverlust."
   }[domi];
-  B("Druck und Wetterlage", dt2 + " " + (rt || ""), druckAb <= -4 ? "gelb" : "gruen");
+  B("Druck und Wetterlage", dt2 + " " + (rt || ""), druckAb <= -sw("druckRot") ? "gelb" : "gruen");
 
   if(dreh >= 60){
     B("Winddreher", "Der Wind dreht innerhalb von 3 Stunden um bis zu " + Math.round(dreh) + " Grad, etwa ab " + zeitLabel(drehZeit) +
@@ -870,10 +1015,10 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis){
 
   var fenster = [], offen = null;
   for(i=0;i<zentrum.zeit.length;i++){
-    var ok = nz(zentrum.wind[i]) <= 17 && nz(zentrum.gust[i]) <= 24 &&
-      (!zentrum.welle.length || nz(zentrum.welle[i]) <= 1.3) && nz(zentrum.code[i]) < 95;
+    var ok = nz(zentrum.wind[i]) <= sw("fWind") && nz(zentrum.gust[i]) <= sw("fBoe") &&
+      (!zentrum.welle.length || nz(zentrum.welle[i]) <= sw("fWelle")) && nz(zentrum.code[i]) < 95;
     var std = stundeVon(zentrum.zeit[i]);
-    if(ok && std >= 6 && std <= 20){
+    if(ok && std >= sw("fVon") && std <= sw("fBis")){
       if(!offen) offen = zentrum.zeit[i];
     }else if(offen){
       fenster.push([offen, zentrum.zeit[i]]);
@@ -884,8 +1029,10 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis){
   fenster = fenster.filter(function(f){ return (new Date(f[1]) - new Date(f[0])) >= 3 * 3600000; }).slice(0, 4);
 
   var empf = fenster.length
-    ? "Fahrbare Fenster bei Tageslicht, bis 17 kn Wind und 24 kn Böen:\n" + fenster.map(function(f){ return "· " + zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("\n")
-    : "Im gewählten Zeitraum gibt es kein Fenster, das 17 kn Wind und 24 kn Böen bei Tageslicht einhält. Etappe verschieben oder deutlich kürzer planen.";
+    ? "Fahrbare Fenster nach deinen Grenzen (bis " + sw("fWind") + " kn Wind, " + sw("fBoe") + " kn Böen, " +
+      sw("fVon") + " bis " + sw("fBis") + " Uhr):\n" + fenster.map(function(f){ return "· " + zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("\n")
+    : "Im gewählten Zeitraum gibt es kein Fenster, das deine Grenzen von " + sw("fWind") + " kn Wind und " + sw("fBoe") +
+      " kn Böen zwischen " + sw("fVon") + " und " + sw("fBis") + " Uhr einhält. Etappe verschieben oder deutlich kürzer planen.";
 
   return {stufe:stufe, bloecke:bloecke, empfehlung:empf, maxWind:maxWind, maxGust:maxGust, maxWelle:maxWelle, fenster:fenster, stunden:stunden};
 }
@@ -915,6 +1062,39 @@ function chartSvg(s){
   return svg + '</svg>';
 }
 
+function karteUrl(lat, lon, umkreis, overlay){
+  var zoom = umkreis >= 30 ? 7 : umkreis >= 20 ? 8 : umkreis >= 10 ? 9 : 10;
+  return "https://embed.windy.com/embed2.html?lat=" + lat.toFixed(3) + "&lon=" + lon.toFixed(3) +
+    "&detailLat=" + lat.toFixed(3) + "&detailLon=" + lon.toFixed(3) +
+    "&zoom=" + zoom + "&level=surface&overlay=" + overlay +
+    "&product=ecmwf&menu=&message=&marker=true&calendar=now&pressure=&type=map&location=coordinates" +
+    "&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1";
+}
+function karteSetzen(overlay){
+  if(!letzteAnalyse) return;
+  var f = $("wKarte");
+  if(!f) return;
+  f.src = karteUrl(letzteAnalyse.ort.lat, letzteAnalyse.ort.lon, letzteAnalyse.umkreis, overlay);
+  Array.prototype.forEach.call(document.querySelectorAll(".kbtn"), function(b){
+    b.classList.toggle("primary", b.getAttribute("data-o") === overlay);
+  });
+}
+function karteHtml(){
+  if(!navigator.onLine){
+    return '<div class="block"><h3>Wetterkarte</h3><p class="note err">Ohne Empfang lässt sich keine Karte laden. Die Auswertung oben bleibt gültig.</p></div>';
+  }
+  return '<div class="block"><h3>Wetterkarte</h3>' +
+    '<div class="btnrow">' +
+    '<button class="small kbtn primary" data-o="wind">Wind</button>' +
+    '<button class="small kbtn" data-o="gust">Böen</button>' +
+    '<button class="small kbtn" data-o="waves">Wellen</button>' +
+    '<button class="small kbtn" data-o="rain">Regen</button>' +
+    '<button class="small kbtn" data-o="pressure">Druck</button>' +
+    '</div>' +
+    '<iframe id="wKarte" class="karte" title="Wetterkarte des analysierten Gebiets" loading="lazy" referrerpolicy="no-referrer"></iframe>' +
+    '<p class="legende">Karte von Windy, Modell ECMWF. Der Marker sitzt auf dem analysierten Standort, in der Karte selbst kannst du Zeit und Gebiet weiter verschieben.</p></div>';
+}
+
 function analyseZeigen(a, zentrum, ortName, zielName){
   var kl = a.stufe === "rot" ? "a-rot" : (a.stufe === "gelb" ? "a-gelb" : "a-gruen");
   var titel = a.stufe === "rot" ? "Nicht fahren" : (a.stufe === "gelb" ? "Fahrbar mit Auflagen" : "Gute Bedingungen");
@@ -930,9 +1110,16 @@ function analyseZeigen(a, zentrum, ortName, zielName){
     var wort = b.stufe === "rot" ? "kritisch" : (b.stufe === "gelb" ? "beachten" : "unkritisch");
     html += '<div class="block"><h3>' + b.titel + '<span class="stufe ' + s + '">' + wort + '</span></h3><p>' + b.text + '</p></div>';
   });
+  html += karteHtml();
   html += '<div class="block"><h3>Empfehlung</h3><p>' + a.empfehlung.replace(/\n/g, "<br>") + '</p></div>' +
-    '<p class="legende">Modellauswertung, kein Ersatz für den amtlichen Seewetterbericht und den Blick nach draußen.</p></div>';
+    '<p class="legende">Eingestuft nach deinen Stammdaten: gelb ab ' + sw("windGelb") + ' kn / ' + sw("boeGelb") + ' kn Böen / ' +
+      String(sw("welleGelb")).replace(".", ",") + ' m, rot ab ' + sw("windRot") + ' kn / ' + sw("boeRot") + ' kn Böen / ' +
+      String(sw("welleRot")).replace(".", ",") + ' m. Modellauswertung, kein Ersatz für den amtlichen Seewetterbericht und den Blick nach draußen.</p></div>';
   $("wOut").innerHTML = html;
+  Array.prototype.forEach.call(document.querySelectorAll(".kbtn"), function(b){
+    b.onclick = function(){ karteSetzen(b.getAttribute("data-o")); };
+  });
+  karteSetzen("wind");
   $("wUeber").disabled = false;
 }
 
@@ -963,7 +1150,7 @@ async function analyseStarten(){
     if(zielS) zielS.name = ziel.name;
 
     var a = analysiere(zentrum, ringS, zielS, stunden, umkreis);
-    letzteAnalyse = {a:a, ort:stand, ziel:ziel};
+    letzteAnalyse = {a:a, ort:stand, ziel:ziel, umkreis:umkreis};
     analyseZeigen(a, zentrum, stand.name, ziel ? ziel.name : "");
 
     setup.lat = stand.lat.toFixed(4); setup.lon = stand.lon.toFixed(4); setup.ziel = zielTxt;
@@ -1042,7 +1229,17 @@ function summen(){
     mot += (parseFloat(String(e.motorBB||"").replace(",",".")) || 0) + (parseFloat(String(e.motorSB||"").replace(",",".")) || 0);
     if(gefuellt(t.n)) tage++;
   });
-  $("totals").innerHTML = "GEFAHREN <b>" + sm.toFixed(1) + " sm</b><span>MOTOR <b>" + mot.toFixed(1) + " h</b></span><span>EINGETRAGEN <b>" + tage + "/15</b></span>";
+  var html = "GEFAHREN <b>" + sm.toFixed(1) + " sm</b><span>MOTOR <b>" + mot.toFixed(1) + " h</b></span>" +
+    "<span>EINGETRAGEN <b>" + tage + "/" + TAGE.length + "</b></span>";
+  if(setup.motBB || setup.motSB){
+    var mbb = 0, msb = 0;
+    TAGE.forEach(function(t){
+      var e = data[t.n] || {};
+      mbb += zahl(e.motorBB); msb += zahl(e.motorSB);
+    });
+    html += "<span>ZÄHLER BB <b>" + (zahl(setup.motBB) + mbb).toFixed(1) + "</b> SB <b>" + (zahl(setup.motSB) + msb).toFixed(1) + "</b></span>";
+  }
+  $("totals").innerHTML = html;
 }
 function marker(){
   var k = $("days").children;
@@ -1179,7 +1376,12 @@ Array.prototype.forEach.call($("nav").children, function(b){
 
 /* ================= Export ================= */
 function alsText(){
-  var out = "LOGBUCH · Red Twin II · Lagoon 450F · Törn 29.08.–12.09.2026\n========================================================\n";
+  var out = "LOGBUCH · " + (setup.boot || "") + " · " + (setup.typ || "") +
+    "\nTörn " + (TAGE.length ? TAGE[0].d + " bis " + TAGE[TAGE.length-1].d : "") +
+    (setup.skipper ? "\nSkipper: " + setup.skipper : "") +
+    (setup.motBB || setup.motSB ? "\nMotorstunden bei Übernahme: BB " + (setup.motBB || "–") + " · SB " + (setup.motSB || "–") +
+      (setup.gen ? " · Generator " + setup.gen : "") : "") +
+    "\n========================================================\n";
   TAGE.forEach(function(t){
     if(!gefuellt(t.n)) return;
     var e = data[t.n];
@@ -1201,6 +1403,279 @@ function download(name, inhalt, typ){
   a.href = URL.createObjectURL(blob);
   a.download = name; a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+}
+
+
+/* ================= Excel-Export (.xlsx, ohne Fremdbibliothek) ================= */
+var XL_COLS = [
+  {k:"__tag", l:"Tag", num:true, w:5},
+  {k:"__datum", l:"Datum", w:11},
+  {k:"__wt", l:"Wo", w:4},
+  {k:"von", l:"Von", w:18},
+  {k:"nach", l:"Nach", w:18},
+  {k:"liegeplatz", l:"Liegeplatz", w:16},
+  {k:"ablegen", l:"Ablegen", w:8},
+  {k:"anlegen", l:"Anlegen", w:8},
+  {k:"distanz", l:"Distanz sm", num:true, w:10},
+  {k:"logstand", l:"Logstand sm", num:true, w:11},
+  {k:"segelstd", l:"Std. Segel", num:true, w:10},
+  {k:"motorBB", l:"Motor BB h", num:true, w:10},
+  {k:"motorSB", l:"Motor SB h", num:true, w:10},
+  {k:"personen", l:"Personen", num:true, w:9},
+  {k:"windRi", l:"Wind Ri", w:8},
+  {k:"windBft", l:"Windstärke", w:18},
+  {k:"windKn", l:"Wind kn", num:true, w:8},
+  {k:"boen", l:"Böen kn", num:true, w:8},
+  {k:"seegang", l:"Seegang", w:12},
+  {k:"sicht", l:"Sicht", w:10},
+  {k:"wetterlage", l:"Wetter", w:12},
+  {k:"druck", l:"Druck hPa", num:true, w:10},
+  {k:"tempLuft", l:"Luft °C", num:true, w:8},
+  {k:"tempWasser", l:"Wasser °C", num:true, w:9},
+  {k:"diesel", l:"Diesel %", num:true, w:8},
+  {k:"wasser", l:"Wassertank %", num:true, w:12},
+  {k:"faekal", l:"Fäkalientank", w:13},
+  {k:"strom", l:"Strom", w:12},
+  {k:"generator", l:"Generator h", num:true, w:11},
+  {k:"gebuehr", l:"Liegegebühr €", num:true, w:12},
+  {k:"bordkasse", l:"Ausgaben €", num:true, w:11},
+  {k:"wache", l:"Rudergänger / Wache", w:20},
+  {k:"route", l:"Route und Position", wrap:true, w:40},
+  {k:"vorhersage", l:"Vorhersage und Quelle", wrap:true, w:40},
+  {k:"technik", l:"Technik und Kontrollen", wrap:true, w:34},
+  {k:"crewNotiz", l:"Crew", wrap:true, w:28},
+  {k:"besonderheiten", l:"Besonderheiten und Manöver", wrap:true, w:40},
+  {k:"vorfaelle", l:"Vorfälle und Entscheidungen", wrap:true, w:40},
+  {k:"erinnerung", l:"Moment des Tages", wrap:true, w:34},
+  {k:"offen", l:"Offen für morgen", wrap:true, w:28}
+];
+var XL_SUM = ["distanz","segelstd","motorBB","motorSB","generator","gebuehr","bordkasse"];
+
+function xEsc(t){
+  return String(t == null ? "" : t)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/\r/g, "")
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
+}
+function xSpalte(i){
+  var s = "";
+  i++;
+  while(i > 0){ var r = (i - 1) % 26; s = String.fromCharCode(65 + r) + s; i = Math.floor((i - r) / 26); }
+  return s;
+}
+function xZelle(spalte, zeile, wert, stil, zahlenwert){
+  var ref = xSpalte(spalte) + zeile;
+  var st = stil ? ' s="' + stil + '"' : "";
+  if(zahlenwert) return '<c r="' + ref + '"' + st + '><v>' + wert + '</v></c>';
+  if(wert === "" || wert == null) return '<c r="' + ref + '"' + st + '/>';
+  return '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + xEsc(wert) + '</t></is></c>';
+}
+function xBlatt(zeilen, spalten, einfrieren){
+  var cols = "";
+  if(spalten){
+    cols = "<cols>";
+    spalten.forEach(function(w, i){ cols += '<col min="' + (i+1) + '" max="' + (i+1) + '" width="' + w + '" customWidth="1"/>'; });
+    cols += "</cols>";
+  }
+  var view = einfrieren
+    ? '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'
+    : '<sheetViews><sheetView workbookViewId="0"/></sheetViews>';
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    view + cols + '<sheetData>' + zeilen.join("") + '</sheetData></worksheet>';
+}
+
+function xlsxBauen(){
+  /* --- Blatt 1: Logbuch --- */
+  var zeilen = [], nr = 1;
+  var kopf = "";
+  XL_COLS.forEach(function(c, i){ kopf += xZelle(i, nr, c.l, 1); });
+  zeilen.push('<row r="' + nr + '" ht="30" customHeight="1">' + kopf + '</row>');
+
+  var summen = {};
+  XL_SUM.forEach(function(k){ summen[k] = 0; });
+
+  TAGE.forEach(function(t){
+    var e = data[t.n] || {};
+    if(!gefuellt(t.n)) return;
+    nr++;
+    var z = "";
+    XL_COLS.forEach(function(c, i){
+      var v;
+      if(c.k === "__tag") v = t.n;
+      else if(c.k === "__datum") v = t.d;
+      else if(c.k === "__wt") v = t.wt;
+      else v = e[c.k] || "";
+      if(c.num && c.k !== "__tag"){
+        var x = zahl(v);
+        if(XL_SUM.indexOf(c.k) >= 0) summen[c.k] += x;
+        z += (String(v).trim() === "") ? xZelle(i, nr, "", 0) : xZelle(i, nr, x, 0, true);
+      }else if(c.k === "__tag"){
+        z += xZelle(i, nr, v, 0, true);
+      }else{
+        z += xZelle(i, nr, v, c.wrap ? 2 : 0);
+      }
+    });
+    zeilen.push('<row r="' + nr + '">' + z + '</row>');
+  });
+
+  nr += 2;
+  var sz = xZelle(0, nr, "Summe", 1) + xZelle(1, nr, "", 1) + xZelle(2, nr, "", 1);
+  for(var i=3;i<XL_COLS.length;i++){
+    var c = XL_COLS[i];
+    sz += (XL_SUM.indexOf(c.k) >= 0) ? xZelle(i, nr, Math.round(summen[c.k] * 10) / 10, 1, true) : xZelle(i, nr, "", 1);
+  }
+  zeilen.push('<row r="' + nr + '">' + sz + '</row>');
+
+  var breiten = XL_COLS.map(function(c){ return c.w; });
+  var blatt1 = xBlatt(zeilen, breiten, true);
+
+  /* --- Blatt 2: Stammdaten --- */
+  var sm = 0, mbb = 0, msb = 0, gen = 0;
+  TAGE.forEach(function(t){
+    var e = data[t.n] || {};
+    sm += zahl(e.distanz); mbb += zahl(e.motorBB); msb += zahl(e.motorSB); gen += zahl(e.generator);
+  });
+  var paare = [
+    ["Boot", setup.boot], ["Bootstyp", setup.typ], ["Skipper", setup.skipper],
+    ["Törn von", TAGE.length ? TAGE[0].d : ""], ["Törn bis", TAGE.length ? TAGE[TAGE.length-1].d : ""],
+    ["Reisetage", String(TAGE.length)], ["Personen an Bord (Standard)", setup.personen],
+    ["", ""],
+    ["Motorstunden BB bei Übernahme", setup.motBB], ["Motorstunden SB bei Übernahme", setup.motSB],
+    ["Generatorstunden bei Übernahme", setup.gen],
+    ["Motorstunden BB gefahren", mbb.toFixed(1)], ["Motorstunden SB gefahren", msb.toFixed(1)],
+    ["Generatorstunden gefahren", gen.toFixed(1)],
+    ["Zählerstand BB aktuell", (zahl(setup.motBB) + mbb).toFixed(1)],
+    ["Zählerstand SB aktuell", (zahl(setup.motSB) + msb).toFixed(1)],
+    ["Zählerstand Generator aktuell", (zahl(setup.gen) + gen).toFixed(1)],
+    ["Seemeilen gesamt", sm.toFixed(1)],
+    ["", ""],
+    ["Wetterschwellen", ""]
+  ];
+  SW_DEF.forEach(function(d){ paare.push([d.l, String(sw(d.k)).replace(".", ",")]); });
+  paare.push(["", ""]);
+  paare.push(["Export erstellt", new Date().toLocaleString("de-DE")]);
+
+  var z2 = [];
+  z2.push('<row r="1"><c r="A1" s="1" t="inlineStr"><is><t>Stammdaten</t></is></c>' +
+          '<c r="B1" s="1" t="inlineStr"><is><t>' + xEsc((setup.boot || "") + (setup.typ ? " · " + setup.typ : "")) + '</t></is></c></row>');
+  paare.forEach(function(pr, k){
+    var r = k + 3;
+    z2.push('<row r="' + r + '">' + xZelle(0, r, pr[0], pr[1] === "" && pr[0] !== "" ? 1 : 0) + xZelle(1, r, pr[1], 0) + '</row>');
+  });
+  var blatt2 = xBlatt(z2, [34, 30], false);
+
+  /* --- Rahmendateien --- */
+  var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    '<fonts count="2">' +
+      '<font><sz val="11"/><name val="Calibri"/></font>' +
+      '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>' +
+    '</fonts>' +
+    '<fills count="3">' +
+      '<fill><patternFill patternType="none"/></fill>' +
+      '<fill><patternFill patternType="gray125"/></fill>' +
+      '<fill><patternFill patternType="solid"><fgColor rgb="FF0E2430"/><bgColor indexed="64"/></patternFill></fill>' +
+    '</fills>' +
+    '<borders count="1"><border/></borders>' +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+    '<cellXfs count="3">' +
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+      '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>' +
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+    '</cellXfs>' +
+    '<cellStyles count="1"><cellStyle name="Standard" xfId="0" builtinId="0"/></cellStyles>' +
+    '</styleSheet>';
+
+  var dateien = [
+    {name:"[Content_Types].xml", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+      '<Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+      '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+      '<Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+      '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+      '</Types>'},
+    {name:"_rels/.rels", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+      '</Relationships>'},
+    {name:"xl/workbook.xml", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+      '<sheets><sheet name="Logbuch" sheetId="1" r:id="rId1"/><sheet name="Stammdaten" sheetId="2" r:id="rId2"/></sheets>' +
+      '</workbook>'},
+    {name:"xl/_rels/workbook.xml.rels", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
+      '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/>' +
+      '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+      '</Relationships>'},
+    {name:"xl/styles.xml", text:styles},
+    {name:"xl/worksheets/sheet1.xml", text:blatt1},
+    {name:"xl/worksheets/sheet2.xml", text:blatt2}
+  ];
+  return zipBauen(dateien);
+}
+
+/* ---------- ZIP ohne Kompression ---------- */
+var CRC_TAB = null;
+function crc32(bytes){
+  if(!CRC_TAB){
+    CRC_TAB = new Uint32Array(256);
+    for(var n=0;n<256;n++){
+      var c = n;
+      for(var k=0;k<8;k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      CRC_TAB[n] = c >>> 0;
+    }
+  }
+  var crc = 0xFFFFFFFF;
+  for(var i=0;i<bytes.length;i++) crc = CRC_TAB[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+function zipBauen(dateien){
+  var enc = new TextEncoder();
+  var d = new Date();
+  var zeit = ((d.getHours() << 11) | (d.getMinutes() << 5) | Math.floor(d.getSeconds() / 2)) & 0xFFFF;
+  var datum = (((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate()) & 0xFFFF;
+  var teile = [], zentral = [], offset = 0;
+
+  dateien.forEach(function(f){
+    var name = enc.encode(f.name), inhalt = enc.encode(f.text), crc = crc32(inhalt);
+    var lh = new Uint8Array(30 + name.length);
+    var v = new DataView(lh.buffer);
+    v.setUint32(0, 0x04034b50, true); v.setUint16(4, 20, true); v.setUint16(6, 0x0800, true);
+    v.setUint16(8, 0, true); v.setUint16(10, zeit, true); v.setUint16(12, datum, true);
+    v.setUint32(14, crc, true); v.setUint32(18, inhalt.length, true); v.setUint32(22, inhalt.length, true);
+    v.setUint16(26, name.length, true); v.setUint16(28, 0, true);
+    lh.set(name, 30);
+    teile.push(lh, inhalt);
+
+    var cd = new Uint8Array(46 + name.length);
+    var c = new DataView(cd.buffer);
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true);
+    c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, zeit, true); c.setUint16(14, datum, true);
+    c.setUint32(16, crc, true); c.setUint32(20, inhalt.length, true); c.setUint32(24, inhalt.length, true);
+    c.setUint16(28, name.length, true); c.setUint16(30, 0, true); c.setUint16(32, 0, true);
+    c.setUint16(34, 0, true); c.setUint16(36, 0, true); c.setUint32(38, 0, true);
+    c.setUint32(42, offset, true);
+    cd.set(name, 46);
+    zentral.push(cd);
+    offset += lh.length + inhalt.length;
+  });
+
+  var zGroesse = zentral.reduce(function(a, b){ return a + b.length; }, 0);
+  var eocd = new Uint8Array(22);
+  var e = new DataView(eocd.buffer);
+  e.setUint32(0, 0x06054b50, true); e.setUint16(4, 0, true); e.setUint16(6, 0, true);
+  e.setUint16(8, dateien.length, true); e.setUint16(10, dateien.length, true);
+  e.setUint32(12, zGroesse, true); e.setUint32(16, offset, true); e.setUint16(20, 0, true);
+
+  var alle = teile.concat(zentral, [eocd]);
+  var gesamt = alle.reduce(function(a, b){ return a + b.length; }, 0);
+  var out = new Uint8Array(gesamt), pos = 0;
+  alle.forEach(function(t){ out.set(t, pos); pos += t.length; });
+  return out;
 }
 
 /* ================= Bedienung ================= */
@@ -1247,16 +1722,48 @@ $("btnText").onclick = function(){
   o.classList.remove("hidden");
   o.scrollIntoView({behavior:"smooth", block:"start"});
 };
-$("btnPrint").onclick = function(){ window.print(); };
+$("btnExcel").onclick = function(){
+  try{
+    var bytes = xlsxBauen();
+    var name = "Logbuch_" + (setup.boot || "Boot").replace(/[^\wÄÖÜäöüß-]+/g, "_") + "_" +
+      new Date().toISOString().slice(0,10) + ".xlsx";
+    var blob = new Blob([bytes], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
+    setStatus("Excel-Datei erstellt: " + name);
+  }catch(e){
+    setStatus("Excel-Export fehlgeschlagen", true);
+  }
+};
+$("btnPrint").onclick = function(){
+  $("dkBoot").textContent = (setup.boot || "Logbuch") + (setup.typ ? " · " + setup.typ : "");
+  $("dkZeit").textContent = (TAGE.length ? "Törn " + TAGE[0].d + " bis " + TAGE[TAGE.length-1].d : "") +
+    (setup.skipper ? " · Skipper " + setup.skipper : "");
+  window.print();
+};
 $("btnClear").onclick = function(){
   if(!confirm("Alle Felder von Tag " + aktiv + " löschen?")) return;
   data[aktiv] = {};
   lokalSpeichern(); zeichne(); trkLaden();
 };
 $("prev").onclick = function(){ if(aktiv > 1){ if(trk.an) trkPause(); aktiv--; zeichne(); trkLaden(); window.scrollTo({top:0}); } };
-$("next").onclick = function(){ if(aktiv < 15){ if(trk.an) trkPause(); aktiv++; zeichne(); trkLaden(); window.scrollTo({top:0}); } };
+$("next").onclick = function(){ if(aktiv < TAGE.length){ if(trk.an) trkPause(); aktiv++; zeichne(); trkLaden(); window.scrollTo({top:0}); } };
+
+$("swReset").onclick = function(){
+  if(!confirm("Alle Wetterschwellen auf die Standardwerte zurücksetzen?")) return;
+  setup.sw = swStandard();
+  swGridBauen();
+  lokalSpeichern();
+};
 
 function setupFelder(){
+  ["boot","typ","skipper","start","ende","personen","motBB","motSB","gen"].forEach(function(k){
+    var el = $("t_" + k);
+    if(el) el.value = setup[k] || "";
+  });
   $("s_provider").value = setup.provider;
   $("s_key").value = setup.key;
   $("s_lat").value = setup.lat;
@@ -1271,6 +1778,18 @@ function setupFelder(){
     if(k === "provider") zeichne();
   });
 });
+["boot","typ","skipper","start","ende","personen","motBB","motSB","gen"].forEach(function(k){
+  $("t_" + k).addEventListener("change", function(){
+    setup[k] = $("t_" + k).value;
+    if(k === "start" || k === "ende" || k === "personen"){ tageBauen(); zeichne(); trkLaden(); }
+    else { tageBauen(); summen(); }
+    lokalSpeichern();
+  });
+  $("t_" + k).addEventListener("input", function(){
+    setup[k] = $("t_" + k).value;
+    lokalSpeichern();
+  });
+});
 window.addEventListener("beforeunload", function(e){
   if(trk.an){ e.preventDefault(); e.returnValue = ""; }
 });
@@ -1278,7 +1797,10 @@ window.addEventListener("beforeunload", function(e){
 /* ================= Start ================= */
 (async function(){
   lokalLaden();
+  if(!setup.sw) setup.sw = swStandard();
   setupFelder();
+  swGridBauen();
+  tageBauen();
   dateiHandle = await handleLaden();
   if(dateiHandle){
     var p = dateiHandle.queryPermission ? await dateiHandle.queryPermission({mode:"readwrite"}) : "granted";
