@@ -285,6 +285,7 @@ footer .navbtns.hidden{display:none}
             <option value="30">30 sm</option>
           </select>
         </div>
+        <div class="f"><label for="w_ab">Zeitraum ab</label><input id="w_ab" type="date"></div>
         <div class="f"><label for="w_dauer">Zeitraum</label>
           <select id="w_dauer">
             <option value="12">12 Stunden</option>
@@ -469,6 +470,72 @@ KOMMEN</div>
     </div>
 
     <div class="sheet hilfe">
+      <h2>Navigation</h2>
+
+      <h3>Wahrer und scheinbarer Wind</h3>
+      <p>Das Instrument an der Mastspitze misst immer den <b>scheinbaren Wind</b> – die Summe aus wahrem Wind und Fahrtwind. Der wahre Wind ist das, was ein stehendes Boot spüren würde, und nur er sagt etwas über die Wetterlage. Vorhersagen und Seewetterbericht nennen immer den wahren Wind.</p>
+      <ul>
+        <li><b>Am Wind:</b> scheinbarer Wind ist stärker und kommt spitzer ein als der wahre. 15 kn wahr können sich wie 22 kn anfühlen.</li>
+        <li><b>Vor dem Wind:</b> scheinbarer Wind ist schwächer. 20 kn wahr bei 7 kn Fahrt fühlen sich wie 13 kn an – die klassische Falle, weil das Reffen dann vergessen wird und beim Anluven plötzlich alles zu viel ist.</li>
+        <li><b>Halbwind:</b> der scheinbare Wind dreht nach vorn, etwa 10 bis 20 Grad beim Katamaran.</li>
+        <li>Faustregel zum Zurückrechnen: vor dem Wind wahren Wind ≈ scheinbar + eigene Fahrt, am Wind ≈ scheinbar − eigene Fahrt.</li>
+      </ul>
+      <p>Reffentscheidungen immer nach dem <b>wahren</b> Wind treffen, sonst reffst du auf Vorwindkurs zu spät.</p>
+
+      <h3>Kurse und Kompass</h3>
+      <table class="wtab">
+        <tr><th>Begriff</th><th>Bedeutung</th></tr>
+        <tr><td>KK</td><td>Kompasskurs – was der Steuerkompass zeigt</td></tr>
+        <tr><td>Ablenkung</td><td>Fehler durch Eisen und Elektrik an Bord, je nach Kurs verschieden</td></tr>
+        <tr><td>mwK</td><td>missweisender Kurs = KK + Ablenkung</td></tr>
+        <tr><td>Missweisung</td><td>Abweichung zwischen magnetisch und geografisch Nord, in der Adria rund 4 bis 5 Grad Ost</td></tr>
+        <tr><td>rwK</td><td>rechtweisender Kurs = mwK + Missweisung – das ist der Kurs in der Seekarte</td></tr>
+        <tr><td>KüG / FüG</td><td>Kurs und Fahrt über Grund, was das GPS anzeigt</td></tr>
+        <tr><td>KdW / FdW</td><td>Kurs und Fahrt durchs Wasser, was Kompass und Log anzeigen</td></tr>
+      </table>
+      <p>Merksatz vom Kompass zur Karte: Ablenkung und Missweisung <b>addieren</b>, östliche Werte positiv. Von der Karte zum Kompass entsprechend abziehen.</p>
+
+      <h3>Strom und Abdrift</h3>
+      <p>Unterschied zwischen KüG und KdW zeigt, wie stark Strom und Wind versetzen. In der Adria ist der Strom meist schwach, in den Kanälen zwischen den Inseln und bei Bora aber bis zu 1 bis 2 kn. Vorhaltewinkel schätzen: Versatz in Grad ≈ 60 × Querversatz in kn geteilt durch eigene Fahrt in kn.</p>
+      <p>Praktischer Ersatz für alle Rechnerei: eine <b>Deckpeilung</b> nehmen. Zwei feste Objekte in einer Linie halten – solange sie übereinander stehen, versetzt dich nichts.</p>
+
+      <h3>Peilen und Standort bestimmen</h3>
+      <ul>
+        <li><b>Kreuzpeilung:</b> zwei bis drei Objekte peilen, Linien in der Karte schneiden sich im Standort. Winkel zwischen den Objekten möglichst 60 bis 120 Grad.</li>
+        <li><b>Doppelte Seitenpeilung (Vierstrichpeilung):</b> Objekt bei 45 Grad querab peilen, Log ablesen, weiterfahren bis 90 Grad querab. Die gelaufene Distanz entspricht dem Abstand zum Objekt.</li>
+        <li><b>Deckpeilung:</b> genaueste Linie ohne Instrument, ideal für Ansteuerungen und Untiefen.</li>
+        <li>GPS ausgefallen: letzte bekannte Position, Kurs, Fahrt und Zeit ergeben die Koppelnavigation. Deshalb im Logbuch stündlich Position eintragen.</li>
+      </ul>
+
+      <h3>Distanz, Zeit, Fahrt</h3>
+      <ul>
+        <li>1 Seemeile = 1852 m = eine Bogenminute Breite. Distanzen in der Karte immer an der <b>seitlichen</b> Breitenskala abgreifen, nie oben oder unten.</li>
+        <li>Distanz = Fahrt × Zeit. Bei 6 kn sind 30 sm genau 5 Stunden – ohne Manöver und Ankermanöver gerechnet.</li>
+        <li>Etappenplanung: für den 450F unter Motor 6 bis 7 kn, unter Segel 5 bis 8 kn rechnen. Ankunft immer mindestens zwei Stunden vor Sonnenuntergang legen.</li>
+        <li>Kimmsicht in sm ≈ 2,1 × Wurzel aus der Augeshöhe in Metern. Vom Flybridge aus (3 m) sind das rund 3,6 sm.</li>
+      </ul>
+
+      <h3>Seekarte lesen</h3>
+      <ul>
+        <li>Tiefen beziehen sich auf Kartennull, Höhen von Leuchtfeuern auf mittleres Hochwasser. Der Tidenhub der Adria ist gering, meist 30 bis 50 cm, bei Jugo und Tiefdruck kann der Pegel aber deutlich steigen.</li>
+        <li>Ankertiefe rechnen: Kartentiefe plus Pegel minus Tiefgang. Für die Kettenlänge zählt die Tiefe plus Bughöhe über Wasser.</li>
+        <li>Feuerkennungen: Fl blitzt, Oc unterbrochen, Iso gleich lang hell und dunkel, LFl langer Blitz, Q schnell. Zahl in Klammern = Blitzgruppe, Sekundenangabe = Wiederholung.</li>
+        <li>Sektorenfeuer zeigen mit Farbsektoren den sicheren Anlaufweg: weiß frei, rot und grün außerhalb.</li>
+        <li>Elektronische Karten sind nicht überall gleich genau. In den Kornaten weichen Untiefen und Küstenlinien teils zweistellig in Metern ab – nach Sicht fahren, nicht nach Plotter.</li>
+      </ul>
+
+      <h3>Plotter und GPS</h3>
+      <ul>
+        <li>Tiefenalarm gleich beim Check-in setzen, sinnvoll 2,5 m bei 1,30 m Tiefgang.</li>
+        <li>Bezugspunkt des Echolots klären: unter Kiel, unter Geber oder ab Wasserlinie – das entscheidet, wie ernst eine Anzeige von 2 m ist.</li>
+        <li>Ankeralarm nutzt die GPS-Position des Gerätes, nicht des Ankers. Radius großzügig setzen: Kettenlänge plus Bootslänge plus Ungenauigkeit.</li>
+        <li>Bei Nachtfahrt Plotter dimmen, sonst ist die Nachtsicht weg.</li>
+      </ul>
+    </div>
+
+    <div id="bootProfil"></div>
+
+    <div class="sheet hilfe">
       <h2>Kurse zum Wind</h2>
       <table class="wtab">
         <tr><th>Kurs</th><th>Winkel zum Wind</th><th>Hinweis</th></tr>
@@ -636,6 +703,7 @@ KOMMEN</div>
 
       <h3>Wetter</h3>
       <p>Standort als Koordinaten, Ortsname oder per GPS. Mit <b>Wegpunkt +</b> baust du die geplante Strecke Station für Station auf; daraus werden Probepunkte entlang der Route abgefragt und die Streckenlänge in Seemeilen berechnet. Umkreis fragt zusätzlich vier Punkte rund um dich ab, damit Düsenlagen zwischen den Inseln auffallen.</p>
+      <p><b>Zeitraum ab</b> legt fest, wann die betrachtete Spanne beginnt – heute für den aktuellen Törntag, oder ein Datum in der Zukunft, um eine Etappe vorauszuplanen. Leer oder heute heißt: ab der aktuellen Stunde. Reicht das gewählte Modell nicht so weit, sagt die App es und schlägt ECMWF oder GFS vor.</p>
       <p><b>Aus Logbuch übernehmen</b> holt Von, Nach und Liegeplatz aus dem aktuellen Tag – nach Bestätigung. <b>Aus Zwischenablage</b> liest Koordinaten, die du in Google Maps durch langes Drücken kopiert hast. Findet die Ortssuche einen Namen nicht, greift eine eingebaute Revierliste, danach OpenStreetMap.</p>
       <p>Der <b>geplante Liegeplatz</b> fließt in die Nachtbewertung ein: Die App prüft, ob Marina, Boje, freier Anker oder Landleine zu den erwarteten Böen passt, und sagt dir, was stattdessen nötig wäre.</p>
       <ul>
@@ -654,6 +722,8 @@ KOMMEN</div>
         <li><b>Funksprüche</b> – Mayday, Pan Pan, Sécurité, Mann über Bord und der Marina-Anruf, fertig formuliert mit Bootsnamen</li>
         <li><b>Ausweichregeln</b> – Segler gegen Segler, Segel gegen Motor mit den Ausnahmen, Schallsignale</li>
         <li><b>Seezeichen</b> – Kardinal-, Lateral- und Sonderzeichen mit Farben, Toppzeichen und Feuertakt</li>
+        <li><b>Navigation</b> – wahrer und scheinbarer Wind, Kursbegriffe und Missweisung, Strom und Abdrift, Peilverfahren, Karte lesen, Plotter</li>
+        <li><b>Reffempfehlung</b> – schiffsspezifisch, nach wahrem Wind und Kurs zum Wind in Grad; erscheint nur für den in den Stammdaten eingetragenen Typ</li>
         <li><b>Kurse zum Wind</b> – Wende, Halse, Reffen, Ankerfaustregeln, Lichter nachts</li>
         <li><b>Adria-Winde</b> – Bora, Jugo, Maestral und wie man darauf reagiert</li>
         <li><b>Links</b> – Wetterdienste, Nationalparks, Vignette und Crewliste, SeaHelp</li>
@@ -782,13 +852,13 @@ var PLAN = {
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "1.6.1";
+var APP_VERSION = "1.9.1";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 1.6.1"],
+    ["Version", APP_VERSION + " · Cache 1.9.1"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
@@ -897,32 +967,47 @@ var data = {}, setup = {provider:"om", key:"", lat:"", lon:"", ziel:"",
 
 /* Schwellen für die Wettereinstufung – vom Skipper einstellbar */
 var SW_DEF = [
-  {k:"windGelb",   l:"Wind gelb ab (kn)",        v:14},
-  {k:"windRot",    l:"Wind rot ab (kn)",         v:22},
-  {k:"boeGelb",    l:"Böen gelb ab (kn)",        v:20},
-  {k:"boeRot",     l:"Böen rot ab (kn)",         v:28},
-  {k:"welleGelb",  l:"Welle gelb ab (m)",        v:1.0},
-  {k:"welleRot",   l:"Welle rot ab (m)",         v:1.8},
-  {k:"faktorGelb", l:"Böenfaktor auffällig ab",  v:1.4},
-  {k:"faktorRot",  l:"Böenfaktor kritisch ab",   v:1.7},
-  {k:"druckGelb",  l:"Druckfall gelb ab (hPa/3h)", v:2},
-  {k:"druckRot",   l:"Druckfall stark ab (hPa/3h)", v:3.5},
-  {k:"fWind",      l:"Fenster: Wind bis (kn)",   v:14},
-  {k:"fBoe",       l:"Fenster: Böen bis (kn)",   v:20},
-  {k:"fWelle",     l:"Fenster: Welle bis (m)",   v:1.0},
-  {k:"fVon",       l:"Fenster: frühestens (Std.)", v:7},
-  {k:"fBis",       l:"Fenster: spätestens (Std.)", v:18},
-  {k:"reff1",      l:"Erstes Reff ab (kn)",      v:12},
-  {k:"reff2",      l:"Zweites Reff ab (kn)",     v:16},
-  {k:"motorBis",   l:"Kaum Segelwind bis (kn)",  v:8},
-  {k:"nachtVon",   l:"Nacht beginnt (Std.)",     v:20},
-  {k:"nachtBis",   l:"Nacht endet (Std.)",       v:7},
-  {k:"ankerGelb",  l:"Anker: Wache ab Böen (kn)", v:18},
-  {k:"ankerRot",   l:"Anker: zu viel ab Böen (kn)", v:25},
-  {k:"bojeRot",    l:"Boje/Muring: Grenze Böen (kn)", v:22},
-  {k:"marinaBoe",  l:"Marina nötig ab Böen (kn)", v:28},
-  {k:"drehWarn",   l:"Winddreher kritisch ab (Grad)", v:45},
-  {k:"schwellWarn",l:"Schwell in Bucht ab (m)",  v:0.6}
+  /* --- Fahrt --- */
+  {g:"Fahrt", k:"windGelb",   l:"Wind gelb ab (kn)",        v:18},
+  {g:"Fahrt", k:"windRot",    l:"Wind rot ab (kn)",         v:24},
+  {g:"Fahrt", k:"boeGelb",    l:"Böen gelb ab (kn)",        v:25},
+  {g:"Fahrt", k:"boeRot",     l:"Böen rot ab (kn)",         v:30},
+  {g:"Fahrt", k:"welleGelb",  l:"Welle gelb ab (m)",        v:1.2},
+  {g:"Fahrt", k:"welleRot",   l:"Welle rot ab (m)",         v:1.8},
+  {g:"Fahrt", k:"motorBis",   l:"Kaum Segelwind bis (kn)",  v:10},
+  {g:"Fahrt", k:"reff1",      l:"Erstes Reff ab (kn)",      v:16},
+  {g:"Fahrt", k:"reff2",      l:"Zweites Reff ab (kn)",     v:21},
+
+  /* --- Fahrbare Zeitfenster --- */
+  {g:"Zeitfenster", k:"fWind", l:"Fenster: Wind bis (kn)",  v:18},
+  {g:"Zeitfenster", k:"fBoe",  l:"Fenster: Böen bis (kn)",  v:25},
+  {g:"Zeitfenster", k:"fWelle",l:"Fenster: Welle bis (m)",  v:1.2},
+  {g:"Zeitfenster", k:"fVon",  l:"Fenster: frühestens (Std.)", v:8},
+  {g:"Zeitfenster", k:"fBis",  l:"Fenster: spätestens (Std.)", v:17},
+  {g:"Zeitfenster", k:"fMin",  l:"Fenster mindestens (Std.)", v:3},
+
+  /* --- Nacht und Liegeplatz --- */
+  {g:"Nacht und Liegeplatz", k:"nachtVon",  l:"Nacht beginnt (Std.)", v:19},
+  {g:"Nacht und Liegeplatz", k:"nachtBis",  l:"Nacht endet (Std.)",   v:8},
+  {g:"Nacht und Liegeplatz", k:"ankerGelb", l:"Anker: Wache ab Böen (kn)", v:22},
+  {g:"Nacht und Liegeplatz", k:"ankerRot",  l:"Anker: zu viel ab Böen (kn)", v:28},
+  {g:"Nacht und Liegeplatz", k:"bojeRot",   l:"Boje/Muring: Grenze Böen (kn)", v:25},
+  {g:"Nacht und Liegeplatz", k:"marinaBoe", l:"Marina nötig ab Böen (kn)", v:32},
+  {g:"Nacht und Liegeplatz", k:"vorwarn",   l:"Liegeplatz: Vorwarnung ab Abstand (kn)", v:4},
+  {g:"Nacht und Liegeplatz", k:"drehWarn",  l:"Winddreher kritisch ab (Grad)", v:45},
+  {g:"Nacht und Liegeplatz", k:"schwellWarn", l:"Schwell in Bucht ab (m)", v:0.8},
+
+  /* --- Feinheiten der Auswertung --- */
+  {g:"Feinheiten", k:"faktorGelb", l:"Böenfaktor auffällig ab", v:1.5},
+  {g:"Feinheiten", k:"faktorRot",  l:"Böenfaktor kritisch ab",  v:1.9},
+  {g:"Feinheiten", k:"druckGelb",  l:"Druckfall gelb ab (hPa/3h)", v:2},
+  {g:"Feinheiten", k:"druckRot",   l:"Druckfall stark ab (hPa/3h)", v:3.5},
+  {g:"Feinheiten", k:"gewitterBoe",l:"Gewitter rot ab Böen (kn)", v:30},
+  {g:"Feinheiten", k:"capeGrenze", l:"Labile Luft ab (J/kg)",   v:1500},
+  {g:"Feinheiten", k:"umkreisDiff",l:"Umkreis auffällig ab Mehrwind (kn)", v:6},
+  {g:"Feinheiten", k:"zielDiff",   l:"Ziel abweichend ab (kn)", v:3},
+  {g:"Feinheiten", k:"streuungKn", l:"Modelle uneins ab (kn)",  v:10},
+  {g:"Feinheiten", k:"amtDiff",    l:"Amtlich über Modell rot ab (kn)", v:8}
 ];
 function swStandard(){
   var o = {};
@@ -941,7 +1026,21 @@ function swGridBauen(){
   var g = $("swGrid");
   if(!g) return;
   g.innerHTML = "";
+  var aktuelleGruppe = "", ziel = g;
   SW_DEF.forEach(function(d){
+    if(d.g && d.g !== aktuelleGruppe){
+      aktuelleGruppe = d.g;
+      var h = document.createElement("h3");
+      h.textContent = d.g;
+      h.style.gridColumn = "1/-1";
+      h.style.margin = "8px 0 0";
+      h.style.fontFamily = "var(--f-display)";
+      h.style.textTransform = "uppercase";
+      h.style.letterSpacing = ".09em";
+      h.style.fontSize = "11.5px";
+      h.style.color = "var(--ink-soft)";
+      g.appendChild(h);
+    }
     var box = document.createElement("div");
     box.className = "f";
     var lab = document.createElement("label");
@@ -990,6 +1089,11 @@ function swInfo(){
   if(sw("druckGelb") >= sw("druckRot")) warn.push("Druckfall gelb sollte unter Druckfall stark liegen");
   if(sw("reff1") >= sw("reff2")) warn.push("Erstes Reff sollte unter zweitem Reff liegen");
   if(sw("fVon") >= sw("fBis")) warn.push("Fenster frühestens sollte vor spätestens liegen");
+  if(sw("ankerGelb") >= sw("bojeRot")) warn.push("Ankerwache-Grenze sollte unter der Bojengrenze liegen, sonst entfällt die Zwischenstufe");
+  if(sw("bojeRot") > sw("ankerRot")) warn.push("Bojengrenze sollte nicht über der Ankergrenze liegen");
+  if(sw("ankerRot") > sw("marinaBoe")) warn.push("Ankergrenze sollte unter der Marinagrenze liegen");
+  if(sw("fWind") > sw("windGelb")) warn.push("Fensterwind über der Gelb-Grenze: Fenster erscheinen dann auch bei gelb bewertetem Wind");
+  if(sw("reff1") >= sw("windRot")) warn.push("Erstes Reff liegt erst bei der Rot-Grenze – das ist spät für einen Kat");
   if(warn.length){
     i.className = "note err";
     i.textContent = "Prüfen: " + warn.join(" · ") + ".";
@@ -1599,9 +1703,23 @@ async function geoNominatim(text){
   liste.sort(function(a, b){ return nahDran(a, b); });
   return liste[0];
 }
+/* Nächstgelegener Eintrag der Revierliste, für die Benennung von Koordinaten */
+function revierNah(lat, lon, maxSm){
+  var best = null, bestD = 1e9;
+  REVIER.forEach(function(r){
+    var d = meter({lat:lat, lon:lon}, {lat:r.lat, lon:r.lon}) / 1852;
+    if(d < bestD){ bestD = d; best = r; }
+  });
+  return (best && bestD <= (maxSm || 3)) ? {name:best.n, sm:bestD} : null;
+}
+
 async function ortSuchen(text){
   var k = parseKoord(text);
-  if(k) return {lat:k.lat, lon:k.lon, name:k.lat.toFixed(3) + " / " + k.lon.toFixed(3), quelle:"Koordinaten"};
+  if(k){
+    var nah = revierNah(k.lat, k.lon, 3);
+    return {lat:k.lat, lon:k.lon, quelle:"Koordinaten",
+      name: nah ? (nah.sm < 0.6 ? nah.name : "bei " + nah.name) : k.lat.toFixed(3) + " / " + k.lon.toFixed(3)};
+  }
 
   var r = revierSuchen(text);
   if(r) return r;
@@ -1614,6 +1732,84 @@ async function ortSuchen(text){
   try{ var d = await geoNominatim(text + ", Hrvatska"); if(d) return d; }catch(e){}
 
   throw new Error("Ort „" + text + "“ nicht gefunden. Öffne die Stelle in Google Maps, halte sie gedrückt, kopiere die Koordinaten und füge sie hier ein.");
+}
+
+/* ================= Schiffsprofile ================= */
+var BOOTE = [{
+  id:"lagoon450",
+  passt: function(t){
+    var x = ortNorm(t);
+    return x.indexOf("lagoon") >= 0 && (x.indexOf("450") >= 0 || x.indexOf("45 f") >= 0);
+  },
+  name:"Lagoon 450 F",
+  daten:"13,96 m Länge · 7,84 m Breite · 1,30 m Tiefgang · rund 16 t leer · Großsegel etwa 74 m², Genua etwa 47 m²",
+  reff:[
+    {bis:12,  kurz:"Volltuch", l:"bis 12 kn wahr", t:"Volles Groß, volle Genua. Darunter läuft der Kat träge, Motorunterstützung erwägen."},
+    {bis:16,  kurz:"Volltuch, wachsam", l:"12 bis 16 kn",   t:"Volltuch, aber Reffleinen klar und Crew eingeteilt. Am Wind wird es hier schon lebhaft."},
+    {bis:21,  kurz:"1. Reff", l:"16 bis 21 kn",   t:"Erstes Reff im Groß. Genua eine Umdrehung einrollen, sobald das Ruder anfängt zu ziehen."},
+    {bis:26,  kurz:"2. Reff", l:"21 bis 26 kn",   t:"Zweites Reff, Genua deutlich reduziert. Halbwind und raumer Kurs bleiben angenehm, am Wind wird es nass."},
+    {bis:32,  kurz:"3. Reff / Genua allein", l:"26 bis 32 kn",   t:"Drittes Reff oder Groß bergen und unter Genua allein laufen. Etappe nur, wenn ein sicherer Hafen in Reichweite ist."},
+    {bis:999, kurz:"nicht fahren", l:"über 32 kn",     t:"Nicht mehr fahren. Marina oder rundum geschützte Bucht, Segel gesichert, Bimini abbauen."}
+  ],
+  kurse:[
+    {l:"Am Wind", grad:"30 bis 60°", d:-3, t:"Scheinbarer Wind deutlich stärker, Boot arbeitet gegen die Welle – eine Stufe früher reffen."},
+    {l:"Halber Wind", grad:"60 bis 120°", d:0, t:"Referenzkurs der Tabelle, schnellster und angenehmster Kurs."},
+    {l:"Raumschots", grad:"120 bis 150°", d:3, t:"Etwas mehr Wind tragbar, Bullenstander setzen."},
+    {l:"Vor dem Wind", grad:"150 bis 180°", d:5, t:"Scheinbarer Wind täuscht um die eigene Fahrt zu wenig vor. Vor dem Anluven reffen, sonst steht plötzlich alles zu viel."}
+  ],
+  hinweise:[
+    "Der Kat krängt nicht als Vorwarnung. Die übliche Warnung durch Schräglage fehlt komplett – deshalb nach Wind reffen, nicht nach Gefühl.",
+    "Reffen vor dem Fallwind, nicht darin: an der Leeseite der Inseln und vor Kanalausgängen frühzeitig eine Stufe wegnehmen.",
+    "Großschot nie in der Klemme lassen. Bei Böen ist Fieren die einzige Reaktion, die dem Rigg hilft.",
+    "Auf raumen Kursen Bullenstander setzen. Eine Patenthalse mit diesem Baum ist ein ernster Schaden.",
+    "Anlegen ist bei diesem Schiff das eigentliche Windproblem: 7,8 m Breite und viel Aufbau, ab 20 kn Seitenwind Crew und Leinen vorher einteilen.",
+    "Drehen auf der Stelle über die Motoren, nicht über das Ruder – ein Motor vor, einer zurück."
+  ]
+}];
+
+function bootProfil(){
+  var t = setup.typ || "";
+  for(var i=0;i<BOOTE.length;i++){ if(BOOTE[i].passt(t)) return BOOTE[i]; }
+  return null;
+}
+function profilBauen(){
+  var box = $("bootProfil");
+  if(!box) return;
+  var b = bootProfil();
+  if(!b){
+    box.innerHTML = '<div class="sheet hilfe"><h2>Schiffsprofil</h2>' +
+      '<p>Für den in den Stammdaten eingetragenen Bootstyp „' + (setup.typ || "–") +
+      '" liegt keine Reffempfehlung vor. Hinterlegt ist derzeit der Lagoon 450 F.</p></div>';
+    return;
+  }
+  var h = '<div class="sheet hilfe"><h2>Reffempfehlung ' + b.name + '</h2>' +
+    '<p class="note">' + b.daten + '</p>' +
+    '<h3>Nach wahrem Wind und Kurs</h3>' +
+    '<table class="wtab"><tr><th>Segelstellung</th>';
+  b.kurse.forEach(function(k){ h += "<th>" + k.l + "<br>" + k.grad + "</th>"; });
+  h += "</tr>";
+  b.reff.forEach(function(r, i){
+    var vorher = i > 0 ? b.reff[i-1].bis : 0;
+    h += "<tr><td>" + r.kurz + "</td>";
+    b.kurse.forEach(function(k){
+      var von = vorher > 0 ? Math.max(0, vorher + k.d) : 0;
+      var bis = r.bis >= 999 ? null : r.bis + k.d;
+      h += "<td>" + (bis == null ? "über " + (von) + " kn" : (von > 0 ? von + " bis " + bis : "bis " + bis) + " kn") + "</td>";
+    });
+    h += "</tr>";
+  });
+  h += "</table>";
+  h += "<h3>Was in welcher Stufe zu tun ist</h3><table class=\"wtab\"><tr><th>Stufe</th><th>Maßnahme</th></tr>";
+  b.reff.forEach(function(r){ h += "<tr><td>" + r.kurz + "</td><td>" + r.t + "</td></tr>"; });
+  h += "</table>";
+  h += "<h3>Kursabhängigkeit</h3><ul>";
+  b.kurse.forEach(function(k){ h += "<li><b>" + k.l + " (" + k.grad + "):</b> " + k.t + "</li>"; });
+  h += "</ul>";
+  h += "<h3>Was diesen Kat ausmacht</h3><ul>";
+  b.hinweise.forEach(function(x){ h += "<li>" + x + "</li>"; });
+  h += '</ul><p class="note">Angaben für wahren Wind und normale Beladung. Bei sechs Personen, vollen Tanks und Welle eher eine Stufe früher reffen. Deine eigenen Reffgrenzen stehen in den Stammdaten (aktuell ' +
+    sw("reff1") + ' und ' + sw("reff2") + ' kn).</p></div>';
+  box.innerHTML = h;
 }
 
 /* ================= Wegpunkte ================= */
@@ -1647,6 +1843,19 @@ function wpRender(){
 }
 
 /* Streckenlänge in Seemeilen über alle Stationen */
+/* Rechtweisende Peilung von a nach b */
+function peilung(a, b){
+  var t = Math.PI/180;
+  var dLon = (b.lon - a.lon) * t;
+  var y = Math.sin(dLon) * Math.cos(b.lat * t);
+  var x = Math.cos(a.lat * t) * Math.sin(b.lat * t) - Math.sin(a.lat * t) * Math.cos(b.lat * t) * Math.cos(dLon);
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+/* Winkel zwischen Kurs und Windrichtung, 0 = von vorn, 180 = von achtern */
+function windWinkel(kurs, windAus){
+  return Math.abs(((windAus - kurs + 540) % 360) - 180);
+}
+
 function streckeSm(stationen){
   var sm = 0;
   for(var i=1;i<stationen.length;i++) sm += meter(stationen[i-1], stationen[i]) / 1852;
@@ -1683,14 +1892,25 @@ function ringPunkte(p, sm){
     {lat:p.lat, lon:p.lon - dLon, name:"West"}
   ];
 }
-async function serienHolen(punkte, stunden, modell){
+function datumsSpanne(abISO, stunden){
+  /* Liefert die Parameter für Open-Meteo: entweder ab heute oder ab einem festen Datum */
+  var heute = new Date(); heute.setHours(0,0,0,0);
+  var ab = abISO ? new Date(abISO + "T00:00:00") : null;
   var tage = Math.min(16, Math.max(1, Math.ceil(stunden / 24) + 1));
+  if(!ab || isNaN(ab) || ab.getTime() <= heute.getTime()) return {p:"&forecast_days=" + tage, abTag:null};
+  var bis = new Date(ab.getTime() + (tage - 1) * 86400000);
+  var f = function(d){ return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); };
+  return {p:"&start_date=" + f(ab) + "&end_date=" + f(bis), abTag:f(ab)};
+}
+
+async function serienHolen(punkte, stunden, modell, abISO){
+  var sp = datumsSpanne(abISO, stunden);
   var mp = (modell && modell !== "best_match") ? "&models=" + modell : "";
   var lats = punkte.map(function(p){ return p.lat.toFixed(3); }).join(",");
   var lons = punkte.map(function(p){ return p.lon.toFixed(3); }).join(",");
   var u = "https://api.open-meteo.com/v1/forecast?latitude=" + lats + "&longitude=" + lons +
     "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m,pressure_msl,temperature_2m,precipitation,weather_code,cape" +
-    "&forecast_days=" + tage + "&wind_speed_unit=kn&timezone=auto" + mp;
+    sp.p + "&wind_speed_unit=kn&timezone=auto" + mp;
   var r = await fetch(u);
   if(!r.ok) throw new Error("Open-Meteo antwortet nicht (" + r.status + ").");
   var j = await r.json();
@@ -1699,20 +1919,30 @@ async function serienHolen(punkte, stunden, modell){
   var mar = null;
   try{
     var rm = await fetch("https://marine-api.open-meteo.com/v1/marine?latitude=" + lats + "&longitude=" + lons +
-      "&hourly=wave_height,wave_period&forecast_days=" + tage + "&timezone=auto");
+      "&hourly=wave_height,wave_period" + sp.p + "&timezone=auto");
     if(rm.ok){ var jm = await rm.json(); mar = Array.isArray(jm) ? jm : [jm]; }
   }catch(e){}
 
   return liste.map(function(o, i){
-    var h = o.hourly, n = Math.min(stunden, h.time.length);
-    var s = {name:punkte[i].name, zeit:h.time.slice(0,n),
-      wind:h.wind_speed_10m.slice(0,n), gust:h.wind_gusts_10m.slice(0,n), dir:h.wind_direction_10m.slice(0,n),
-      press:h.pressure_msl.slice(0,n), temp:h.temperature_2m.slice(0,n),
-      regen:h.precipitation.slice(0,n), code:h.weather_code.slice(0,n), cape:(h.cape || []).slice(0,n),
+    var h = o.hourly;
+    var von = 0;
+    if(!sp.abTag){
+      /* Ab heute: bei der aktuellen Stunde einsteigen, Vergangenes weglassen */
+      var jetzt = new Date();
+      for(var q=0;q<h.time.length;q++){
+        if(new Date(h.time[q]).getTime() >= jetzt.getTime() - 3600000){ von = q; break; }
+      }
+    }
+    var bis = Math.min(von + stunden, h.time.length);
+    var sl = function(arr){ return (arr || []).slice(von, bis); };
+    var s = {name:punkte[i].name, zeit:h.time.slice(von, bis),
+      wind:sl(h.wind_speed_10m), gust:sl(h.wind_gusts_10m), dir:sl(h.wind_direction_10m),
+      press:sl(h.pressure_msl), temp:sl(h.temperature_2m),
+      regen:sl(h.precipitation), code:sl(h.weather_code), cape:sl(h.cape),
       welle:[], periode:[]};
     if(mar && mar[i] && mar[i].hourly){
-      s.welle = (mar[i].hourly.wave_height || []).slice(0,n);
-      s.periode = (mar[i].hourly.wave_period || []).slice(0,n);
+      s.welle = (mar[i].hourly.wave_height || []).slice(von, bis);
+      s.periode = (mar[i].hourly.wave_period || []).slice(von, bis);
     }
     return s;
   });
@@ -1817,9 +2047,9 @@ function nachtBewertung(serie, offen, geplantArt){
     wind = Math.max(wind, nz(serie.wind[i]));
     if(nz(serie.gust[i]) > gust){ gust = nz(serie.gust[i]); dirMax = nz(serie.dir[i]); }
     if(serie.welle.length) welle = Math.max(welle, nz(serie.welle[i]));
-    faktor = Math.max(faktor, nz(serie.gust[i]) / Math.max(3, nz(serie.wind[i])));
+    if(nz(serie.wind[i]) >= Math.max(6, sw("motorBis"))) faktor = Math.max(faktor, nz(serie.gust[i]) / nz(serie.wind[i]));
     if(nz(serie.code[i]) >= 95) gewitter++;
-    if(nz(serie.cape[i]) >= 1500) labilN++;
+    if(nz(serie.cape[i]) >= sw("capeGrenze")) labilN++;
     dreh = Math.max(dreh, winkelDiff(nz(serie.dir[i]), dirA));
   });
   var von = zeitLabel(serie.zeit[idx[0]]), bisZ = zeitLabel(serie.zeit[idx[idx.length-1]]);
@@ -1891,7 +2121,7 @@ function nachtBewertung(serie, offen, geplantArt){
       stufe = "rot";
       grund.push("geplanter Liegeplatz „" + geplantArt + "“ hält nur bis " + Math.round(g) + " kn");
       text.push("Du hast „" + geplantArt + "“ geplant. Bei " + Math.round(gust) + " kn Böen reicht das nach deinen Schwellen nicht – nötig wäre: " + liegeEmpfehlung(gust) + ".");
-    }else if(g != null && gust >= g - 4){
+    }else if(g != null && gust >= g - sw("vorwarn")){
       if(stufe === "gruen") stufe = "gelb";
       text.push("Der geplante Liegeplatz „" + geplantArt + "“ liegt mit " + Math.round(gust) + " kn Böen knapp unter seiner Grenze von " + Math.round(g) + " kn. Alternative bereithalten.");
     }else if(g != null){
@@ -1914,19 +2144,21 @@ function nachtBewertung(serie, offen, geplantArt){
     gruende:grund, gust:gust, wind:wind, dir:richtungAus(dirMax), von:von, bis:bisZ, dreh:dreh, labil:labilN};
 }
 
-function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuung, amt, liege, sm){
+function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuung, amt, liege, sm, kursGrad){
   var maxWind = maxV(zentrum.wind), maxGust = maxV(zentrum.gust), maxWelle = maxV(zentrum.welle);
   var idxGust = zentrum.gust.indexOf(maxGust), idxWind = zentrum.wind.indexOf(maxWind);
-  var boeFaktor = 0, i;
+  /* Böenfaktor nur dort, wo überhaupt Wind steht – bei 3 kn Grundwind ist er ohne Aussage */
+  var boeFaktor = 0, i, faktorAb = Math.max(6, sw("motorBis"));
   for(i=0;i<zentrum.wind.length;i++){
-    boeFaktor = Math.max(boeFaktor, nz(zentrum.gust[i]) / Math.max(3, nz(zentrum.wind[i])));
+    if(nz(zentrum.wind[i]) < faktorAb) continue;
+    boeFaktor = Math.max(boeFaktor, nz(zentrum.gust[i]) / nz(zentrum.wind[i]));
   }
   var druckAb = 0;
   for(i=0;i+3<zentrum.press.length;i++){ druckAb = Math.min(druckAb, nz(zentrum.press[i+3]) - nz(zentrum.press[i])); }
   var gewitter = [], labil = [];
   for(i=0;i<zentrum.code.length;i++){
     if(nz(zentrum.code[i]) >= 95) gewitter.push(zentrum.zeit[i]);
-    else if(nz(zentrum.cape[i]) >= 1500) labil.push(zentrum.zeit[i]);
+    else if(nz(zentrum.cape[i]) >= sw("capeGrenze")) labil.push(zentrum.zeit[i]);
   }
   var dreh = 0, drehZeit = null;
   for(i=0;i+3<zentrum.dir.length;i++){
@@ -1973,7 +2205,7 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
     hoch("gelb");
   }
   if(gewitter.length){
-    var gRot = maxGust >= Math.min(sw("boeRot"), sw("boeGelb") + 5);
+    var gRot = maxGust >= sw("gewitterBoe");
     gruende.push({s: gRot ? "rot" : "gelb",
       t:"Gewitter im Modell in " + gewitter.length + " Stunden" + (gRot ? " zusammen mit " + Math.round(maxGust) + " kn Böen" : "")});
     hoch(gRot ? "rot" : "gelb");
@@ -1993,13 +2225,33 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
   else if(maxWind < sw("reff2")) wt += "Ab deiner Marke von " + sw("reff1") + " kn das erste Reff am Groß einplanen, dann läuft der Kat ruhig und schnell.";
   else if(maxWind < sw("windRot")) wt += "Über " + sw("reff2") + " kn zweites Reff und deutlich reduzierte Genua. Bei diesem Wind wird das Anlegen mit 7,8 m Breite zur Hauptaufgabe des Tages.";
   else wt += "Über deiner Grenze von " + sw("windRot") + " kn ist das kein Etappenwetter mehr. Sicheren Hafen oder gut geschützte Bucht wählen und liegen bleiben.";
+  var bp = bootProfil();
+  if(bp){
+    var windAus = nz(zentrum.dir[idxWind >= 0 ? idxWind : 0]);
+    var band = bp.kurse[1], twa = null;
+    if(kursGrad != null){
+      twa = windWinkel(kursGrad, windAus);
+      band = twa < 60 ? bp.kurse[0] : (twa < 120 ? bp.kurse[1] : (twa < 150 ? bp.kurse[2] : bp.kurse[3]));
+    }
+    var stufeR = null;
+    for(var q=0;q<bp.reff.length;q++){
+      if(maxWind <= bp.reff[q].bis + band.d){ stufeR = bp.reff[q]; break; }
+    }
+    if(!stufeR) stufeR = bp.reff[bp.reff.length - 1];
+    wt += " Für den " + bp.name + " bei " + Math.round(maxWind) + " kn wahr" +
+      (twa != null
+        ? " auf Kurs " + Math.round(kursGrad) + "° (Wind aus " + Math.round(windAus) + "°, also " + Math.round(twa) + "° zum Wind, " + band.l + ")"
+        : " (Referenz halber Wind, ohne Ziel kein Kurs bekannt)") +
+      ": " + stufeR.kurz + " – " + stufeR.t;
+  }
   B("Wind", wt, maxWind >= sw("windRot") ? "rot" : (maxWind >= sw("windGelb") ? "gelb" : "gruen"));
 
   var bt = "Böenspitzen bis " + Math.round(maxGust) + " kn" + (idxGust >= 0 ? " um " + zeitLabel(zentrum.zeit[idxGust]) : "") +
-    ", Böenfaktor " + boeFaktor.toFixed(1).replace(".", ",") + ". ";
+    (boeFaktor > 0 ? ", Böenfaktor " + boeFaktor.toFixed(1).replace(".", ",") : ", Böenfaktor nicht aussagekräftig (Grundwind unter " + faktorAb + " kn)") + ". ";
   if(boeFaktor >= sw("faktorRot")) bt += "Der Faktor ist hier der eigentliche Risikoträger: Der Kat krängt nicht als Vorwarnung, die Böe geht voll auf Rigg und Ruder. Früh reffen, Großschot nie festklemmen.";
   else if(boeFaktor >= sw("faktorGelb")) bt += "Deutlich böig, typisch für Leeseiten der Inseln und Kanalausgänge. Vor der Fallwindstrecke reffen, nicht danach.";
-  else bt += "Gleichmäßiger Wind, Böen im normalen Rahmen.";
+  else if(boeFaktor > 0) bt += "Gleichmäßiger Wind, Böen im normalen Rahmen.";
+  else bt += "Bei so wenig Grundwind sagen die Böenwerte wenig aus – entscheidend ist, ob überhaupt segelbarer Wind steht.";
   B("Böen", bt, maxGust >= sw("boeRot") ? "rot" : (maxGust >= sw("boeGelb") ? "gelb" : "gruen"));
 
   var st = maxWelle > 0
@@ -2015,7 +2267,7 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
     B("Gewitter", "Das Modell sagt in " + gewitter.length + " Stunden Gewitter vorher, erstmals " + zeitLabel(gewitter[0]) +
       (maxCape ? ", Labilität bis " + maxCape + " J/kg" : "") +
       ". Adriagewitter bringen kurzzeitig 35 bis 45 kn aus wechselnder Richtung. Vor Anker heißt das: Kette lang, Ankeralarm an, Bridle geprüft, Wache einteilen. Nicht in einer nach Süden offenen Bucht liegen bleiben.",
-      maxGust >= Math.min(sw("boeRot"), sw("boeGelb") + 5) ? "rot" : "gelb");
+      maxGust >= sw("gewitterBoe") ? "rot" : "gelb");
   }else if(labil.length){
     B("Gewitter", "Kein Gewitter vorhergesagt, aber die Luftmasse ist in " + labil.length + " Stunden labil (bis " + maxCape +
       " J/kg). Das ist nur eine Neigung, kein Ereignis: im Sommer über der Adria normal. Nachmittags und abends den Himmel im Auge behalten, besonders über den Bergen an Land.", "gelb");
@@ -2043,11 +2295,11 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
   if(ring.length){
     var diff = ringMax - maxGust;
     B("Umkreis " + umkreis + " sm",
-      diff >= 6
+      diff >= sw("umkreisDiff")
         ? "Im Umkreis erreichen die Böen bis " + Math.round(ringMax) + " kn, also " + Math.round(diff) + " kn mehr als am Standort, am stärksten im Sektor " + ringOrt +
           ". So entstehen Düsenlagen zwischen den Inseln. Unterwegs mit mehr Wind rechnen als am Ankerplatz gemessen."
         : "Die Werte im Umkreis liegen mit maximal " + Math.round(ringMax) + " kn Böen nah am Standort, das Feld ist einheitlich.",
-      diff >= 6 ? "gelb" : "gruen");
+      diff >= sw("umkreisDiff") ? "gelb" : "gruen");
   }
 
   if(ziel){
@@ -2056,7 +2308,7 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
     B("Ziel " + ziel.name,
       "Dort bis " + Math.round(zW) + " kn Wind und " + Math.round(zG) + " kn Böen" +
       (zWe ? ", Welle bis " + zWe.toFixed(1).replace(".", ",") + " m" : "") + ". " +
-      (Math.abs(d1) < 3 ? "Praktisch gleiche Bedingungen wie hier."
+      (Math.abs(d1) < sw("zielDiff") ? "Praktisch gleiche Bedingungen wie hier."
         : (d1 > 0 ? d1 + " kn mehr als am Standort, die Etappe wird auf der zweiten Hälfte ungemütlicher."
                   : Math.abs(d1) + " kn weniger als hier, es lohnt sich, dort hinzukommen.")),
       zG >= 34 ? "rot" : (zG >= 25 ? "gelb" : "gruen"));
@@ -2086,12 +2338,13 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
       if(m.gust < gMin){ gMin = m.gust; best = m.l; }
     });
     var spanne = gMax - gMin;
+    var spanneGross = spanne >= sw("streuungKn");
     B("Modellstreuung",
       streuung.map(function(m){ return m.l + ": " + Math.round(m.gust) + " kn"; }).join(" · ") +
-      ". " + (spanne >= 10
+      ". " + (spanneGross
         ? "Die Modelle sind sich mit " + Math.round(spanne) + " kn Unterschied deutlich uneins (" + schlecht + " am pessimistischsten, " + best + " am mildesten). Bei so einer Streuung plane nach dem schlechteren Modell und halte einen Ausweichhafen bereit."
         : "Die Modelle liegen mit " + Math.round(spanne) + " kn Unterschied nah beieinander, die Lage ist gut vorhersagbar."),
-      spanne >= 10 ? "gelb" : "gruen");
+      spanneGross ? "gelb" : "gruen");
   }
 
   /* Amtlicher Seewetterbericht */
@@ -2101,10 +2354,10 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
       (amt.bft ? ", Beaufort bis " + amt.bft : "") +
       (amt.worte.length ? ", Schlagworte: " + amt.worte.join(", ") : "") + ". ";
     var aStufe = "gruen";
-    if(amt.maxKn >= maxGust + 8){
+    if(amt.maxKn >= maxGust + sw("amtDiff")){
       aStufe = "rot";
       at += "Der amtliche Bericht liegt " + Math.round(amt.maxKn - maxGust) + " kn über dem Modell. In Kroatien ist das der Normalfall bei Bora, weil die Düsen an der Küste im Gitter untergehen. Es gilt der amtliche Bericht, nicht das Modell.";
-    }else if(amt.maxKn >= maxGust + 3){
+    }else if(amt.maxKn >= maxGust + Math.max(2, sw("amtDiff") / 2)){
       aStufe = "gelb";
       at += "Der amtliche Bericht liegt leicht über dem Modell. Für die Planung den höheren Wert nehmen.";
     }else if(amt.maxKn){
@@ -2145,11 +2398,11 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
     }
   }
   if(fOffen) fenster.push([fOffen, zentrum.zeit[zentrum.zeit.length-1]]);
-  fenster = fenster.filter(function(f){ return (new Date(f[1]) - new Date(f[0])) >= 3 * 3600000; }).slice(0, 4);
+  fenster = fenster.filter(function(f){ return (new Date(f[1]) - new Date(f[0])) >= sw("fMin") * 3600000; }).slice(0, 4);
 
   var empf = fenster.length
     ? "Fahrbare Fenster nach deinen Grenzen (bis " + sw("fWind") + " kn Wind, " + sw("fBoe") + " kn Böen, " +
-      sw("fVon") + " bis " + sw("fBis") + " Uhr):\n" + fenster.map(function(f){ return "· " + zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("\n")
+      sw("fVon") + " bis " + sw("fBis") + " Uhr, mindestens " + sw("fMin") + " h):\n" + fenster.map(function(f){ return "· " + zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("\n")
     : "Im gewählten Zeitraum gibt es kein Fenster, das deine Grenzen von " + sw("fWind") + " kn Wind und " + sw("fBoe") +
       " kn Böen zwischen " + sw("fVon") + " und " + sw("fBis") + " Uhr einhält. Etappe verschieben oder deutlich kürzer planen.";
 
@@ -2223,6 +2476,7 @@ function analyseZeigen(a, zentrum, ortName, zielName){
   var titel = a.stufe === "rot" ? "Nicht fahren" : (a.stufe === "gelb" ? "Fahrbar mit Auflagen" : "Gute Bedingungen");
   var kurz = "Bis " + Math.round(a.maxWind) + " kn, Böen " + Math.round(a.maxGust) + " kn" +
     (a.maxWelle ? ", Welle " + a.maxWelle.toFixed(1).replace(".", ",") + " m" : "") + " in den nächsten " + a.stunden + " Stunden." +
+    (letzteAnalyse && letzteAnalyse.kurs != null ? " Kurs rechtweisend " + Math.round(letzteAnalyse.kurs) + "°." : "") +
     (a.sm ? " Strecke " + a.sm.toFixed(1).replace(".", ",") + " sm" +
       (letzteAnalyse && letzteAnalyse.wps && letzteAnalyse.wps.length ? " über " + letzteAnalyse.wps.length + " Wegpunkte" : "") + "." : "");
 
@@ -2293,8 +2547,24 @@ async function analyseStarten(){
     var umkreis = parseInt($("w_umkreis").value, 10);
     var stunden = parseInt($("w_dauer").value, 10);
     var mi = modellInfo(setup.modell);
+    var abISO = $("w_ab") ? $("w_ab").value : "";
     var gekappt = false;
     if(stunden > mi.max){ stunden = mi.max; gekappt = true; }
+
+    /* Reicht das Modell bis zum gewünschten Startdatum? */
+    if(abISO){
+      var heute0 = new Date(); heute0.setHours(0,0,0,0);
+      var vorlauf = Math.round((new Date(abISO + "T00:00:00").getTime() - heute0.getTime()) / 3600000);
+      if(vorlauf > 0 && vorlauf + stunden > mi.max){
+        var rest = mi.max - vorlauf;
+        if(rest <= 6){
+          throw new Error(mi.l + " rechnet nur " + mi.max + " Stunden voraus und reicht nicht bis zum " +
+            new Date(abISO + "T00:00:00").toLocaleDateString("de-DE") +
+            ". Wähle in den Stammdaten ECMWF oder GFS für längere Vorhersagen.");
+        }
+        stunden = rest; gekappt = true;
+      }
+    }
 
     var ring = ringPunkte(stand, umkreis);
     var stationen = [stand].concat(wpOrte);
@@ -2305,7 +2575,7 @@ async function analyseStarten(){
     var punkte = [{lat:stand.lat, lon:stand.lon, name:"Standort"}].concat(ring, wpPunkte, strecke);
     if(ziel) punkte.push({lat:ziel.lat, lon:ziel.lon, name:ziel.name});
 
-    var serien = await serienHolen(punkte, stunden, setup.modell);
+    var serien = await serienHolen(punkte, stunden, setup.modell, abISO);
     var zentrum = serien[0];
     var ringS = serien.slice(1, 1 + ring.length);
     var streckeS = serien.slice(1 + ring.length, 1 + ring.length + wpPunkte.length + strecke.length);
@@ -2319,9 +2589,10 @@ async function analyseStarten(){
     var streuung = null;
     try{ streuung = await streuungHolen(stand.lat, stand.lon, stunden); }catch(e){}
 
-    var a = analysiere(zentrum, ringS, zielS, stunden, umkreis, streckeS, offen, streuung, amt, liege, sm);
+    var kursGrad = stationen.length > 1 ? peilung(stationen[0], stationen[stationen.length - 1]) : null;
+    var a = analysiere(zentrum, ringS, zielS, stunden, umkreis, streckeS, offen, streuung, amt, liege, sm, kursGrad);
     letzteAnalyse = {a:a, ort:stand, ziel:ziel, umkreis:umkreis, offen:offen, modell:mi,
-      wps:wpOrte, sm:sm, liege:liege, zeit:new Date().toISOString()};
+      wps:wpOrte, sm:sm, liege:liege, ab:abISO || "", kurs:kursGrad, zeit:new Date().toISOString()};
     planSichern();
     analyseZeigen(a, zentrum, stand.name, ziel ? ziel.name : "");
 
@@ -2330,6 +2601,7 @@ async function analyseStarten(){
     msg.className = "note ok";
     msg.textContent = "Analyse " + new Date().toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}) +
       " · " + mi.l + " · " + punkte.length + " Gitterpunkte" +
+      (abISO ? " · ab " + new Date(abISO + "T00:00:00").toLocaleDateString("de-DE") : " · ab jetzt") +
       (gekappt ? " · Zeitraum auf " + stunden + " h gekürzt, weiter rechnet dieses Modell nicht" : "");
   }catch(e){
     msg.className = "note err";
@@ -2382,7 +2654,7 @@ $("wPaste").onclick = async function(){
   }
 };
 
-["w_stand","w_ziel","w_liege","w_offen"].forEach(function(id){
+["w_stand","w_ziel","w_liege","w_offen","w_ab"].forEach(function(id){
   var el = $(id);
   if(el) el.addEventListener("change", planSichern);
 });
@@ -2454,7 +2726,7 @@ function analyseSnapshot(la){
     ort: {name:la.ort.name, lat:la.ort.lat, lon:la.ort.lon, quelle:la.ort.quelle || ""},
     ziel: la.ziel ? {name:la.ziel.name, lat:la.ziel.lat, lon:la.ziel.lon} : null,
     wps: (la.wps || []).map(function(w){ return {name:w.name, lat:w.lat, lon:w.lon}; }),
-    sm: la.sm || 0, umkreis: la.umkreis, stunden: a.stunden, liege: la.liege || "", offen: la.offen || "",
+    sm: la.sm || 0, umkreis: la.umkreis, stunden: a.stunden, ab: la.ab || "", kurs: la.kurs, liege: la.liege || "", offen: la.offen || "",
     stufe: a.stufe, maxWind: a.maxWind, maxGust: a.maxGust, maxWelle: a.maxWelle,
     roh: a.roh || {}, gruende: a.gruende || [],
     bloecke: (a.bloecke || []).map(function(b){ return {titel:b.titel, stufe:b.stufe}; }),
@@ -2472,6 +2744,7 @@ function planSichern(){
     stand: $("w_stand") ? $("w_stand").value : alt.stand,
     ziel: $("w_ziel") ? $("w_ziel").value : alt.ziel,
     liege: $("w_liege") ? $("w_liege").value : alt.liege,
+    ab: $("w_ab") ? $("w_ab").value : alt.ab,
     offen: $("w_offen") ? $("w_offen").value : alt.offen,
     wps: wps.slice(),
     sm: letzteAnalyse && letzteAnalyse.sm ? Math.round(letzteAnalyse.sm * 10) / 10 : alt.sm,
@@ -2494,6 +2767,7 @@ function planLaden(){
   if($("w_ziel")) $("w_ziel").value = pl.ziel || "";
   if($("w_liege")) $("w_liege").value = pl.liege || e.liegeplatz || "";
   if($("w_offen")) $("w_offen").value = pl.offen || "";
+  if($("w_ab")) $("w_ab").value = pl.ab || (TAGE[aktiv-1] ? TAGE[aktiv-1].d.split(".").reverse().join("-") : "");
   wps = (pl.wps || []).slice();
   wpRender();
   var m = $("wMsg");
@@ -2590,7 +2864,7 @@ function diagnoseText(){
   t.push("  Liegeplatz geplant: " + ($("w_liege") ? ($("w_liege").value || "-") : "-"));
   t.push("  Bucht offen nach: " + ($("w_offen") ? ($("w_offen").value || "-") : "-"));
   t.push("  Umkreis: " + ($("w_umkreis") ? $("w_umkreis").value : "-") + " sm · Zeitraum: " +
-    ($("w_dauer") ? $("w_dauer").value : "-") + " h");
+    ($("w_dauer") ? $("w_dauer").value : "-") + " h ab " + (($("w_ab") && $("w_ab").value) ? $("w_ab").value : "jetzt"));
   var amtRoh = $("w_amt") ? $("w_amt").value.trim() : "";
   t.push("  Amtlicher Bericht eingefügt: " + (amtRoh ? amtRoh.length + " Zeichen" : "nein"));
   if(amtRoh){
@@ -2605,11 +2879,13 @@ function diagnoseText(){
     var r = snap.roh || {};
     t.push("");
     t.push("ANALYSE (" + new Date(snap.zeit).toLocaleString("de-DE") + ", " + quelleTxt + ")");
-    t.push("  Modell: " + (snap.modell || "-") + " · Umkreis " + snap.umkreis + " sm · Zeitraum " + snap.stunden + " h");
+    t.push("  Modell: " + (snap.modell || "-") + " · Umkreis " + snap.umkreis + " sm · Zeitraum " + snap.stunden + " h" +
+      " · ab " + (snap.ab ? snap.ab : "jetzt"));
     t.push("  Ort: " + snap.ort.name + " (" + snap.ort.lat.toFixed(3) + "/" + snap.ort.lon.toFixed(3) +
       ", Quelle " + (snap.ort.quelle || "?") + ")");
     if(snap.wps && snap.wps.length) t.push("  Wegpunkte: " + snap.wps.map(function(w){ return w.name; }).join(" | "));
     if(snap.ziel) t.push("  Ziel: " + snap.ziel.name + " (" + snap.ziel.lat.toFixed(3) + "/" + snap.ziel.lon.toFixed(3) + ")");
+    t.push("  Kurs rechtweisend: " + (snap.kurs != null ? Math.round(snap.kurs) + "°" : "-"));
     t.push("  Strecke: " + (snap.sm || 0).toFixed(1) + " sm · Liegeplatz geplant: " + (snap.liege || "-") +
       " · Bucht offen: " + (snap.offen || "-"));
     t.push("  Ergebnis: Ampel " + snap.stufe + " · Wind max " + Math.round(snap.maxWind) + " kn · Böen max " +
@@ -2865,6 +3141,7 @@ function ansichtSetzen(v){
   $("viewSetup").classList.toggle("on", v === "setup");
   if(v === "wetter") planLaden();
   $("viewWiki").classList.toggle("on", v === "wiki");
+  if(v === "wiki") profilBauen();
   $("viewInfo").classList.toggle("on", v === "info");
   if(v === "info") infoBauen();
   $("navbtns").classList.toggle("hidden", v !== "log");
@@ -3335,6 +3612,7 @@ $("s_modell").addEventListener("change", function(){
     setup[k] = $("t_" + k).value;
     if(k === "start" || k === "ende" || k === "personen"){ tageBauen(); zeichne(); trkLaden(); }
     else { tageBauen(); summen(); }
+    if(k === "typ") profilBauen();
     lokalSpeichern();
   });
   $("t_" + k).addEventListener("input", function(){
