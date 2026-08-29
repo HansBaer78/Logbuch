@@ -43,6 +43,56 @@ nav button[aria-selected="true"]{color:#F4F7F4;border-bottom-color:var(--brass)}
 .day[aria-current="true"]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 .day[aria-current="true"] .d{color:var(--ink-soft)}
 main{padding:14px 12px 0;max-width:720px;margin:0 auto}
+
+/* Tablet und kleine Notebooks */
+@media (min-width:700px){
+  body{font-size:16.5px}
+  header{padding:12px 20px 0}
+  .brand .logo{width:52px;height:52px}
+  .brand h1{font-size:23px}
+  .brand .boat{font-size:12px}
+  nav button{flex:1 1 0;min-width:0;font-size:13px;letter-spacing:.08em}
+  main{max-width:900px;padding:18px 20px 0}
+  .banner{margin-left:auto;margin-right:auto}
+  .sheet{padding:18px 18px 8px;border-radius:12px}
+  .grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .dayhead .big{font-size:28px}
+  .day{min-width:78px}
+  .karte{height:420px}
+  .wchart{height:150px}
+  textarea{min-height:96px}
+  footer{padding:10px 20px calc(10px + env(safe-area-inset-bottom))}
+  footer .status{font-size:12px}
+}
+
+/* Desktop */
+@media (min-width:1080px){
+  main{max-width:1120px}
+  .grid{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+  .sheet{padding:20px 22px 10px}
+  .karte{height:min(58vh,560px)}
+  .wchart{height:180px}
+  .track{gap:12px}
+  .track b{font-size:20px}
+  .hilfe p, .hilfe ul{font-size:15px}
+  .wtab{font-size:14.5px}
+}
+
+/* Sehr breite Bildschirme: Wiki und Info zweispaltig lesen */
+@media (min-width:1400px){
+  main{max-width:1320px}
+  #viewWiki, #viewInfo{column-count:2;column-gap:22px}
+  #viewWiki .sheet, #viewInfo .sheet{break-inside:avoid;display:inline-block;width:100%}
+}
+
+/* Querformat auf niedrigen Bildschirmen: Kopfzeile schlanker */
+@media (max-height:520px) and (orientation:landscape){
+  header{padding:6px 12px 0}
+  .brand .logo{width:32px;height:32px}
+  .brand h1{font-size:16px}
+  .totals{margin:2px 0 4px}
+  body{padding-bottom:78px}
+}
 .view{display:none}
 .view.on{display:block}
 .sheet{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 13px 4px;margin-bottom:14px}
@@ -99,8 +149,8 @@ footer .navbtns.hidden{display:none}
 .block p{margin:0 0 6px;font-size:14.5px}
 .block .stufe{font-family:var(--f-data);font-size:10.5px;letter-spacing:.06em;padding:1px 6px;border-radius:20px;border:1px solid currentColor;margin-left:6px}
 .s-rot{color:var(--buoy)}.s-gelb{color:var(--brass)}.s-gruen{color:var(--seagrass)}
-.wchart{width:100%;height:120px;display:block;margin:2px 0 8px}
-.karte{width:100%;height:330px;border:1px solid var(--line);border-radius:8px;display:block;background:#E3E8E4;margin:0 0 8px}
+.wchart{width:100%;height:clamp(110px,18vh,170px);display:block;margin:2px 0 8px}
+.karte{width:100%;height:clamp(300px,46vh,420px);border:1px solid var(--line);border-radius:8px;display:block;background:#E3E8E4;margin:0 0 8px}
 .legende{font-family:var(--f-data);font-size:10.5px;color:var(--ink-soft);margin:0 0 12px}
 #exportOut{white-space:pre-wrap;font-family:var(--f-data);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:22px}
 #exportOut.hidden{display:none}
@@ -144,8 +194,8 @@ footer .navbtns.hidden{display:none}
   <nav id="nav">
     <button data-v="log" aria-selected="true">Logbuch</button>
     <button data-v="wetter" aria-selected="false">Wetter</button>
-    <button data-v="setup" aria-selected="false">Stammdaten</button>
     <button data-v="wiki" aria-selected="false">Wiki</button>
+    <button data-v="setup" aria-selected="false">Stammdaten</button>
     <button data-v="info" aria-selected="false">Info</button>
   </nav>
   <div class="ruler" id="ruler"><div class="days" id="days"></div></div>
@@ -233,67 +283,6 @@ footer .navbtns.hidden{display:none}
     <div id="wOut"></div>
   </section>
 
-  <section class="view" id="viewSetup">
-    <div class="sheet">
-      <h2>Törn und Schiff</h2>
-      <div class="grid">
-        <div class="f"><label for="t_boot">Bootsname</label><input id="t_boot" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Red Twin II"></div>
-        <div class="f"><label for="t_typ">Bootstyp</label><input id="t_typ" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Lagoon 450F"></div>
-        <div class="f wide"><label for="t_skipper">Skipper</label><input id="t_skipper" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Name des Skippers"></div>
-        <div class="f"><label for="t_start">Reise von</label><input id="t_start" type="date"></div>
-        <div class="f"><label for="t_ende">Reise bis</label><input id="t_ende" type="date"></div>
-        <div class="f"><label for="t_personen">Personen an Bord</label><input id="t_personen" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="numeric" placeholder="6"></div>
-        <div class="f"><label for="t_motBB">Motorstunden BB bei Übernahme</label><input id="t_motBB" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 1842,5"></div>
-        <div class="f"><label for="t_motSB">Motorstunden SB bei Übernahme</label><input id="t_motSB" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 1798,0"></div>
-        <div class="f"><label for="t_gen">Generatorstunden bei Übernahme</label><input id="t_gen" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 640,0"></div>
-      </div>
-      <p class="note" id="tornInfo"></p>
-    </div>
-
-    <div class="sheet">
-      <h2>Wetterschwellen – ab wann kritisch</h2>
-      <div class="grid" id="swGrid"></div>
-      <div class="btnrow"><button class="small" id="swReset">Auf Standardwerte zurück</button></div>
-      <p class="note" id="swInfo"></p>
-    </div>
-
-    <div class="sheet" id="setup">
-      <h2>Speicherort, Wetterquelle und Modell</h2>
-      <p class="note" id="storeInfo"></p>
-      <div class="btnrow">
-        <button class="small" id="btnPick">Speicherort wählen</button>
-        <button class="small" id="btnWriteNow">Jetzt in Datei schreiben</button>
-        <button class="small" id="btnForget">Speicherort lösen</button>
-      </div>
-      <div class="grid">
-        <div class="f"><label for="s_provider">Wetterquelle</label>
-          <select id="s_provider">
-            <option value="om">Open-Meteo (empfohlen)</option>
-            <option value="windy">Windy Point Forecast (Schlüssel)</option>
-          </select>
-        </div>
-        <div class="f"><label for="s_modell">Wettermodell für die Analyse</label>
-          <select id="s_modell"></select>
-        </div>
-        <div class="f"><label for="s_key">Windy API-Schlüssel</label><input id="s_key" type="text" autocomplete="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="nur für Windy nötig"></div>
-        <div class="f"><label for="s_lat">Breite (Lat)</label><input id="s_lat" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="43.5871"></div>
-        <div class="f"><label for="s_lon">Länge (Lon)</label><input id="s_lon" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="15.9203"></div>
-      </div>
-      <p class="note" id="diag"></p>
-      <p class="note">Der freie Windy-Schlüssel liefert nur Testdaten von zufälligen Koordinaten. Für den Törn ist Open-Meteo die brauchbare Quelle.</p>
-    </div>
-
-    <div class="tools">
-      <button class="primary" id="btnBackup">Backup in Downloads</button>
-      <button id="btnRestore">Backup laden</button>
-      <button id="btnExcel">Excel-Export (.xlsx)</button>
-      <button id="btnText">Logbuch als Text</button>
-      <button id="btnPrint">Drucken / PDF</button>
-      <button class="warn" id="btnClear">Aktuellen Tag leeren</button>
-      <input type="file" id="file" accept=".json,application/json" hidden>
-    </div>
-    <div id="exportOut" class="hidden"></div>
-  </section>
   <section class="view" id="viewWiki">
     <div class="sheet hilfe">
       <h2>Notruf und Funk</h2>
@@ -517,6 +506,68 @@ KOMMEN</div>
     </div>
   </section>
 
+  <section class="view" id="viewSetup">
+    <div class="sheet">
+      <h2>Törn und Schiff</h2>
+      <div class="grid">
+        <div class="f"><label for="t_boot">Bootsname</label><input id="t_boot" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Red Twin II"></div>
+        <div class="f"><label for="t_typ">Bootstyp</label><input id="t_typ" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Lagoon 450F"></div>
+        <div class="f wide"><label for="t_skipper">Skipper</label><input id="t_skipper" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Name des Skippers"></div>
+        <div class="f"><label for="t_start">Reise von</label><input id="t_start" type="date"></div>
+        <div class="f"><label for="t_ende">Reise bis</label><input id="t_ende" type="date"></div>
+        <div class="f"><label for="t_personen">Personen an Bord</label><input id="t_personen" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="numeric" placeholder="6"></div>
+        <div class="f"><label for="t_motBB">Motorstunden BB bei Übernahme</label><input id="t_motBB" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 1842,5"></div>
+        <div class="f"><label for="t_motSB">Motorstunden SB bei Übernahme</label><input id="t_motSB" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 1798,0"></div>
+        <div class="f"><label for="t_gen">Generatorstunden bei Übernahme</label><input id="t_gen" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="z. B. 640,0"></div>
+      </div>
+      <p class="note" id="tornInfo"></p>
+    </div>
+
+    <div class="sheet">
+      <h2>Wetterschwellen – ab wann kritisch</h2>
+      <div class="grid" id="swGrid"></div>
+      <p class="note">Die Standardwerte sind auf einen 45-Fuß-Charterkatamaran mit gemischter Crew und einen Skipper mit mittlerer Erfahrung in fremdem Revier ausgelegt – also bewusst früh warnend. Wer viel Erfahrung mit dem Schiff hat, kann sie nach oben setzen.</p>
+      <div class="btnrow"><button class="small" id="swReset">Auf Standardwerte zurück</button></div>
+      <p class="note" id="swInfo"></p>
+    </div>
+
+    <div class="sheet" id="setup">
+      <h2>Speicherort, Wetterquelle und Modell</h2>
+      <p class="note" id="storeInfo"></p>
+      <div class="btnrow">
+        <button class="small" id="btnPick">Speicherort wählen</button>
+        <button class="small" id="btnWriteNow">Jetzt in Datei schreiben</button>
+        <button class="small" id="btnForget">Speicherort lösen</button>
+      </div>
+      <div class="grid">
+        <div class="f"><label for="s_provider">Wetterquelle</label>
+          <select id="s_provider">
+            <option value="om">Open-Meteo (empfohlen)</option>
+            <option value="windy">Windy Point Forecast (Schlüssel)</option>
+          </select>
+        </div>
+        <div class="f"><label for="s_modell">Wettermodell für die Analyse</label>
+          <select id="s_modell"></select>
+        </div>
+        <div class="f"><label for="s_key">Windy API-Schlüssel</label><input id="s_key" type="text" autocomplete="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="nur für Windy nötig"></div>
+        <div class="f"><label for="s_lat">Breite (Lat)</label><input id="s_lat" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="43.5871"></div>
+        <div class="f"><label for="s_lon">Länge (Lon)</label><input id="s_lon" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="decimal" placeholder="15.9203"></div>
+      </div>
+      <p class="note" id="diag"></p>
+      <p class="note">Der freie Windy-Schlüssel liefert nur Testdaten von zufälligen Koordinaten. Für den Törn ist Open-Meteo die brauchbare Quelle.</p>
+    </div>
+
+    <div class="tools">
+      <button class="primary" id="btnBackup">Backup in Downloads</button>
+      <button id="btnRestore">Backup laden</button>
+      <button id="btnExcel">Excel-Export (.xlsx)</button>
+      <button id="btnText">Logbuch als Text</button>
+      <button id="btnPrint">Drucken / PDF</button>
+      <button class="warn" id="btnClear">Aktuellen Tag leeren</button>
+      <input type="file" id="file" accept=".json,application/json" hidden>
+    </div>
+    <div id="exportOut" class="hidden"></div>
+  </section>
   <section class="view" id="viewInfo">
     <div class="sheet">
       <h2>Über diese App</h2>
@@ -526,6 +577,14 @@ KOMMEN</div>
 
     <div class="sheet hilfe">
       <h2>Kurzanleitung</h2>
+      <p>Die App hat fünf Reiter. Oben umschalten, bei schmalen Bildschirmen ist die Leiste seitlich verschiebbar.</p>
+      <ul>
+        <li><b>Logbuch</b> – Tageseinträge und GPS-Streckenmessung</li>
+        <li><b>Wetter</b> – Analyse für Fahrt und Nacht, Karte, amtlicher Bericht</li>
+        <li><b>Wiki</b> – Notruf, Funksprüche, Regeln, Seezeichen, Links</li>
+        <li><b>Stammdaten</b> – Boot, Törn, Schwellenwerte, Speicher, Export</li>
+        <li><b>Info</b> – Version, Modelle, Quellen, Haftungsausschluss</li>
+      </ul>
 
       <h3>Logbuch</h3>
       <p>Oben die Tagesleiste: Tagesnummer, Wochentag und Datum. Ein grüner Strich zeigt, dass für den Tag etwas erfasst ist. Unten rechts blätterst du mit „Tag" vor und zurück. Jede Eingabe wird sofort gespeichert, du musst nichts bestätigen.</p>
@@ -538,7 +597,7 @@ KOMMEN</div>
 
       <h3>Strecke messen</h3>
       <p>„Start ab hier" zeichnet die Fahrt per GPS auf und zeigt Distanz, Dauer, Fahrt über Grund und Durchschnitt. „Etappe beenden" schreibt alles in den Tag: Distanz, Ablege- und Anlegezeit, Start- und Endkoordinaten.</p>
-      <p>Wichtig: Android schaltet das GPS ab, sobald die App in den Hintergrund geht. Handy also sichtbar liegen lassen, die App hält den Bildschirm selbst wach. Eine unterbrochene Messung bleibt gespeichert und lässt sich fortsetzen.</p>
+      <p>Wichtig: Mobile Betriebssysteme schalten das GPS ab, sobald die App in den Hintergrund geht. Gerät also sichtbar liegen lassen, die App hält den Bildschirm selbst wach. Eine unterbrochene Messung bleibt gespeichert und lässt sich fortsetzen.</p>
 
       <h3>Wetter</h3>
       <p>Standort als Koordinaten, Ortsname oder per GPS. Ziel optional – dann werden drei Zwischenpunkte auf der Strecke mitgeprüft. Umkreis fragt vier Punkte rund um dich ab, damit Düsenlagen zwischen den Inseln auffallen.</p>
@@ -548,10 +607,26 @@ KOMMEN</div>
         <li><b>Zwei Ampeln</b> – oben für die Fahrt, darunter für die Nacht mit Empfehlung Anker, Boje oder Marina</li>
         <li><b>In Logbuch übernehmen</b> schreibt die Kurzfassung in den aktuellen Tag</li>
       </ul>
+      <p>Unter der Auswertung liegt eine Wetterkarte, umschaltbar zwischen Wind, Böen, Wellen, Regen und Druck. Der Block <b>Modellstreuung</b> vergleicht fünf Modelle für deinen Standort: Sind sie sich uneins, ist die Lage schlecht vorhersagbar und du planst nach dem pessimistischeren. Welches Modell die Hauptrechnung nutzt, stellst du in den Stammdaten ein – hochauflösende Modelle rechnen nur 48 bis 60 Stunden weit.</p>
+
+      <h3>Wiki</h3>
+      <p>Nachschlagewerk für unterwegs, funktioniert auch ohne Empfang – nur die Links brauchen Internet.</p>
+      <ul>
+        <li><b>Notruf und Funk</b> – Nummern, Kanäle und Küstenfunkstellen für Kroatien, Italien und Griechenland</li>
+        <li><b>Funksprüche</b> – Mayday, Pan Pan, Sécurité, Mann über Bord und der Marina-Anruf, fertig formuliert mit Bootsnamen</li>
+        <li><b>Ausweichregeln</b> – Segler gegen Segler, Segel gegen Motor mit den Ausnahmen, Schallsignale</li>
+        <li><b>Seezeichen</b> – Kardinal-, Lateral- und Sonderzeichen mit Farben, Toppzeichen und Feuertakt</li>
+        <li><b>Kurse zum Wind</b> – Wende, Halse, Reffen, Ankerfaustregeln, Lichter nachts</li>
+        <li><b>Adria-Winde</b> – Bora, Jugo, Maestral und wie man darauf reagiert</li>
+        <li><b>Links</b> – Wetterdienste, Nationalparks, Vignette und Crewliste, SeaHelp</li>
+      </ul>
 
       <h3>Stammdaten</h3>
       <p>Boot, Skipper, Reisezeitraum, Personen und Motorstunden bei Übernahme. Aus den Startwerten rechnet die Kopfzeile die aktuellen Zählerstände.</p>
       <p>Die Wetterschwellen legen fest, ab wann etwas gelb oder rot ist – für Wind, Böen, Welle, Böenfaktor, Druckfall, Nachtzeitraum sowie die Grenzen für Anker, Boje und Marina. Leere Felder fallen auf den Standard zurück, unplausible Kombinationen werden rot gemeldet.</p>
+
+      <h3>Info</h3>
+      <p>Version und Autor, die sechs wählbaren Wettermodelle mit Gitterweite und Vorhersagelänge, alle Datenquellen sowie der Haftungsausschluss.</p>
 
       <h3>Sichern und weitergeben</h3>
       <ul>
@@ -561,6 +636,9 @@ KOMMEN</div>
         <li><b>Excel-Export</b> – zwei Blätter, Logbuch und Stammdaten, zum Weitergeben</li>
         <li><b>Drucken / PDF</b> – mit Logo, Bootsname und Törnzeitraum als Kopf</li>
       </ul>
+
+      <h3>Updates</h3>
+      <p>Liegt eine neue Version bereit, erscheint oben ein Hinweis mit dem Knopf „Jetzt aktualisieren". Logbucheinträge, Stammdaten und Schwellenwerte bleiben dabei erhalten – sie liegen im Gerätespeicher und werden von einem Update nicht angefasst. Browserdaten löschen ist nicht nötig und würde die Einträge vernichten; vorher immer ein Backup ziehen.</p>
 
       <h3>Grenzen</h3>
       <p>Die Wetteranalyse ist eine Vorsortierung aus Modelldaten, kein amtlicher Seewetterbericht. Auch 2-km-Modelle lösen Bora-Fallwinde an der Steilküste nicht vollständig auf; örtlich sind 10 bis 15 kn mehr möglich. Vor jeder Etappe zusätzlich UKW Kanal 16 und den DHMZ-Bericht prüfen.</p>
@@ -658,13 +736,13 @@ var PLAN = {
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "1.3";
+var APP_VERSION = "1.3.2";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache v15"],
+    ["Version", APP_VERSION + " · Cache 1.3.2"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
@@ -772,32 +850,32 @@ var data = {}, setup = {provider:"om", key:"", lat:"", lon:"", ziel:"",
 
 /* Schwellen für die Wettereinstufung – vom Skipper einstellbar */
 var SW_DEF = [
-  {k:"windGelb",   l:"Wind gelb ab (kn)",        v:18},
-  {k:"windRot",    l:"Wind rot ab (kn)",         v:25},
-  {k:"boeGelb",    l:"Böen gelb ab (kn)",        v:25},
-  {k:"boeRot",     l:"Böen rot ab (kn)",         v:34},
-  {k:"welleGelb",  l:"Welle gelb ab (m)",        v:1.5},
-  {k:"welleRot",   l:"Welle rot ab (m)",         v:2.5},
-  {k:"faktorGelb", l:"Böenfaktor auffällig ab",  v:1.5},
-  {k:"faktorRot",  l:"Böenfaktor kritisch ab",   v:1.8},
-  {k:"druckGelb",  l:"Druckfall gelb ab (hPa/3h)", v:3},
-  {k:"druckRot",   l:"Druckfall stark ab (hPa/3h)", v:4},
-  {k:"fWind",      l:"Fenster: Wind bis (kn)",   v:17},
-  {k:"fBoe",       l:"Fenster: Böen bis (kn)",   v:24},
-  {k:"fWelle",     l:"Fenster: Welle bis (m)",   v:1.3},
-  {k:"fVon",       l:"Fenster: frühestens (Std.)", v:6},
-  {k:"fBis",       l:"Fenster: spätestens (Std.)", v:20},
-  {k:"reff1",      l:"Erstes Reff ab (kn)",      v:14},
-  {k:"reff2",      l:"Zweites Reff ab (kn)",     v:18},
+  {k:"windGelb",   l:"Wind gelb ab (kn)",        v:14},
+  {k:"windRot",    l:"Wind rot ab (kn)",         v:22},
+  {k:"boeGelb",    l:"Böen gelb ab (kn)",        v:20},
+  {k:"boeRot",     l:"Böen rot ab (kn)",         v:28},
+  {k:"welleGelb",  l:"Welle gelb ab (m)",        v:1.0},
+  {k:"welleRot",   l:"Welle rot ab (m)",         v:1.8},
+  {k:"faktorGelb", l:"Böenfaktor auffällig ab",  v:1.4},
+  {k:"faktorRot",  l:"Böenfaktor kritisch ab",   v:1.7},
+  {k:"druckGelb",  l:"Druckfall gelb ab (hPa/3h)", v:2},
+  {k:"druckRot",   l:"Druckfall stark ab (hPa/3h)", v:3.5},
+  {k:"fWind",      l:"Fenster: Wind bis (kn)",   v:14},
+  {k:"fBoe",       l:"Fenster: Böen bis (kn)",   v:20},
+  {k:"fWelle",     l:"Fenster: Welle bis (m)",   v:1.0},
+  {k:"fVon",       l:"Fenster: frühestens (Std.)", v:7},
+  {k:"fBis",       l:"Fenster: spätestens (Std.)", v:18},
+  {k:"reff1",      l:"Erstes Reff ab (kn)",      v:12},
+  {k:"reff2",      l:"Zweites Reff ab (kn)",     v:16},
   {k:"motorBis",   l:"Kaum Segelwind bis (kn)",  v:8},
   {k:"nachtVon",   l:"Nacht beginnt (Std.)",     v:20},
   {k:"nachtBis",   l:"Nacht endet (Std.)",       v:7},
-  {k:"ankerGelb",  l:"Anker: Wache ab Böen (kn)", v:22},
-  {k:"ankerRot",   l:"Anker: zu viel ab Böen (kn)", v:30},
-  {k:"bojeRot",    l:"Boje/Muring: Grenze Böen (kn)", v:25},
-  {k:"marinaBoe",  l:"Marina nötig ab Böen (kn)", v:33},
-  {k:"drehWarn",   l:"Winddreher kritisch ab (Grad)", v:60},
-  {k:"schwellWarn",l:"Schwell in Bucht ab (m)",  v:0.8}
+  {k:"ankerGelb",  l:"Anker: Wache ab Böen (kn)", v:18},
+  {k:"ankerRot",   l:"Anker: zu viel ab Böen (kn)", v:25},
+  {k:"bojeRot",    l:"Boje/Muring: Grenze Böen (kn)", v:22},
+  {k:"marinaBoe",  l:"Marina nötig ab Böen (kn)", v:28},
+  {k:"drehWarn",   l:"Winddreher kritisch ab (Grad)", v:45},
+  {k:"schwellWarn",l:"Schwell in Bucht ab (m)",  v:0.6}
 ];
 function swStandard(){
   var o = {};
@@ -1028,7 +1106,7 @@ function gpsGrund(err){
   if(err && err.code === 1){
     return lokal
       ? "Standort gesperrt, weil die Datei lokal geöffnet ist. Öffne die GitHub-Adresse oder nutze „Koordinaten einfügen“."
-      : "Standortzugriff abgelehnt. Adresszeile → Schloss → Berechtigungen → Standort erlauben, und Edge in den Android-Berechtigungen den Standort geben.";
+      : "Standortzugriff abgelehnt. Adresszeile → Schloss → Berechtigungen → Standort erlauben, und dem Browser in den Systemeinstellungen den Standortzugriff geben.";
   }
   if(err && err.code === 2) return "Position nicht ermittelbar. Kurz an Deck gehen oder Koordinaten einfügen.";
   if(err && err.code === 3) return "GPS-Zeitüberschreitung. Nochmal antippen oder Koordinaten einfügen.";
@@ -1130,7 +1208,7 @@ async function trkStart(){
     trk.punkte.push([p.timestamp, +jetzt.lat.toFixed(5), +jetzt.lon.toFixed(5)]);
     trkAnzeige();
     $("tMsg").className = "note ok";
-    $("tMsg").textContent = "Messung läuft · " + trk.punkte.length + " Punkte · Bildschirm bleibt an, im Hintergrund stoppt Android das GPS.";
+    $("tMsg").textContent = "Messung läuft · " + trk.punkte.length + " Punkte · Bildschirm bleibt an, im Hintergrund stoppt das Betriebssystem das GPS.";
     if(trk.punkte.length % 8 === 0) trkSichern(true);
   }, function(err){
     $("tMsg").className = "note err";
@@ -2574,13 +2652,42 @@ window.addEventListener("beforeunload", function(e){
   if(lsOk) setStatus("Bereit · Gerätespeicher aktiv");
 })();
 
-/* ---------- Offline-Betrieb ---------- */
+/* ---------- Offline-Betrieb und Updates ---------- */
+function updateHinweis(reg){
+  var b = $("banner");
+  b.className = "banner";
+  b.innerHTML = "Eine neue Version der App liegt bereit. Deine Einträge bleiben dabei erhalten. " +
+    '<button class="small primary" id="updateJetzt" style="margin-left:8px">Jetzt aktualisieren</button>';
+  $("updateJetzt").onclick = function(){
+    if(reg.waiting) reg.waiting.postMessage({type:"SKIP_WAITING"});
+    setTimeout(function(){ location.reload(); }, 400);
+  };
+}
 if("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("./sw.js").then(function(){
+    navigator.serviceWorker.register("./sw.js").then(function(reg){
       var d = $("diag");
       if(d) d.textContent += " · Offline-Betrieb aktiv";
+      if(reg.waiting) updateHinweis(reg);
+      reg.addEventListener("updatefound", function(){
+        var neu = reg.installing;
+        if(!neu) return;
+        neu.addEventListener("statechange", function(){
+          if(neu.state === "installed" && navigator.serviceWorker.controller) updateHinweis(reg);
+        });
+      });
+      /* Beim Start und bei jeder Rückkehr in die App nach Updates sehen */
+      reg.update();
+      document.addEventListener("visibilitychange", function(){
+        if(!document.hidden) reg.update();
+      });
     }).catch(function(){});
+    var neuGeladen = false;
+    navigator.serviceWorker.addEventListener("controllerchange", function(){
+      if(neuGeladen) return;
+      neuGeladen = true;
+      location.reload();
+    });
   });
 }
 </script>
