@@ -782,13 +782,13 @@ var PLAN = {
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "1.6";
+var APP_VERSION = "1.6.1";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 1.6"],
+    ["Version", APP_VERSION + " · Cache 1.6.1"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
@@ -2444,6 +2444,27 @@ $("wUeber").onclick = function(){
 };
 
 /* ================= Planübergabe Wetter <-> Logbuch ================= */
+/* Ergebnis einer Analyse in eine speicherbare Form bringen */
+function analyseSnapshot(la){
+  if(!la) return null;
+  var a = la.a;
+  return {
+    zeit: la.zeit,
+    modell: la.modell ? la.modell.l : "",
+    ort: {name:la.ort.name, lat:la.ort.lat, lon:la.ort.lon, quelle:la.ort.quelle || ""},
+    ziel: la.ziel ? {name:la.ziel.name, lat:la.ziel.lat, lon:la.ziel.lon} : null,
+    wps: (la.wps || []).map(function(w){ return {name:w.name, lat:w.lat, lon:w.lon}; }),
+    sm: la.sm || 0, umkreis: la.umkreis, stunden: a.stunden, liege: la.liege || "", offen: la.offen || "",
+    stufe: a.stufe, maxWind: a.maxWind, maxGust: a.maxGust, maxWelle: a.maxWelle,
+    roh: a.roh || {}, gruende: a.gruende || [],
+    bloecke: (a.bloecke || []).map(function(b){ return {titel:b.titel, stufe:b.stufe}; }),
+    fenster: (a.fenster || []).map(function(f){ return [f[0], f[1]]; }),
+    nacht: a.nacht ? {von:a.nacht.von, bis:a.nacht.bis, gust:Math.round(a.nacht.gust), dir:a.nacht.dir,
+      stufe:a.nacht.stufe, liege:a.nacht.liege, geplant:a.nacht.geplant, dreh:Math.round(a.nacht.dreh),
+      gruende:a.nacht.gruende || []} : null
+  };
+}
+
 function planSichern(){
   var e = eintrag(aktiv);
   var alt = e.plan || {};
@@ -2461,7 +2482,8 @@ function planSichern(){
       geplant: letzteAnalyse.a.nacht.geplant,
       gust: Math.round(letzteAnalyse.a.nacht.gust),
       stufe: letzteAnalyse.a.nacht.stufe
-    } : alt.nacht
+    } : alt.nacht,
+    analyse: letzteAnalyse ? analyseSnapshot(letzteAnalyse) : alt.analyse
   };
   lokalSpeichern();
 }
@@ -2474,6 +2496,15 @@ function planLaden(){
   if($("w_offen")) $("w_offen").value = pl.offen || "";
   wps = (pl.wps || []).slice();
   wpRender();
+  var m = $("wMsg");
+  if(m && pl.analyse){
+    var alt2 = Math.round((Date.now() - new Date(pl.analyse.zeit).getTime()) / 60000);
+    m.className = "note";
+    m.textContent = "Gespeicherte Analyse für Tag " + aktiv + " von " +
+      new Date(pl.analyse.zeit).toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}) +
+      " (" + (alt2 < 90 ? alt2 + " min" : Math.round(alt2 / 60) + " h") + " alt): Ampel " + pl.analyse.stufe +
+      ", Böen bis " + Math.round(pl.analyse.maxGust) + " kn. Für aktuelle Werte neu rechnen.";
+  }
 }
 
 /* Vorschläge aus der Wetterplanung im Logbuch anzeigen */
@@ -2568,33 +2599,52 @@ function diagnoseText(){
     t.push("    Text: " + amtRoh.replace(/\s+/g, " ").slice(0, 300));
   }
 
-  if(letzteAnalyse){
-    var a = letzteAnalyse.a, r = a.roh || {};
+  var snap = letzteAnalyse ? analyseSnapshot(letzteAnalyse) : ((data[aktiv] || {}).plan || {}).analyse;
+  var quelleTxt = letzteAnalyse ? "aus dieser Sitzung" : "gespeichert bei Tag " + aktiv;
+  if(snap){
+    var r = snap.roh || {};
     t.push("");
-    t.push("LETZTE ANALYSE (" + new Date(letzteAnalyse.zeit).toLocaleString("de-DE") + ")");
-    t.push("  Ort: " + letzteAnalyse.ort.name + " (" + letzteAnalyse.ort.lat.toFixed(3) + "/" + letzteAnalyse.ort.lon.toFixed(3) +
-      ", Quelle " + (letzteAnalyse.ort.quelle || "?") + ")");
-    if(letzteAnalyse.ziel) t.push("  Ziel: " + letzteAnalyse.ziel.name + " (" + letzteAnalyse.ziel.lat.toFixed(3) + "/" + letzteAnalyse.ziel.lon.toFixed(3) + ")");
-    t.push("  Strecke: " + (letzteAnalyse.sm || 0).toFixed(1) + " sm");
-    t.push("  Ergebnis: Ampel " + a.stufe + " · Wind max " + Math.round(a.maxWind) + " kn · Böen max " + Math.round(a.maxGust) +
-      " kn · Welle max " + (a.maxWelle || 0).toFixed(1) + " m");
+    t.push("ANALYSE (" + new Date(snap.zeit).toLocaleString("de-DE") + ", " + quelleTxt + ")");
+    t.push("  Modell: " + (snap.modell || "-") + " · Umkreis " + snap.umkreis + " sm · Zeitraum " + snap.stunden + " h");
+    t.push("  Ort: " + snap.ort.name + " (" + snap.ort.lat.toFixed(3) + "/" + snap.ort.lon.toFixed(3) +
+      ", Quelle " + (snap.ort.quelle || "?") + ")");
+    if(snap.wps && snap.wps.length) t.push("  Wegpunkte: " + snap.wps.map(function(w){ return w.name; }).join(" | "));
+    if(snap.ziel) t.push("  Ziel: " + snap.ziel.name + " (" + snap.ziel.lat.toFixed(3) + "/" + snap.ziel.lon.toFixed(3) + ")");
+    t.push("  Strecke: " + (snap.sm || 0).toFixed(1) + " sm · Liegeplatz geplant: " + (snap.liege || "-") +
+      " · Bucht offen: " + (snap.offen || "-"));
+    t.push("  Ergebnis: Ampel " + snap.stufe + " · Wind max " + Math.round(snap.maxWind) + " kn · Böen max " +
+      Math.round(snap.maxGust) + " kn · Welle max " + (snap.maxWelle || 0).toFixed(1) + " m");
     t.push("  Roh: Böenfaktor " + (r.boeFaktor || 0).toFixed(2) + " · Druckfall " + (r.druckAb || 0).toFixed(1) +
       " hPa/3h · Gewitterstunden " + (r.gewitter || 0) + " · labile Stunden " + (r.labil || 0) +
       " · CAPE max " + (r.cape || 0) + " · Dreher " + (r.dreh || 0) + "° · Sektor " + (r.domi || "-") +
       " · Umkreis-Böen max " + (r.ringMax || 0) + " kn");
-    if(a.nacht){
-      t.push("  Nacht " + a.nacht.von + " bis " + a.nacht.bis + ": Böen " + Math.round(a.nacht.gust) + " kn aus " +
-        a.nacht.dir + " · Stufe " + a.nacht.stufe + " · Empfehlung " + a.nacht.liege +
-        (a.nacht.geplant ? " · geplant " + a.nacht.geplant : ""));
-      if(a.nacht.gruende && a.nacht.gruende.length) t.push("    Gründe Nacht: " + a.nacht.gruende.join("; "));
+    if(snap.nacht){
+      t.push("  Nacht " + snap.nacht.von + " bis " + snap.nacht.bis + ": Böen " + snap.nacht.gust + " kn aus " +
+        (snap.nacht.dir || "?") + " · Dreher " + snap.nacht.dreh + "° · Stufe " + snap.nacht.stufe +
+        " · Empfehlung " + snap.nacht.liege + (snap.nacht.geplant ? " · geplant " + snap.nacht.geplant : ""));
+      if(snap.nacht.gruende && snap.nacht.gruende.length) t.push("    Gründe Nacht: " + snap.nacht.gruende.join("; "));
     }
     t.push("  Ausgelöste Regeln:");
-    (a.gruende || []).forEach(function(g){ t.push("    [" + g.s + "] " + g.t); });
-    t.push("  Blöcke: " + (a.bloecke || []).map(function(b){ return b.titel + "=" + b.stufe; }).join(", "));
-    t.push("  Fenster: " + (a.fenster.length ? a.fenster.map(function(f){ return zeitLabel(f[0]) + "-" + zeitLabel(f[1]); }).join("; ") : "keine"));
+    (snap.gruende || []).forEach(function(g){ t.push("    [" + g.s + "] " + g.t); });
+    t.push("  Blöcke: " + (snap.bloecke || []).map(function(b){ return b.titel + "=" + b.stufe; }).join(", "));
+    t.push("  Fenster: " + (snap.fenster && snap.fenster.length
+      ? snap.fenster.map(function(f){ return zeitLabel(f[0]) + "-" + zeitLabel(f[1]); }).join("; ") : "keine"));
   }else{
     t.push("");
-    t.push("LETZTE ANALYSE: noch keine in dieser Sitzung");
+    t.push("ANALYSE: für Tag " + aktiv + " liegt keine gespeicherte Analyse vor");
+  }
+
+  /* Kurzüberblick über alle Tage mit gespeicherter Analyse */
+  var andere = [];
+  TAGE.forEach(function(tg){
+    var pa = ((data[tg.n] || {}).plan || {}).analyse;
+    if(pa && tg.n !== aktiv) andere.push("Tag " + tg.n + " " + tg.d + ": " + pa.stufe +
+      " (" + Math.round(pa.maxGust) + " kn Böen, " + new Date(pa.zeit).toLocaleString("de-DE", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"}) + ")");
+  });
+  if(andere.length){
+    t.push("");
+    t.push("WEITERE GESPEICHERTE ANALYSEN");
+    andere.forEach(function(x){ t.push("  " + x); });
   }
 
   t.push("");
