@@ -25,7 +25,10 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);color:#EDF1EE;padd
 .brand .titel{flex:1;min-width:0}
 .brand h1{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:19px;margin:0}
 .brand .boat{display:block;font-family:var(--f-data);font-size:11px;color:#8FA8AE;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.totals{display:flex;gap:14px;font-family:var(--f-data);font-size:11.5px;color:#9FB8BD;letter-spacing:.05em;margin:4px 0 8px;flex-wrap:wrap}
+.kopfzeile{display:flex;align-items:flex-start;gap:8px}
+.kopfBtn{flex:0 0 auto;background:transparent;border:1px solid #38525E;color:#C3D5D8;border-radius:8px;
+  font-family:var(--f-data);font-size:11.5px;min-height:32px;padding:4px 9px;margin:2px 0 0}
+.totals{flex:1;min-width:0;display:flex;gap:14px;font-family:var(--f-data);font-size:11.5px;color:#9FB8BD;letter-spacing:.05em;margin:4px 0 8px;flex-wrap:wrap}
 .totals b{color:#F4F7F4;font-weight:600}
 nav{display:flex;gap:2px;margin:2px 0 0;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
@@ -168,6 +171,13 @@ footer .navbtns.hidden{display:none}
 .wtab td:first-child{font-weight:600;white-space:nowrap}
 .funk{background:#F5F7F3;border-left:3px solid var(--ink);border-radius:0 8px 8px 0;padding:9px 11px;margin:0 0 12px;font-family:var(--f-data);font-size:12.5px;line-height:1.55;white-space:pre-line}
 .linkliste{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.wp{display:flex;gap:6px;align-items:center;margin:0 0 6px}
+.wp input{flex:1}
+.wp button{min-height:46px;padding:0 12px;border-color:var(--line);color:var(--ink-soft)}
+.wpKopf{display:flex;justify-content:space-between;align-items:center;margin:0 0 4px}
+.wpKopf label{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-soft);font-weight:600}
+.vorschlag{border-left:3px solid var(--seagrass);background:#F2F8F4;border-radius:0 8px 8px 0;padding:10px 12px;margin:0 0 10px}
+.vorschlag p{margin:0 0 8px;font-size:14px}
 .linkliste a{font-family:var(--f-data);font-size:12.5px;color:var(--ink);text-decoration:none;border:1px solid var(--ink);border-radius:8px;padding:9px 11px;min-height:40px;display:flex;align-items:center}
 @media (min-width:560px){.dayhead .big{font-size:26px}}
 @media print{
@@ -190,7 +200,10 @@ footer .navbtns.hidden{display:none}
       <span class="boat" id="brandBoot">RED TWIN II · LAGOON 450F</span>
     </div>
   </div>
-  <div class="totals" id="totals"></div>
+  <div class="kopfzeile">
+    <div class="totals" id="totals"></div>
+    <button class="kopfBtn" id="kopfToggle" aria-expanded="true" title="Tagesleiste ein- und ausklappen"></button>
+  </div>
   <nav id="nav">
     <button data-v="log" aria-selected="true">Logbuch</button>
     <button data-v="wetter" aria-selected="false">Wetter</button>
@@ -225,15 +238,32 @@ footer .navbtns.hidden{display:none}
       </div>
       <p class="note" id="tMsg"></p>
     </div>
+    <div id="vorschlagBox"></div>
     <div id="form"></div>
   </section>
 
   <section class="view" id="viewWetter">
     <div class="sheet">
       <h2>Wetteranalyse für Segler</h2>
+      <div class="btnrow">
+        <button class="small" id="wAusLog">Aus Logbuch übernehmen</button>
+        <button class="small" id="wGps">Standort vom GPS</button>
+        <button class="small" id="wPaste">Aus Zwischenablage</button>
+      </div>
       <div class="grid">
-        <div class="f wide"><label for="w_stand">Standort</label><input id="w_stand" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="43.5871, 15.9203 oder Ortsname"></div>
+        <div class="f wide"><label for="w_stand">Start / Standort</label><input id="w_stand" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="43.5871, 15.9203 oder Ortsname"></div>
+        <div class="f wide" id="wpBox"></div>
         <div class="f wide"><label for="w_ziel">Ziel (optional)</label><input id="w_ziel" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="z. B. Zut oder 43.90, 15.30"></div>
+        <div class="f wide"><label for="w_liege">Geplanter Liegeplatz für die Nacht</label>
+          <select id="w_liege">
+            <option value="">noch offen</option>
+            <option value="Marina">Marina</option>
+            <option value="Steg im Ort">Steg im Ort</option>
+            <option value="Boje / Muring">Boje / Muring</option>
+            <option value="Anker frei">Anker frei</option>
+            <option value="Ankern mit Landleine">Ankern mit Landleine</option>
+          </select>
+        </div>
         <div class="f"><label for="w_offen">Ankerbucht offen nach</label>
           <select id="w_offen">
             <option value="">unbekannt / noch offen</option>
@@ -275,7 +305,6 @@ footer .navbtns.hidden{display:none}
       </div>
       <div class="btnrow">
         <button class="small primary" id="wGo">Analyse starten</button>
-        <button class="small" id="wGps">Standort vom GPS</button>
         <button class="small" id="wUeber" disabled>In Logbuch übernehmen</button>
       </div>
       <p class="note" id="wMsg">Open-Meteo mit ECMWF und GFS. Der Abruf braucht Empfang, die Auswertung läuft im Gerät.</p>
@@ -594,18 +623,21 @@ KOMMEN</div>
         <li><b>Schiffsbetrieb</b> – Tankstände, Generator, Gebühren, Technik</li>
         <li><b>Crew</b> und <b>Eintrag des Skippers</b> für Besonderheiten und Vorfälle</li>
       </ul>
+      <p>Hast du am Morgen eine Wetteranalyse gemacht, erscheint abends oben eine grüne Leiste <b>Aus der Wetterplanung</b> mit Vorschlägen für Nach, Von, Liegeplatz und Distanz. Jeder Vorschlag wird einzeln bestätigt, nichts wird stillschweigend überschrieben. Die Leiste merkt sich, wie lange die Planung her ist.</p>
 
       <h3>Strecke messen</h3>
       <p>„Start ab hier" zeichnet die Fahrt per GPS auf und zeigt Distanz, Dauer, Fahrt über Grund und Durchschnitt. „Etappe beenden" schreibt alles in den Tag: Distanz, Ablege- und Anlegezeit, Start- und Endkoordinaten.</p>
       <p>Wichtig: Mobile Betriebssysteme schalten das GPS ab, sobald die App in den Hintergrund geht. Gerät also sichtbar liegen lassen, die App hält den Bildschirm selbst wach. Eine unterbrochene Messung bleibt gespeichert und lässt sich fortsetzen.</p>
 
       <h3>Wetter</h3>
-      <p>Standort als Koordinaten, Ortsname oder per GPS. Ziel optional – dann werden drei Zwischenpunkte auf der Strecke mitgeprüft. Umkreis fragt vier Punkte rund um dich ab, damit Düsenlagen zwischen den Inseln auffallen.</p>
+      <p>Standort als Koordinaten, Ortsname oder per GPS. Mit <b>Wegpunkt +</b> baust du die geplante Strecke Station für Station auf; daraus werden Probepunkte entlang der Route abgefragt und die Streckenlänge in Seemeilen berechnet. Umkreis fragt zusätzlich vier Punkte rund um dich ab, damit Düsenlagen zwischen den Inseln auffallen.</p>
+      <p><b>Aus Logbuch übernehmen</b> holt Von, Nach und Liegeplatz aus dem aktuellen Tag – nach Bestätigung. <b>Aus Zwischenablage</b> liest Koordinaten, die du in Google Maps durch langes Drücken kopiert hast. Findet die Ortssuche einen Namen nicht, greift eine eingebaute Revierliste, danach OpenStreetMap.</p>
+      <p>Der <b>geplante Liegeplatz</b> fließt in die Nachtbewertung ein: Die App prüft, ob Marina, Boje, freier Anker oder Landleine zu den erwarteten Böen passt, und sagt dir, was stattdessen nötig wäre.</p>
       <ul>
         <li><b>Ankerbucht offen nach</b> – die App prüft, ob der Nachtwind aus der offenen Richtung einsteht</li>
         <li><b>Amtlicher Bericht</b> – Text von meteo.hr einfügen, wird mit dem Modell verglichen; liegt er höher, gilt er</li>
         <li><b>Zwei Ampeln</b> – oben für die Fahrt, darunter für die Nacht mit Empfehlung Anker, Boje oder Marina</li>
-        <li><b>In Logbuch übernehmen</b> schreibt die Kurzfassung in den aktuellen Tag</li>
+        <li><b>In Logbuch übernehmen</b> zeigt vor dem Speichern eine Liste dessen, was eingetragen wird: Vorhersage-Notiz, Nach, Von, Liegeplatz und die geplante Distanz</li>
       </ul>
       <p>Unter der Auswertung liegt eine Wetterkarte, umschaltbar zwischen Wind, Böen, Wellen, Regen und Druck. Der Block <b>Modellstreuung</b> vergleicht fünf Modelle für deinen Standort: Sind sie sich uneins, ist die Lage schlecht vorhersagbar und du planst nach dem pessimistischeren. Welches Modell die Hauptrechnung nutzt, stellst du in den Stammdaten ein – hochauflösende Modelle rechnen nur 48 bis 60 Stunden weit.</p>
 
@@ -673,6 +705,12 @@ KOMMEN</div>
         <li>Ergänzend nicht in der App: UKW Kanal 16 und 67, NAVTEX 518 kHz über Plovput</li>
       </ul>
 
+      <h3>Eingebaut, ohne Internet nutzbar</h3>
+      <ul>
+        <li><b>Revierliste</b> – Häfen, Marinas und Ankerbuchten der gesamten kroatischen Küste von Umag in Istrien über Kvarner, Zadar und die Kornaten bis Dubrovnik und Cavtat, dazu die vorgelagerten Inseln. Wird bei der Ortssuche vor den Onlinediensten befragt, erkennt Schreibweisen ohne Sonderzeichen.</li>
+        <li>Positionen sind Näherungswerte für die Wetterabfrage und nicht zur Navigation geeignet.</li>
+      </ul>
+
       <h3>Gerät</h3>
       <ul>
         <li><b>GPS des Handys</b> – Position und Streckenmessung</li>
@@ -736,16 +774,17 @@ var PLAN = {
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "1.3.2";
+var APP_VERSION = "1.5";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 1.3.2"],
+    ["Version", APP_VERSION + " · Cache 1.5"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
+    ["Revierliste", REVIER.length + " Häfen und Buchten, Umag bis Cavtat"],
     ["Betrieb", (location.protocol.indexOf("http") === 0 ? "online-fähig, offline nutzbar" : "lokale Datei, GPS gesperrt")],
     ["Speicher", "Gerätespeicher" + (dateiHandle ? " + Datei " + dateiHandle.name : "")]
   ];
@@ -1377,27 +1416,245 @@ async function wetterHolen(btn){
 }
 
 /* ================= Wetteranalyse ================= */
+
+/* ================= Ortssuche ================= */
+/* Kleine Revierliste als Rückfall – funktioniert auch ohne Empfang.
+   Positionen sind Näherungswerte für die Wetterabfrage, nicht zur Navigation. */
+var REVIER = [
+  /* Istrien und Kvarner */
+  {n:"Umag", lat:45.4310, lon:13.5240, alt:["umag","aci umag"]},
+  {n:"Novigrad (Istrien)", lat:45.3170, lon:13.5580, alt:["novigrad istrien","novigrad"]},
+  {n:"Poreč", lat:45.2270, lon:13.5940, alt:["porec"]},
+  {n:"Vrsar", lat:45.1470, lon:13.6040, alt:["vrsar"]},
+  {n:"Rovinj", lat:45.0810, lon:13.6360, alt:["rovinj"]},
+  {n:"Pula", lat:44.8730, lon:13.8420, alt:["pula","aci pula"]},
+  {n:"Medulin", lat:44.8180, lon:13.9330, alt:["medulin"]},
+  {n:"Rabac", lat:45.0790, lon:14.1580, alt:["rabac"]},
+  {n:"Opatija", lat:45.3390, lon:14.3060, alt:["opatija","icici"]},
+  {n:"Rijeka", lat:45.3270, lon:14.4420, alt:["rijeka"]},
+  {n:"Cres", lat:44.9610, lon:14.4090, alt:["cres"]},
+  {n:"Osor", lat:44.6930, lon:14.3930, alt:["osor"]},
+  {n:"Nerezine", lat:44.6580, lon:14.3930, alt:["nerezine"]},
+  {n:"Mali Lošinj", lat:44.5330, lon:14.4620, alt:["mali losinj","losinj"]},
+  {n:"Veli Lošinj", lat:44.5170, lon:14.5060, alt:["veli losinj"]},
+  {n:"Susak", lat:44.5110, lon:14.3040, alt:["susak"]},
+  {n:"Unije", lat:44.6360, lon:14.2440, alt:["unije"]},
+  {n:"Ilovik", lat:44.4610, lon:14.5490, alt:["ilovik"]},
+  {n:"Punat (Krk)", lat:45.0180, lon:14.6270, alt:["punat","krk punat"]},
+  {n:"Krk Stadt", lat:45.0270, lon:14.5760, alt:["krk"]},
+  {n:"Malinska (Krk)", lat:45.1220, lon:14.5250, alt:["malinska"]},
+  {n:"Baška (Krk)", lat:44.9690, lon:14.7530, alt:["baska"]},
+  {n:"Rab", lat:44.7550, lon:14.7620, alt:["rab","aci rab"]},
+  {n:"Supetarska Draga (Rab)", lat:44.7860, lon:14.7280, alt:["supetarska draga"]},
+  {n:"Lopar (Rab)", lat:44.8330, lon:14.7300, alt:["lopar"]},
+  {n:"Senj", lat:44.9890, lon:14.9040, alt:["senj"]},
+  {n:"Novalja (Pag)", lat:44.5560, lon:14.8850, alt:["novalja"]},
+  {n:"Pag Stadt", lat:44.4450, lon:15.0570, alt:["pag"]},
+  {n:"Šimuni (Pag)", lat:44.4770, lon:14.9560, alt:["simuni"]},
+  {n:"Karlobag", lat:44.5290, lon:15.0770, alt:["karlobag"]},
+
+  /* Nord- und Mitteldalmatien */
+  {n:"Silba", lat:44.3720, lon:14.7060, alt:["silba"]},
+  {n:"Olib", lat:44.3690, lon:14.7830, alt:["olib"]},
+  {n:"Premuda", lat:44.3350, lon:14.6070, alt:["premuda"]},
+  {n:"Ist", lat:44.2680, lon:14.7690, alt:["ist"]},
+  {n:"Molat", lat:44.2260, lon:14.8460, alt:["molat","zapuntel"]},
+  {n:"Božava (Dugi otok)", lat:44.1370, lon:14.9100, alt:["bozava"]},
+  {n:"Veli Rat (Dugi otok)", lat:44.1520, lon:14.8280, alt:["veli rat"]},
+  {n:"Zadar", lat:44.1197, lon:15.2300, alt:["zadar","marina dalmacija","borik"]},
+  {n:"Sukošan", lat:44.0480, lon:15.3110, alt:["sukosan","dalmacija sukosan"]},
+  {n:"Preko (Ugljan)", lat:44.0800, lon:15.1900, alt:["preko","ugljan"]},
+  {n:"Kali (Ugljan)", lat:44.0570, lon:15.2170, alt:["kali"]},
+  {n:"Tkon (Pašman)", lat:43.9330, lon:15.3760, alt:["tkon","pasman"]},
+  {n:"Biograd na Moru", lat:43.9400, lon:15.4450, alt:["biograd","kornati marina"]},
+  {n:"Vrgada", lat:43.8520, lon:15.5060, alt:["vrgada"]},
+  {n:"Sali (Dugi otok)", lat:43.9390, lon:15.1600, alt:["sali","dugi otok"]},
+  {n:"Telašćica / Uvala Mir", lat:43.8880, lon:15.1780, alt:["telascica","uvala mir","mir"]},
+  {n:"Zut (ACI Žut)", lat:43.8590, lon:15.2930, alt:["zut","aci zut","uvala zut"]},
+  {n:"Vrulje (Kornat)", lat:43.8330, lon:15.2760, alt:["vrulje"]},
+  {n:"Levrnaka", lat:43.8100, lon:15.2540, alt:["levrnaka","lojena"]},
+  {n:"Lavsa", lat:43.7820, lon:15.3170, alt:["lavsa"]},
+  {n:"Smokvica (Kornati)", lat:43.7960, lon:15.3730, alt:["smokvica","smokvica vela"]},
+  {n:"Piškera / Vela Panitula", lat:43.7620, lon:15.3450, alt:["piskera","aci piskera","panitula"]},
+  {n:"Ravni Žakan", lat:43.7420, lon:15.3670, alt:["zakan","ravni zakan"]},
+  {n:"Opat (Kornat)", lat:43.7300, lon:15.3980, alt:["opat"]},
+  {n:"Murter / Hramina", lat:43.8230, lon:15.5900, alt:["murter","hramina","betina"]},
+  {n:"Jezera (Murter)", lat:43.7930, lon:15.6420, alt:["jezera"]},
+  {n:"Tribunj", lat:43.7530, lon:15.7460, alt:["tribunj"]},
+  {n:"Vodice", lat:43.7590, lon:15.7790, alt:["vodice"]},
+  {n:"Šibenik", lat:43.7350, lon:15.8890, alt:["sibenik","mandalina"]},
+  {n:"Skradin", lat:43.8156, lon:15.9222, alt:["skradin","aci skradin"]},
+  {n:"Prvić Luka", lat:43.7250, lon:15.8060, alt:["prvic","prvic luka"]},
+  {n:"Zlarin", lat:43.6940, lon:15.8480, alt:["zlarin"]},
+  {n:"Kaprije", lat:43.6870, lon:15.7100, alt:["kaprije"]},
+  {n:"Žirje", lat:43.6570, lon:15.6700, alt:["zirje","muna","velika stupica"]},
+  {n:"Primošten", lat:43.5856, lon:15.9231, alt:["primosten"]},
+  {n:"Marina Kremik", lat:43.5871, lon:15.9203, alt:["kremik","primosten marina"]},
+  {n:"Rogoznica", lat:43.5289, lon:15.9686, alt:["marina frapa","rogoznica"]},
+  {n:"Marina (Agana)", lat:43.5120, lon:16.1180, alt:["marina agana","agana"]},
+  {n:"Vinišće", lat:43.4880, lon:16.1350, alt:["vinisce"]},
+  {n:"Drvenik Veli", lat:43.4490, lon:16.1470, alt:["drvenik veli","krknjasi"]},
+  {n:"Trogir", lat:43.5125, lon:16.2510, alt:["trogir","marina trogir","seget"]},
+  {n:"Kaštela", lat:43.5490, lon:16.3800, alt:["kastela"]},
+  {n:"Split", lat:43.5043, lon:16.4400, alt:["split","aci split"]},
+  {n:"Omiš", lat:43.4440, lon:16.6890, alt:["omis"]},
+  {n:"Makarska", lat:43.2940, lon:17.0180, alt:["makarska"]},
+  {n:"Baška Voda", lat:43.3580, lon:16.9500, alt:["baska voda"]},
+
+  /* Süddalmatien */
+  {n:"Rogač (Šolta)", lat:43.3930, lon:16.3020, alt:["rogac"]},
+  {n:"Maslinica (Šolta)", lat:43.3990, lon:16.2070, alt:["maslinica","solta"]},
+  {n:"Stomorska (Šolta)", lat:43.3760, lon:16.3450, alt:["stomorska"]},
+  {n:"Milna (Brač)", lat:43.3270, lon:16.4500, alt:["milna","brac milna","vlaska"]},
+  {n:"Bobovišća (Brač)", lat:43.3650, lon:16.4390, alt:["bobovisca"]},
+  {n:"Supetar (Brač)", lat:43.3850, lon:16.5540, alt:["supetar"]},
+  {n:"Bol (Brač)", lat:43.2620, lon:16.6540, alt:["bol","zlatni rat"]},
+  {n:"Hvar / Palmižana", lat:43.1620, lon:16.3900, alt:["hvar","palmizana","paklinski"]},
+  {n:"Stari Grad (Hvar)", lat:43.1840, lon:16.5960, alt:["stari grad"]},
+  {n:"Jelsa (Hvar)", lat:43.1630, lon:16.6900, alt:["jelsa"]},
+  {n:"Vrboska (Hvar)", lat:43.1810, lon:16.6790, alt:["vrboska"]},
+  {n:"Šćedro", lat:43.0930, lon:16.7000, alt:["scedro"]},
+  {n:"Vis", lat:43.0620, lon:16.1830, alt:["vis","luka vis"]},
+  {n:"Komiža (Vis)", lat:43.0450, lon:16.0910, alt:["komiza"]},
+  {n:"Vela Luka (Korčula)", lat:42.9640, lon:16.7160, alt:["vela luka"]},
+  {n:"Korčula Stadt", lat:42.9600, lon:17.1360, alt:["korcula"]},
+  {n:"Lumbarda (Korčula)", lat:42.9280, lon:17.1720, alt:["lumbarda"]},
+  {n:"Lastovo", lat:42.7660, lon:16.8990, alt:["lastovo","ubli","skrivena luka"]},
+  {n:"Orebić (Pelješac)", lat:42.9750, lon:17.1750, alt:["orebic","peljesac"]},
+  {n:"Trstenik (Pelješac)", lat:42.9160, lon:17.4130, alt:["trstenik"]},
+  {n:"Lovište (Pelješac)", lat:43.0270, lon:17.0300, alt:["loviste"]},
+  {n:"Ston", lat:42.8390, lon:17.6960, alt:["ston","mali ston"]},
+  {n:"Polače (Mljet)", lat:42.7900, lon:17.3820, alt:["polace","mljet"]},
+  {n:"Pomena (Mljet)", lat:42.7860, lon:17.3450, alt:["pomena"]},
+  {n:"Okuklje (Mljet)", lat:42.7350, lon:17.5560, alt:["okuklje"]},
+  {n:"Slano", lat:42.7860, lon:17.8890, alt:["slano"]},
+  {n:"Šipan (Šipanska Luka)", lat:42.7290, lon:17.8630, alt:["sipan","sipanska luka"]},
+  {n:"Lopud", lat:42.6900, lon:17.9420, alt:["lopud"]},
+  {n:"Dubrovnik / ACI Komolac", lat:42.6790, lon:18.1230, alt:["dubrovnik","komolac","gruz"]},
+  {n:"Cavtat", lat:42.6180, lon:18.2170, alt:["cavtat"]}
+];
+
+function ortNorm(t){
+  return String(t || "").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+}
+function revierSuchen(text){
+  var q = ortNorm(text);
+  if(q.length < 3) return null;
+  for(var i=0;i<REVIER.length;i++){
+    var r = REVIER[i];
+    var namen = [ortNorm(r.n)].concat((r.alt || []).map(ortNorm));
+    for(var j=0;j<namen.length;j++){
+      if(namen[j] === q || namen[j].indexOf(q) === 0 || q.indexOf(namen[j]) === 0){
+        return {lat:r.lat, lon:r.lon, name:r.n, quelle:"Revierliste"};
+      }
+    }
+  }
+  return null;
+}
+function nahDran(a, b){
+  if(!setup.lat || !setup.lon) return 0;
+  var p = {lat:parseFloat(String(setup.lat).replace(",",".")), lon:parseFloat(String(setup.lon).replace(",","."))};
+  return meter(p, a) - meter(p, b);
+}
+async function geoOpenMeteo(text){
+  var r = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=10&language=de&name=" + encodeURIComponent(text));
+  if(!r.ok) return null;
+  var j = await r.json();
+  if(!j.results || !j.results.length) return null;
+  var liste = j.results.map(function(t){
+    return {lat:t.latitude, lon:t.longitude, name:t.name + (t.admin1 ? ", " + t.admin1 : "") + (t.country_code ? " (" + t.country_code + ")" : ""), quelle:"Open-Meteo"};
+  });
+  liste.sort(function(a, b){ return nahDran(a, b); });
+  return liste[0];
+}
+async function geoNominatim(text){
+  var u = "https://nominatim.openstreetmap.org/search?format=json&limit=5&accept-language=de&q=" + encodeURIComponent(text);
+  var r = await fetch(u, {headers:{"Accept":"application/json"}});
+  if(!r.ok) return null;
+  var j = await r.json();
+  if(!j || !j.length) return null;
+  var liste = j.map(function(t){
+    return {lat:parseFloat(t.lat), lon:parseFloat(t.lon), name:String(t.display_name).split(",").slice(0,2).join(",").trim(), quelle:"OpenStreetMap"};
+  });
+  liste.sort(function(a, b){ return nahDran(a, b); });
+  return liste[0];
+}
 async function ortSuchen(text){
   var k = parseKoord(text);
-  if(k) return {lat:k.lat, lon:k.lon, name:k.lat.toFixed(3) + " / " + k.lon.toFixed(3)};
-  var r = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=de&name=" + encodeURIComponent(text));
-  if(!r.ok) throw new Error("Ortssuche nicht erreichbar.");
-  var j = await r.json();
-  if(!j.results || !j.results.length) throw new Error("Ort „" + text + "“ nicht gefunden. Nutze Koordinaten.");
-  var t = j.results[0];
-  return {lat:t.latitude, lon:t.longitude, name:t.name};
+  if(k) return {lat:k.lat, lon:k.lon, name:k.lat.toFixed(3) + " / " + k.lon.toFixed(3), quelle:"Koordinaten"};
+
+  var r = revierSuchen(text);
+  if(r) return r;
+
+  var fehler = null;
+  try{ var a = await geoOpenMeteo(text); if(a) return a; }catch(e){ fehler = e; }
+  /* Zweiter Versuch: Zusatz "Kroatien" hilft bei Buchtnamen */
+  try{ var b = await geoOpenMeteo(text + " Kroatien"); if(b) return b; }catch(e){}
+  try{ var c = await geoNominatim(text); if(c) return c; }catch(e){ fehler = e; }
+  try{ var d = await geoNominatim(text + ", Hrvatska"); if(d) return d; }catch(e){}
+
+  throw new Error("Ort „" + text + "“ nicht gefunden. Öffne die Stelle in Google Maps, halte sie gedrückt, kopiere die Koordinaten und füge sie hier ein.");
 }
-/* Zwischenpunkte auf der Strecke Standort -> Ziel */
-function routePunkte(a, b, anzahl){
-  if(!b) return [];
+
+/* ================= Wegpunkte ================= */
+var wps = [];
+function wpRender(){
+  var box = $("wpBox");
+  if(!box) return;
+  var h = '<div class="wpKopf"><label>Wegpunkte auf der Strecke</label>' +
+    '<button class="small" id="wpAdd">Wegpunkt +</button></div>';
+  box.innerHTML = h;
+  wps.forEach(function(w, i){
+    var zeile = document.createElement("div");
+    zeile.className = "wp";
+    var inp = document.createElement("input");
+    inp.type = "text";
+    inp.value = w;
+    inp.placeholder = "Bucht, Ort oder 43.80, 15.30";
+    inp.setAttribute("autocomplete", "off");
+    inp.addEventListener("input", function(){ wps[i] = inp.value; planSichern(); });
+    var weg = document.createElement("button");
+    weg.textContent = "×";
+    weg.title = "Wegpunkt entfernen";
+    weg.onclick = function(){ wps.splice(i, 1); wpRender(); planSichern(); };
+    zeile.appendChild(inp); zeile.appendChild(weg);
+    box.appendChild(zeile);
+  });
+  $("wpAdd").onclick = function(){
+    if(wps.length >= 6){ $("wMsg").className = "note err"; $("wMsg").textContent = "Mehr als sechs Wegpunkte werden nicht abgefragt."; return; }
+    wps.push(""); wpRender();
+  };
+}
+
+/* Streckenlänge in Seemeilen über alle Stationen */
+function streckeSm(stationen){
+  var sm = 0;
+  for(var i=1;i<stationen.length;i++) sm += meter(stationen[i-1], stationen[i]) / 1852;
+  return sm;
+}
+/* Probepunkte gleichmäßig über die gesamte Strecke verteilen */
+function streckeProben(stationen, anzahl){
+  if(stationen.length < 2) return [];
+  var laengen = [], gesamt = 0;
+  for(var i=1;i<stationen.length;i++){
+    var d = meter(stationen[i-1], stationen[i]);
+    laengen.push(d); gesamt += d;
+  }
+  if(gesamt <= 0) return [];
   var out = [];
-  for(var i=1;i<=anzahl;i++){
-    var f = i / (anzahl + 1);
+  for(var k=1;k<=anzahl;k++){
+    var ziel = gesamt * k / (anzahl + 1), lauf = 0, idx = 0;
+    while(idx < laengen.length - 1 && lauf + laengen[idx] < ziel){ lauf += laengen[idx]; idx++; }
+    var f = laengen[idx] > 0 ? (ziel - lauf) / laengen[idx] : 0;
+    var a = stationen[idx], b = stationen[idx + 1];
     out.push({lat:a.lat + (b.lat - a.lat) * f, lon:a.lon + (b.lon - a.lon) * f,
-      name:"Strecke " + Math.round(f * 100) + " %"});
+      name:"Strecke " + Math.round(100 * k / (anzahl + 1)) + " %"});
   }
   return out;
 }
+
 function ringPunkte(p, sm){
   if(!sm) return [];
   var dLat = sm / 60, dLon = sm / (60 * Math.cos(p.lat * Math.PI/180));
@@ -1518,7 +1775,23 @@ function nachtIndizes(serie){
   return idx;
 }
 
-function nachtBewertung(serie, offen){
+/* Was hält welcher Liegeplatz aus? */
+function liegeGrenze(art){
+  if(art === "Marina" || art === "Steg im Ort") return sw("marinaBoe") + 12;
+  if(art === "Boje / Muring") return sw("bojeRot");
+  if(art === "Ankern mit Landleine") return sw("ankerRot");
+  if(art === "Anker frei") return sw("ankerRot");
+  return null;
+}
+function liegeEmpfehlung(gust){
+  if(gust >= sw("marinaBoe")) return "Marina";
+  if(gust >= sw("ankerRot")) return "Marina oder sehr gut geschützte Bucht";
+  if(gust >= sw("bojeRot")) return "Anker mit Wache, Boje nur bei bekanntem Zustand";
+  if(gust >= sw("ankerGelb")) return "Anker gut, mit Ankeralarm";
+  return "freier Anker unkritisch";
+}
+
+function nachtBewertung(serie, offen, liege){
   var idx = nachtIndizes(serie);
   if(!idx.length) return null;
   var wind = 0, gust = 0, welle = 0, dirA = nz(serie.dir[idx[0]]), dirMax = dirA, dreh = 0, gewitter = 0, faktor = 0;
@@ -1588,10 +1861,32 @@ function nachtBewertung(serie, offen){
     text.push("Trage oben ein, wohin die geplante Bucht offen ist, dann prüfe ich die Lage gegen die Nachtwindrichtung.");
   }
 
-  return {stufe:stufe, liege:liege, text:text.join(" "), gust:gust, wind:wind, von:von, bis:bisZ, dreh:dreh};
+  if(liege){
+    var g = liegeGrenze(liege);
+    if(g != null && gust >= g){
+      stufe = "rot";
+      text.push("Du hast „" + liege + "“ geplant. Bei " + Math.round(gust) + " kn Böen reicht das nach deinen Schwellen nicht – nötig wäre: " + liegeEmpfehlung(gust) + ".");
+    }else if(g != null && gust >= g - 4){
+      if(stufe === "gruen") stufe = "gelb";
+      text.push("Der geplante Liegeplatz „" + liege + "“ liegt mit " + Math.round(gust) + " kn Böen knapp unter seiner Grenze von " + Math.round(g) + " kn. Alternative bereithalten.");
+    }else if(g != null){
+      text.push("Der geplante Liegeplatz „" + liege + "“ passt zu dieser Nacht.");
+    }
+    if(liege === "Ankern mit Landleine" && faktor >= sw("faktorGelb") && mittelDir >= 20 && mittelDir <= 90){
+      if(stufe === "gruen") stufe = "gelb";
+      text.push("Landleinen bei böigem NE-Wind sind heikel: Fallböen belasten ruckartig und die Leine scheuert am Fels. Scheuerschutz anbringen und lang fieren.");
+    }
+    if(liege === "Boje / Muring" && gewitter){
+      stufe = "rot";
+      text.push("An einer Boje weißt du nicht, was unter Wasser liegt. Bei Gewitter ist das die schlechteste Wahl.");
+    }
+  }
+
+  return {stufe:stufe, liege:liegeEmpfehlung(gust), geplant:liege || "", text:text.join(" "),
+    gust:gust, wind:wind, von:von, bis:bisZ, dreh:dreh};
 }
 
-function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuung, amt){
+function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuung, amt, liege, sm){
   var maxWind = maxV(zentrum.wind), maxGust = maxV(zentrum.gust), maxWelle = maxV(zentrum.welle);
   var idxGust = zentrum.gust.indexOf(maxGust), idxWind = zentrum.wind.indexOf(maxWind);
   var boeFaktor = 0, i;
@@ -1765,7 +2060,7 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
   }
 
   /* Nacht am Liegeplatz */
-  var nacht = nachtBewertung(zentrum, offen);
+  var nacht = nachtBewertung(zentrum, offen, liege);
   if(nacht){
     B("Nacht und Liegeplatz", nacht.text, nacht.stufe);
     if(nacht.stufe === "rot" && stufe !== "rot") stufe = "rot";
@@ -1794,7 +2089,7 @@ function analysiere(zentrum, ring, ziel, stunden, umkreis, route, offen, streuun
       " kn Böen zwischen " + sw("fVon") + " und " + sw("fBis") + " Uhr einhält. Etappe verschieben oder deutlich kürzer planen.";
 
   return {stufe:stufe, bloecke:bloecke, empfehlung:empf, maxWind:maxWind, maxGust:maxGust,
-    maxWelle:maxWelle, fenster:fenster, stunden:stunden, nacht:nacht};
+    maxWelle:maxWelle, fenster:fenster, stunden:stunden, nacht:nacht, sm:sm || 0};
 }
 
 function chartSvg(s){
@@ -1859,9 +2154,13 @@ function analyseZeigen(a, zentrum, ortName, zielName){
   var kl = a.stufe === "rot" ? "a-rot" : (a.stufe === "gelb" ? "a-gelb" : "a-gruen");
   var titel = a.stufe === "rot" ? "Nicht fahren" : (a.stufe === "gelb" ? "Fahrbar mit Auflagen" : "Gute Bedingungen");
   var kurz = "Bis " + Math.round(a.maxWind) + " kn, Böen " + Math.round(a.maxGust) + " kn" +
-    (a.maxWelle ? ", Welle " + a.maxWelle.toFixed(1).replace(".", ",") + " m" : "") + " in den nächsten " + a.stunden + " Stunden.";
+    (a.maxWelle ? ", Welle " + a.maxWelle.toFixed(1).replace(".", ",") + " m" : "") + " in den nächsten " + a.stunden + " Stunden." +
+    (a.sm ? " Strecke " + a.sm.toFixed(1).replace(".", ",") + " sm" +
+      (letzteAnalyse && letzteAnalyse.wps && letzteAnalyse.wps.length ? " über " + letzteAnalyse.wps.length + " Wegpunkte" : "") + "." : "");
 
-  var html = '<div class="sheet"><h2>' + ortName + (zielName ? " nach " + zielName : "") + '</h2>' +
+  var weg = (letzteAnalyse && letzteAnalyse.wps && letzteAnalyse.wps.length)
+    ? " über " + letzteAnalyse.wps.map(function(w){ return w.name; }).join(", ") : "";
+  var html = '<div class="sheet"><h2>' + ortName + weg + (zielName ? " nach " + zielName : "") + '</h2>' +
     '<div class="ampel ' + kl + '"><span class="dot"></span><div><b>' + titel + '</b><div class="txt">' + kurz + '</div></div></div>' +
     (a.nacht ? '<div class="ampel ' + (a.nacht.stufe === "rot" ? "a-rot" : a.nacht.stufe === "gelb" ? "a-gelb" : "a-gruen") +
       '"><span class="dot"></span><div><b>Nacht: ' + a.nacht.liege + '</b><div class="txt">' +
@@ -1901,6 +2200,15 @@ async function analyseStarten(){
     }
     var zielTxt = $("w_ziel").value.trim();
     var ziel = zielTxt ? await ortSuchen(zielTxt) : null;
+
+    /* Wegpunkte auflösen */
+    var wpOrte = [];
+    for(var wi=0; wi<wps.length; wi++){
+      var t = String(wps[wi] || "").trim();
+      if(!t) continue;
+      msg.textContent = "Suche Wegpunkt " + (wi + 1) + " …";
+      wpOrte.push(await ortSuchen(t));
+    }
     var umkreis = parseInt($("w_umkreis").value, 10);
     var stunden = parseInt($("w_dauer").value, 10);
     var mi = modellInfo(setup.modell);
@@ -1908,25 +2216,32 @@ async function analyseStarten(){
     if(stunden > mi.max){ stunden = mi.max; gekappt = true; }
 
     var ring = ringPunkte(stand, umkreis);
-    var strecke = routePunkte(stand, ziel, 3);
-    var punkte = [{lat:stand.lat, lon:stand.lon, name:"Standort"}].concat(ring, strecke);
+    var stationen = [stand].concat(wpOrte);
+    if(ziel) stationen.push(ziel);
+    var sm = stationen.length > 1 ? streckeSm(stationen) : 0;
+    var strecke = stationen.length > 1 ? streckeProben(stationen, Math.min(4, 2 + wpOrte.length)) : [];
+    var wpPunkte = wpOrte.map(function(w){ return {lat:w.lat, lon:w.lon, name:w.name}; });
+    var punkte = [{lat:stand.lat, lon:stand.lon, name:"Standort"}].concat(ring, wpPunkte, strecke);
     if(ziel) punkte.push({lat:ziel.lat, lon:ziel.lon, name:ziel.name});
 
     var serien = await serienHolen(punkte, stunden, setup.modell);
     var zentrum = serien[0];
     var ringS = serien.slice(1, 1 + ring.length);
-    var streckeS = serien.slice(1 + ring.length, 1 + ring.length + strecke.length);
+    var streckeS = serien.slice(1 + ring.length, 1 + ring.length + wpPunkte.length + strecke.length);
     var zielS = ziel ? serien[serien.length - 1] : null;
     if(zielS) zielS.name = ziel.name;
     var offen = $("w_offen").value;
+    var liege = $("w_liege").value;
     var amtText = $("w_amt").value;
     setup.amt = amtText;
     var amt = amtAuswerten(amtText);
     var streuung = null;
     try{ streuung = await streuungHolen(stand.lat, stand.lon, stunden); }catch(e){}
 
-    var a = analysiere(zentrum, ringS, zielS, stunden, umkreis, streckeS, offen, streuung, amt);
-    letzteAnalyse = {a:a, ort:stand, ziel:ziel, umkreis:umkreis, offen:offen, modell:mi};
+    var a = analysiere(zentrum, ringS, zielS, stunden, umkreis, streckeS, offen, streuung, amt, liege, sm);
+    letzteAnalyse = {a:a, ort:stand, ziel:ziel, umkreis:umkreis, offen:offen, modell:mi,
+      wps:wpOrte, sm:sm, liege:liege, zeit:new Date().toISOString()};
+    planSichern();
     analyseZeigen(a, zentrum, stand.name, ziel ? ziel.name : "");
 
     setup.lat = stand.lat.toFixed(4); setup.lon = stand.lon.toFixed(4); setup.ziel = zielTxt; setup.offen = offen;
@@ -1946,6 +2261,51 @@ $("wDhmzDe").onclick = function(){ window.open("https://meteo.hr/prognoze.php?se
 $("wDhmzEn").onclick = function(){ window.open("https://www.meteo.hr/prognoze_e.php?section=prognoze_specp&param=jadran", "_blank"); };
 $("wGekom").onclick = function(){ window.open("https://www.bora.gekom.hr/", "_blank"); };
 $("w_amt").addEventListener("input", function(){ setup.amt = $("w_amt").value; lokalSpeichern(); });
+$("wAusLog").onclick = function(){
+  var e = data[aktiv] || {}, t = TAGE[aktiv-1];
+  var teile = [];
+  if(e.von) teile.push("Start: " + e.von);
+  if(e.nach) teile.push("Ziel: " + e.nach);
+  if(e.liegeplatz) teile.push("Liegeplatz: " + e.liegeplatz);
+  if(!teile.length){
+    $("wMsg").className = "note err";
+    $("wMsg").textContent = "In Tag " + aktiv + " stehen noch keine Angaben zu Von, Nach oder Liegeplatz.";
+    return;
+  }
+  if(!confirm("Aus Tag " + aktiv + " (" + t.wt + " " + t.d + ") übernehmen?\n\n" + teile.join("\n"))) return;
+  if(e.von) $("w_stand").value = e.von;
+  if(e.nach) $("w_ziel").value = e.nach;
+  if(e.liegeplatz) $("w_liege").value = e.liegeplatz;
+  planSichern();
+  $("wMsg").className = "note ok";
+  $("wMsg").textContent = "Aus Tag " + aktiv + " übernommen. Jetzt Analyse starten.";
+};
+
+$("wPaste").onclick = async function(){
+  var m = $("wMsg");
+  try{
+    var t = await navigator.clipboard.readText();
+    var k = parseKoord(t);
+    if(!k){
+      m.className = "note err";
+      m.textContent = "In der Zwischenablage stehen keine erkennbaren Koordinaten. In Google Maps die Stelle gedrückt halten, die Zahlen oben antippen und kopieren.";
+      return;
+    }
+    $("w_stand").value = k.lat.toFixed(4) + ", " + k.lon.toFixed(4);
+    planSichern();
+    m.className = "note ok";
+    m.textContent = "Standort aus der Zwischenablage: " + k.lat.toFixed(4) + " / " + k.lon.toFixed(4);
+  }catch(e){
+    m.className = "note err";
+    m.textContent = "Zugriff auf die Zwischenablage nicht möglich. Koordinaten von Hand in das Feld einfügen.";
+  }
+};
+
+["w_stand","w_ziel","w_liege","w_offen"].forEach(function(id){
+  var el = $(id);
+  if(el) el.addEventListener("change", planSichern);
+});
+
 $("wGo").onclick = analyseStarten;
 $("wGps").onclick = function(){
   var msg = $("wMsg");
@@ -1959,17 +2319,44 @@ $("wGps").onclick = function(){
 };
 $("wUeber").onclick = function(){
   if(!letzteAnalyse) return;
-  var a = letzteAnalyse.a, e = eintrag(aktiv);
-  e.vorhersage = (e.vorhersage ? e.vorhersage.trim() + "\n" : "") +
-    "Analyse " + new Date().toLocaleString("de-DE", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"}) +
-    " · " + letzteAnalyse.ort.name + (letzteAnalyse.ziel ? " nach " + letzteAnalyse.ziel.name : "") +
+  var a = letzteAnalyse.a, e = eintrag(aktiv), t = TAGE[aktiv-1];
+  var vor = [];
+  var zeile = "Analyse " + new Date().toLocaleString("de-DE", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"}) +
+    " · " + letzteAnalyse.ort.name +
+    (letzteAnalyse.wps && letzteAnalyse.wps.length ? " über " + letzteAnalyse.wps.map(function(w){ return w.name; }).join(", ") : "") +
+    (letzteAnalyse.ziel ? " nach " + letzteAnalyse.ziel.name : "") +
     (letzteAnalyse.modell ? " · " + letzteAnalyse.modell.l : "") +
     " · " + a.stunden + " h: bis " + Math.round(a.maxWind) + " kn, Böen " + Math.round(a.maxGust) + " kn" +
     (a.maxWelle ? ", Welle " + a.maxWelle.toFixed(1).replace(".", ",") + " m" : "") +
     " · Bewertung " + (a.stufe === "rot" ? "nicht fahren" : a.stufe === "gelb" ? "mit Auflagen" : "gut") +
     (a.fenster.length ? "\n  Fenster: " + a.fenster.map(function(f){ return zeitLabel(f[0]) + " bis " + zeitLabel(f[1]); }).join("; ") : "") +
     (a.nacht ? "\n  Nacht " + a.nacht.von + " bis " + a.nacht.bis + ": Böen bis " + Math.round(a.nacht.gust) +
-      " kn, Empfehlung " + a.nacht.liege : "");
+      " kn, Empfehlung " + a.nacht.liege + (a.nacht.geplant ? " (geplant: " + a.nacht.geplant + ")" : "") : "");
+  vor.push("Vorhersage-Notiz anhängen");
+
+  var zielName = letzteAnalyse.ziel ? letzteAnalyse.ziel.name : "";
+  var setzeZiel = zielName && (e.nach || "").trim() !== zielName;
+  if(setzeZiel) vor.push("Nach: " + zielName + (e.nach ? " (statt " + e.nach + ")" : ""));
+
+  var startName = letzteAnalyse.ort.name;
+  var setzeStart = startName && !(e.von || "").trim() && letzteAnalyse.ort.quelle !== "Koordinaten";
+  if(setzeStart) vor.push("Von: " + startName);
+
+  var setzeLiege = letzteAnalyse.liege && (e.liegeplatz || "") !== letzteAnalyse.liege;
+  if(setzeLiege) vor.push("Liegeplatz: " + letzteAnalyse.liege);
+
+  var smWert = Math.round((letzteAnalyse.sm || 0) * 10) / 10;
+  var setzeSm = smWert > 0 && Math.abs(zahl(e.distanz) - smWert) > 0.5;
+  if(setzeSm) vor.push("Distanz: " + String(smWert).replace(".", ",") + " sm (Streckenlänge aus der Planung" +
+    (zahl(e.distanz) > 0 ? ", ersetzt " + e.distanz : "") + ")");
+
+  if(!confirm("In Tag " + aktiv + " (" + t.wt + " " + t.d + ") übernehmen?\n\n· " + vor.join("\n· "))) return;
+
+  e.vorhersage = (e.vorhersage ? e.vorhersage.trim() + "\n" : "") + zeile;
+  if(setzeZiel) e.nach = zielName;
+  if(setzeStart) e.von = startName;
+  if(setzeLiege) e.liegeplatz = letzteAnalyse.liege;
+  if(setzeSm) e.distanz = String(smWert).replace(".", ",");
   lokalSpeichern();
   $("wMsg").className = "note ok";
   $("wMsg").textContent = "In Tag " + aktiv + " übernommen.";
@@ -2014,8 +2401,10 @@ function summen(){
     mot += (parseFloat(String(e.motorBB||"").replace(",",".")) || 0) + (parseFloat(String(e.motorSB||"").replace(",",".")) || 0);
     if(gefuellt(t.n)) tage++;
   });
-  var html = "GEFAHREN <b>" + sm.toFixed(1) + " sm</b><span>MOTOR <b>" + mot.toFixed(1) + " h</b></span>" +
-    "<span>EINGETRAGEN <b>" + tage + "/" + TAGE.length + "</b></span>";
+  var html = "TAG <b>" + aktiv + "/" + TAGE.length + "</b>" +
+    "<span>MIT EINTRÄGEN <b>" + tage + "</b></span>" +
+    "<span>GEFAHREN <b>" + sm.toFixed(1) + " sm</b></span>" +
+    "<span>MOTOR <b>" + mot.toFixed(1) + " h</b></span>";
   if(setup.motBB || setup.motSB){
     var mbb = 0, msb = 0;
     TAGE.forEach(function(t){
@@ -2026,6 +2415,24 @@ function summen(){
   }
   $("totals").innerHTML = html;
 }
+/* Kopfbereich ein- und ausklappen */
+function kopfAnwenden(){
+  var zu = !!setup.kopfZu;
+  var imLog = ansicht === "log";
+  $("ruler").classList.toggle("hidden", !imLog || zu);
+  document.querySelector(".totals").style.display = zu ? "none" : "";
+  var t = TAGE[aktiv-1];
+  $("kopfToggle").textContent = zu
+    ? "Tag " + aktiv + "/" + TAGE.length + (t ? " · " + t.wt + " " + t.d.slice(0,6) : "") + "  ⌄"
+    : "⌃";
+  $("kopfToggle").setAttribute("aria-expanded", zu ? "false" : "true");
+}
+$("kopfToggle").onclick = function(){
+  setup.kopfZu = !setup.kopfZu;
+  kopfAnwenden();
+  lokalSpeichern();
+};
+
 function marker(){
   var k = $("days").children;
   for(var i=0;i<k.length;i++) k[i].classList.toggle("filled", gefuellt(i+1));
@@ -2142,7 +2549,7 @@ function zeichne(){
     s.appendChild(grid);
     form.appendChild(s);
   });
-  tagesleiste(); summen();
+  tagesleiste(); summen(); vorschlaegeBauen(); kopfAnwenden();
 }
 
 /* ================= Ansichten ================= */
@@ -2151,11 +2558,12 @@ function ansichtSetzen(v){
   $("viewLog").classList.toggle("on", v === "log");
   $("viewWetter").classList.toggle("on", v === "wetter");
   $("viewSetup").classList.toggle("on", v === "setup");
+  if(v === "wetter") planLaden();
   $("viewWiki").classList.toggle("on", v === "wiki");
   $("viewInfo").classList.toggle("on", v === "info");
   if(v === "info") infoBauen();
-  $("ruler").classList.toggle("hidden", v !== "log");
   $("navbtns").classList.toggle("hidden", v !== "log");
+  kopfAnwenden();
   Array.prototype.forEach.call($("nav").children, function(b){
     b.setAttribute("aria-selected", b.getAttribute("data-v") === v ? "true" : "false");
   });
