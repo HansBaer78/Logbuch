@@ -587,6 +587,7 @@ KOMMEN</div>
     </div>
 
     <div class="tools">
+      <button class="primary" id="btnUpdate">Nach Updates suchen</button>
       <button class="primary" id="btnBackup">Backup in Downloads</button>
       <button id="btnRestore">Backup laden</button>
       <button id="btnExcel">Excel-Export (.xlsx)</button>
@@ -670,6 +671,7 @@ KOMMEN</div>
       </ul>
 
       <h3>Updates</h3>
+      <p>Wenn die App nicht von selbst aktualisiert, hilft in den Stammdaten der Knopf <b>Nach Updates suchen</b>: Er leert den Zwischenspeicher der App-Dateien und lädt neu. Logbucheinträge sind davon nicht betroffen.</p>
       <p>Liegt eine neue Version bereit, erscheint oben ein Hinweis mit dem Knopf „Jetzt aktualisieren". Logbucheinträge, Stammdaten und Schwellenwerte bleiben dabei erhalten – sie liegen im Gerätespeicher und werden von einem Update nicht angefasst. Browserdaten löschen ist nicht nötig und würde die Einträge vernichten; vorher immer ein Backup ziehen.</p>
 
       <h3>Grenzen</h3>
@@ -774,13 +776,13 @@ var PLAN = {
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "1.5";
+var APP_VERSION = "1.5.1";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 1.5"],
+    ["Version", APP_VERSION + " · Cache 1.5.1"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
@@ -2362,6 +2364,90 @@ $("wUeber").onclick = function(){
   $("wMsg").textContent = "In Tag " + aktiv + " übernommen.";
 };
 
+/* ================= Planübergabe Wetter <-> Logbuch ================= */
+function planSichern(){
+  var e = eintrag(aktiv);
+  var alt = e.plan || {};
+  e.plan = {
+    stand: $("w_stand") ? $("w_stand").value : alt.stand,
+    ziel: $("w_ziel") ? $("w_ziel").value : alt.ziel,
+    liege: $("w_liege") ? $("w_liege").value : alt.liege,
+    offen: $("w_offen") ? $("w_offen").value : alt.offen,
+    wps: wps.slice(),
+    sm: letzteAnalyse && letzteAnalyse.sm ? Math.round(letzteAnalyse.sm * 10) / 10 : alt.sm,
+    zeit: letzteAnalyse ? letzteAnalyse.zeit : alt.zeit,
+    ampel: letzteAnalyse ? letzteAnalyse.a.stufe : alt.ampel,
+    nacht: letzteAnalyse && letzteAnalyse.a.nacht ? {
+      liege: letzteAnalyse.a.nacht.liege,
+      geplant: letzteAnalyse.a.nacht.geplant,
+      gust: Math.round(letzteAnalyse.a.nacht.gust),
+      stufe: letzteAnalyse.a.nacht.stufe
+    } : alt.nacht
+  };
+  lokalSpeichern();
+}
+function planLaden(){
+  var e = data[aktiv] || {};
+  var pl = e.plan || {};
+  if($("w_stand")) $("w_stand").value = pl.stand || (setup.lat && setup.lon ? setup.lat + ", " + setup.lon : "");
+  if($("w_ziel")) $("w_ziel").value = pl.ziel || "";
+  if($("w_liege")) $("w_liege").value = pl.liege || e.liegeplatz || "";
+  if($("w_offen")) $("w_offen").value = pl.offen || "";
+  wps = (pl.wps || []).slice();
+  wpRender();
+}
+
+/* Vorschläge aus der Wetterplanung im Logbuch anzeigen */
+function vorschlaegeBauen(){
+  var box = $("vorschlagBox");
+  if(!box) return;
+  var e = data[aktiv] || {};
+  var pl = e.plan;
+  box.innerHTML = "";
+  if(!pl || !pl.zeit) return;
+
+  var alter = Math.round((Date.now() - new Date(pl.zeit).getTime()) / 60000);
+  var alterTxt = alter < 90 ? "vor " + alter + " Minuten" : "vor " + Math.round(alter / 60) + " Stunden";
+  var zeilen = [];
+
+  if(pl.ziel && pl.ziel.trim() && (e.nach || "").trim() !== pl.ziel.trim()){
+    zeilen.push({feld:"nach", wert:pl.ziel.trim(), text:"Ziel „" + pl.ziel.trim() + "“ als Nach eintragen"});
+  }
+  if(pl.stand && pl.stand.trim() && !(e.von || "").trim() && !parseKoord(pl.stand)){
+    zeilen.push({feld:"von", wert:pl.stand.trim(), text:"Start „" + pl.stand.trim() + "“ als Von eintragen"});
+  }
+  if(pl.liege && (e.liegeplatz || "") !== pl.liege){
+    zeilen.push({feld:"liegeplatz", wert:pl.liege, text:"Liegeplatz „" + pl.liege + "“ übernehmen"});
+  }
+  if(pl.sm && Math.abs(zahl(e.distanz) - pl.sm) > 0.5){
+    zeilen.push({feld:"distanz", wert:String(pl.sm).replace(".", ","),
+      text:"Geplante Strecke " + String(pl.sm).replace(".", ",") + " sm als Distanz eintragen" +
+        (zahl(e.distanz) > 0 ? " (ersetzt " + e.distanz + ")" : "")});
+  }
+  if(!zeilen.length) return;
+
+  var d = document.createElement("div");
+  d.className = "vorschlag";
+  d.innerHTML = "<p><b>Aus der Wetterplanung " + alterTxt + "</b>" +
+    (pl.nacht ? " · Nacht: " + pl.nacht.liege + ", Böen bis " + pl.nacht.gust + " kn" : "") + "</p>";
+  var row = document.createElement("div");
+  row.className = "btnrow";
+  zeilen.forEach(function(z){
+    var b = document.createElement("button");
+    b.className = "small";
+    b.textContent = z.text;
+    b.onclick = function(){
+      if(!confirm(z.text + "?")) return;
+      eintrag(aktiv)[z.feld] = z.wert;
+      lokalSpeichern();
+      zeichne();
+    };
+    row.appendChild(b);
+  });
+  d.appendChild(row);
+  box.appendChild(d);
+}
+
 /* ================= Logbuch-Oberfläche ================= */
 function eintrag(n){ if(!data[n]) data[n] = {}; return data[n]; }
 function gefuellt(n){
@@ -2391,7 +2477,7 @@ function tagesleiste(){
     wrap.appendChild(b);
   });
   var akt = wrap.children[aktiv-1];
-  if(akt) akt.scrollIntoView({block:"nearest", inline:"center"});
+  if(akt && akt.scrollIntoView) akt.scrollIntoView({block:"nearest", inline:"center"});
 }
 function summen(){
   var sm = 0, mot = 0, tage = 0;
@@ -2896,6 +2982,27 @@ $("btnForget").onclick = async function(){
   dateiHandle = null; await handleLoeschen();
   storeInfo("Nur Gerätespeicher aktiv.");
 };
+$("btnUpdate").onclick = async function(){
+  setStatus("Suche nach Updates …");
+  try{
+    if(navigator.serviceWorker && navigator.serviceWorker.getRegistration){
+      var reg = await navigator.serviceWorker.getRegistration();
+      if(reg){
+        await reg.update();
+        if(reg.waiting) reg.waiting.postMessage({type:"SKIP_WAITING"});
+      }
+    }
+    /* App-Dateien aus dem Zwischenspeicher werfen. Logbucheinträge liegen woanders und bleiben. */
+    if(window.caches){
+      var namen = await caches.keys();
+      await Promise.all(namen.map(function(n){ return caches.delete(n); }));
+    }
+    setStatus("Neue Version wird geladen …");
+    setTimeout(function(){ location.reload(); }, 400);
+  }catch(e){
+    setStatus("Update fehlgeschlagen: " + (e && e.message ? e.message : e), true);
+  }
+};
 $("btnBackup").onclick = function(){
   download("Logbuch_RedTwinII_" + new Date().toISOString().slice(0,10) + ".json", JSON.stringify({eintraege:data, setup:setup}, null, 1), "application/json");
   setStatus("Backup abgelegt");
@@ -2921,7 +3028,7 @@ $("btnText").onclick = function(){
   var o = $("exportOut");
   o.textContent = alsText() || "Noch keine Einträge.";
   o.classList.remove("hidden");
-  o.scrollIntoView({behavior:"smooth", block:"start"});
+  if(o.scrollIntoView) o.scrollIntoView({behavior:"smooth", block:"start"});
 };
 $("btnExcel").onclick = function(){
   try{
@@ -3055,9 +3162,15 @@ window.addEventListener("beforeunload", function(e){
     var p2 = t.d.split(".");
     if(new Date(p2[2], p2[1]-1, p2[0]).toDateString() === heute.toDateString()) aktiv = t.n;
   });
-  zeichne();
-  trkLaden();
-  if(lsOk) setStatus("Bereit · Gerätespeicher aktiv");
+  try{
+    zeichne();
+    trkLaden();
+    if(lsOk) setStatus("Bereit · Gerätespeicher aktiv");
+  }catch(e){
+    setStatus("Startfehler: " + (e && e.message ? e.message : e), true);
+    banner("Beim Start ist ein Fehler aufgetreten: " + (e && e.message ? e.message : e) +
+      " · Deine Daten sind gesichert. Lade die Seite neu oder ziehe in den Stammdaten ein Backup.");
+  }
 })();
 
 /* ---------- Offline-Betrieb und Updates ---------- */

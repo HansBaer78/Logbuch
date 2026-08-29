@@ -5,7 +5,7 @@
    - Übrige Dateien: aus dem Cache, im Hintergrund aktualisiert.
    Gespeicherte Logbucheinträge liegen im localStorage und werden hiervon nie berührt. */
 
-var VERSION = "1.5";
+var VERSION = "1.5.1";
 var CACHE = "logbuch-" + VERSION;
 var DATEIEN = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./logo.png"];
 
