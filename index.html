@@ -697,7 +697,7 @@ KOMMEN</div>
       <ul>
         <li><b>Etappe</b> – von, nach, Zeiten, Distanz, Log, Segel- und Motorstunden</li>
         <li><b>Wetter und See</b> – von Hand oder per Knopf „Wetter jetzt übernehmen"</li>
-        <li><b>Schiffsbetrieb</b> – Tankstände, Generator, Gebühren, Technik</li>
+        <li><b>Schiffsbetrieb</b> – Tankstände, Motorzähler, Generator, Gebühren, Technik. Bei den Motoren wird der <b>Zählerstand</b> eingetragen, nicht die Stunden; die Laufzeit rechnet die App als Differenz zum vorigen Eintrag, Basis ist der Übernahmestand aus den Stammdaten.</li>
         <li><b>Crew</b> und <b>Eintrag des Skippers</b> für Besonderheiten und Vorfälle</li>
       </ul>
       <p>Steht in Tag 5 ein Ziel, schlägt Tag 6 es als Start vor – zusammen mit dem Liegeplatz, wenn dort noch keiner steht. Ebenso wird aus der Differenz zweier Logstände die Distanz vorgeschlagen. Bestätigen musst du beides.</p>
@@ -864,13 +864,13 @@ var PLAN = {
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "2.0";
+var APP_VERSION = "2.1";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 2.0"],
+    ["Version", APP_VERSION + " · Cache 2.1"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
@@ -931,8 +931,8 @@ var SCHEMA = [
    {k:"distanz", l:"Distanz (sm)", t:"dec"},
    {k:"logstand", l:"Logstand (sm)", t:"dec"},
    {k:"segelstd", l:"Std. unter Segel", t:"dec"},
-   {k:"motorBB", l:"Motorstd. BB", t:"dec"},
-   {k:"motorSB", l:"Motorstd. SB", t:"dec"},
+   {k:"motorBB", l:"Motorzähler BB (Stand)", t:"dec"},
+   {k:"motorSB", l:"Motorzähler SB (Stand)", t:"dec"},
    {k:"route", l:"Route, Buchten, Position", t:"area", wide:true}
  ]},
  {titel:"Wetter und See", wetter:true, felder:[
@@ -2874,7 +2874,10 @@ function planLaden(){
   var e = data[aktiv] || {};
   var pl = e.plan || {};
   var vorTag = aktiv > 1 ? (data[aktiv-1] || {}) : {};
-  if($("w_stand")) $("w_stand").value = pl.stand || (e.von || "").trim() || (vorTag.nach || "").trim() ||
+  var vorEnde = (vorTag.nach || "").trim() ||
+    (vorTag.plan && vorTag.plan.analyse && vorTag.plan.analyse.ziel ? vorTag.plan.analyse.ziel.name : "") ||
+    (vorTag.plan ? (vorTag.plan.ziel || "").trim() : "");
+  if($("w_stand")) $("w_stand").value = pl.stand || (e.von || "").trim() || vorEnde ||
     (setup.lat && setup.lon ? setup.lat + ", " + setup.lon : "");
   if($("w_ziel")) $("w_ziel").value = pl.ziel || "";
   if($("w_liege")) $("w_liege").value = pl.liege || e.liegeplatz || "";
@@ -2900,20 +2903,30 @@ function vorschlaegeBauen(){
   box.innerHTML = "";
   var e = data[aktiv] || {};
 
-  /* Ziel des Vortags wird zum Start von heute */
+  /* Ziel des Vortags wird zum Start von heute – auch wenn es nur in der Wetterplanung stand */
   var vor = aktiv > 1 ? (data[aktiv-1] || {}) : null;
-  if(vor && (vor.nach || "").trim() && !(e.von || "").trim()){
+  var vorZiel = "";
+  var vorQuelle = "";
+  if(vor){
+    if((vor.nach || "").trim()){ vorZiel = vor.nach.trim(); vorQuelle = "Feld Nach"; }
+    else if(vor.plan && vor.plan.analyse && vor.plan.analyse.ziel && vor.plan.analyse.ziel.name){
+      vorZiel = vor.plan.analyse.ziel.name; vorQuelle = "Wetteranalyse";
+    }else if(vor.plan && (vor.plan.ziel || "").trim()){
+      vorZiel = vor.plan.ziel.trim(); vorQuelle = "Wetterplanung";
+    }
+  }
+  if(vor && vorZiel && !(e.von || "").trim()){
     var d0 = document.createElement("div");
     d0.className = "vorschlag";
-    d0.innerHTML = "<p><b>Aus Tag " + (aktiv-1) + "</b> · dort endete die Etappe in „" + vor.nach.trim() + "“.</p>";
+    d0.innerHTML = "<p><b>Aus Tag " + (aktiv-1) + "</b> (" + vorQuelle + ") · dort endete die Etappe in „" + vorZiel + "“.</p>";
     var r0 = document.createElement("div");
     r0.className = "btnrow";
     var b0 = document.createElement("button");
     b0.className = "small";
-    b0.textContent = "„" + vor.nach.trim() + "“ als Start übernehmen";
+    b0.textContent = "„" + vorZiel + "“ als Start übernehmen";
     b0.onclick = function(){
-      if(!confirm("Start von Tag " + aktiv + " auf „" + vor.nach.trim() + "“ setzen?")) return;
-      eintrag(aktiv).von = vor.nach.trim();
+      if(!confirm("Start von Tag " + aktiv + " auf „" + vorZiel + "“ setzen?")) return;
+      eintrag(aktiv).von = vorZiel;
       if(!eintrag(aktiv).liegeplatz && vor.liegeplatz) eintrag(aktiv).liegeplatz = vor.liegeplatz;
       lokalSpeichern(); zeichne();
     };
@@ -3125,21 +3138,49 @@ function tagesleiste(){
   var akt = wrap.children[aktiv-1];
   if(akt && akt.scrollIntoView) akt.scrollIntoView({block:"nearest", inline:"center"});
 }
+/* Motorzähler: Stunden ergeben sich aus der Differenz zum vorigen Stand.
+   Basis ist der Übernahmestand aus den Stammdaten, sonst der erste eingetragene Stand. */
+function motorLauf(feld, bisTag){
+  var staende = [];
+  TAGE.forEach(function(t){
+    if(bisTag && t.n > bisTag) return;
+    var v = zahl((data[t.n] || {})[feld]);
+    if(v > 0) staende.push({n:t.n, v:v});
+  });
+  if(!staende.length) return {std:0, stand:zahl(setup[feld === "motorBB" ? "motBB" : "motSB"]) || 0, basis:null, letzterTag:null};
+  var basis = zahl(setup[feld === "motorBB" ? "motBB" : "motSB"]);
+  if(!basis) basis = staende[0].v;
+  var letzter = staende[staende.length - 1];
+  return {std: Math.max(0, letzter.v - basis), stand: letzter.v, basis: basis, letzterTag: letzter.n};
+}
+/* Stunden eines einzelnen Tages: Stand des Tages minus letzter Stand davor */
+function motorTag(feld, tagNr){
+  var v = zahl((data[tagNr] || {})[feld]);
+  if(v <= 0) return null;
+  var vorher = zahl(setup[feld === "motorBB" ? "motBB" : "motSB"]);
+  for(var i = tagNr - 1; i >= 1; i--){
+    var x = zahl((data[i] || {})[feld]);
+    if(x > 0){ vorher = x; break; }
+  }
+  if(!vorher) return null;
+  return Math.round((v - vorher) * 10) / 10;
+}
+
 function summen(){
-  var sm = 0, mbb = 0, msb = 0, tage = 0;
+  var sm = 0, tage = 0;
   TAGE.forEach(function(t){
     var e = data[t.n] || {};
     sm += zahl(e.distanz);
-    mbb += zahl(e.motorBB);
-    msb += zahl(e.motorSB);
     if(gefuellt(t.n)) tage++;
   });
+  var lbb = motorLauf("motorBB"), lsb = motorLauf("motorSB");
+  var mbb = lbb.std, msb = lsb.std;
   var html = "TAG <b>" + aktiv + "/" + TAGE.length + "</b>" +
     "<span>MIT EINTRÄGEN <b>" + tage + "</b></span>" +
     "<span>GEFAHREN <b>" + sm.toFixed(1) + " sm</b></span>" +
     "<span>MOTOR BB <b>" + mbb.toFixed(1) + "</b> SB <b>" + msb.toFixed(1) + "</b> ZUS. <b>" + (mbb + msb).toFixed(1) + " h</b></span>";
-  if(setup.motBB || setup.motSB){
-    html += "<span>ZÄHLER BB <b>" + (zahl(setup.motBB) + mbb).toFixed(1) + "</b> SB <b>" + (zahl(setup.motSB) + msb).toFixed(1) + "</b></span>";
+  if(lbb.stand || lsb.stand){
+    html += "<span>ZÄHLERSTAND BB <b>" + lbb.stand.toFixed(1) + "</b> SB <b>" + lsb.stand.toFixed(1) + "</b></span>";
   }
   $("totals").innerHTML = html;
 }
@@ -3275,6 +3316,17 @@ function zeichne(){
     grid.className = "grid";
     g.felder.forEach(function(f){ grid.appendChild(feld(f, e)); });
     s.appendChild(grid);
+    if(g.titel === "Schiffsbetrieb"){
+      var mb = motorTag("motorBB", aktiv), ms = motorTag("motorSB", aktiv);
+      var note = document.createElement("p");
+      note.className = "note";
+      note.textContent = (mb != null || ms != null)
+        ? "Gelaufen an diesem Tag: BB " + (mb != null ? mb.toFixed(1).replace(".", ",") + " h" : "–") +
+          " · SB " + (ms != null ? ms.toFixed(1).replace(".", ",") + " h" : "–") +
+          " (aus der Differenz zum vorigen Zählerstand)"
+        : "Hier den Zählerstand der Motoren eintragen, nicht die Stunden. Die App rechnet die Laufzeit als Differenz zum vorigen Eintrag, Basis ist der Übernahmestand aus den Stammdaten.";
+      s.appendChild(note);
+    }
     form.appendChild(s);
   });
   tagesleiste(); summen(); vorschlaegeBauen(); kopfAnwenden();
@@ -3349,8 +3401,10 @@ var XL_COLS = [
   {k:"distanz", l:"Distanz sm", num:true, w:10},
   {k:"logstand", l:"Logstand sm", num:true, w:11},
   {k:"segelstd", l:"Std. Segel", num:true, w:10},
-  {k:"motorBB", l:"Motor BB h", num:true, w:10},
-  {k:"motorSB", l:"Motor SB h", num:true, w:10},
+  {k:"motorBB", l:"Zähler BB", num:true, w:10},
+  {k:"motorSB", l:"Zähler SB", num:true, w:10},
+  {k:"__stdBB", l:"Motor BB h", num:true, w:10},
+  {k:"__stdSB", l:"Motor SB h", num:true, w:10},
   {k:"personen", l:"Personen", num:true, w:9},
   {k:"windRi", l:"Wind Ri", w:8},
   {k:"windBft", l:"Windstärke", w:18},
@@ -3379,7 +3433,7 @@ var XL_COLS = [
   {k:"erinnerung", l:"Moment des Tages", wrap:true, w:34},
   {k:"offen", l:"Offen für morgen", wrap:true, w:28}
 ];
-var XL_SUM = ["distanz","segelstd","motorBB","motorSB","generator","gebuehr","bordkasse"];
+var XL_SUM = ["distanz","segelstd","__stdBB","__stdSB","gebuehr","bordkasse"];
 
 function xEsc(t){
   return String(t == null ? "" : t)
@@ -3435,6 +3489,8 @@ function xlsxBauen(){
       if(c.k === "__tag") v = t.n;
       else if(c.k === "__datum") v = t.d;
       else if(c.k === "__wt") v = t.wt;
+      else if(c.k === "__stdBB"){ var xb = motorTag("motorBB", t.n); v = xb == null ? "" : xb; }
+      else if(c.k === "__stdSB"){ var xs = motorTag("motorSB", t.n); v = xs == null ? "" : xs; }
       else v = e[c.k] || "";
       if(c.num && c.k !== "__tag"){
         var x = zahl(v);
@@ -3461,11 +3517,13 @@ function xlsxBauen(){
   var blatt1 = xBlatt(zeilen, breiten, true);
 
   /* --- Blatt 2: Stammdaten --- */
-  var sm = 0, mbb = 0, msb = 0, gen = 0;
+  var sm = 0, gen = 0;
   TAGE.forEach(function(t){
     var e = data[t.n] || {};
-    sm += zahl(e.distanz); mbb += zahl(e.motorBB); msb += zahl(e.motorSB); gen += zahl(e.generator);
+    sm += zahl(e.distanz); gen += zahl(e.generator);
   });
+  var lbb = motorLauf("motorBB"), lsb = motorLauf("motorSB");
+  var mbb = lbb.std, msb = lsb.std;
   var paare = [
     ["Boot", setup.boot], ["Bootstyp", setup.typ], ["Skipper", setup.skipper],
     ["Törn von", TAGE.length ? TAGE[0].d : ""], ["Törn bis", TAGE.length ? TAGE[TAGE.length-1].d : ""],
@@ -3475,8 +3533,8 @@ function xlsxBauen(){
     ["Generatorstunden bei Übernahme", setup.gen],
     ["Motorstunden BB gefahren", mbb.toFixed(1)], ["Motorstunden SB gefahren", msb.toFixed(1)],
     ["Generatorstunden gefahren", gen.toFixed(1)],
-    ["Zählerstand BB aktuell", (zahl(setup.motBB) + mbb).toFixed(1)],
-    ["Zählerstand SB aktuell", (zahl(setup.motSB) + msb).toFixed(1)],
+    ["Zählerstand BB aktuell", lbb.stand.toFixed(1)],
+    ["Zählerstand SB aktuell", lsb.stand.toFixed(1)],
     ["Zählerstand Generator aktuell", (zahl(setup.gen) + gen).toFixed(1)],
     ["Seemeilen gesamt", sm.toFixed(1)],
     ["", ""],
