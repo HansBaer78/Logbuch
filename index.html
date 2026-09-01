@@ -235,8 +235,13 @@ footer .navbtns.hidden{display:none}
       </div>
       <div class="btnrow">
         <button class="small primary" id="tStart">Start ab hier</button>
+        <button class="small" id="tPunkt">Position festhalten</button>
         <button class="small" id="tStop" disabled>Etappe beenden</button>
+      </div>
+      <div class="btnrow">
+        <button class="small" id="tGpx">GPX-Track laden</button>
         <button class="small warn" id="tReset">Messung verwerfen</button>
+        <input type="file" id="gpxFile" accept=".gpx,application/gpx+xml,text/xml" hidden>
       </div>
       <p class="note" id="tMsg"></p>
     </div>
@@ -695,11 +700,18 @@ KOMMEN</div>
         <li><b>Schiffsbetrieb</b> – Tankstände, Generator, Gebühren, Technik</li>
         <li><b>Crew</b> und <b>Eintrag des Skippers</b> für Besonderheiten und Vorfälle</li>
       </ul>
+      <p>Steht in Tag 5 ein Ziel, schlägt Tag 6 es als Start vor – zusammen mit dem Liegeplatz, wenn dort noch keiner steht. Ebenso wird aus der Differenz zweier Logstände die Distanz vorgeschlagen. Bestätigen musst du beides.</p>
       <p>Hast du am Morgen eine Wetteranalyse gemacht, erscheint abends oben eine grüne Leiste <b>Aus der Wetterplanung</b> mit Vorschlägen für Nach, Von, Liegeplatz und Distanz. Jeder Vorschlag wird einzeln bestätigt, nichts wird stillschweigend überschrieben. Die Leiste merkt sich, wie lange die Planung her ist.</p>
 
       <h3>Strecke messen</h3>
       <p>„Start ab hier" zeichnet die Fahrt per GPS auf und zeigt Distanz, Dauer, Fahrt über Grund und Durchschnitt. „Etappe beenden" schreibt alles in den Tag: Distanz, Ablege- und Anlegezeit, Start- und Endkoordinaten.</p>
-      <p>Wichtig: Mobile Betriebssysteme schalten das GPS ab, sobald die App in den Hintergrund geht. Gerät also sichtbar liegen lassen, die App hält den Bildschirm selbst wach. Eine unterbrochene Messung bleibt gespeichert und lässt sich fortsetzen.</p>
+      <p>Wichtig und technisch nicht zu umgehen: Eine Webseite darf im Hintergrund kein GPS nutzen. Sperrst du das Handy oder öffnest eine andere App, ruht die Messung. Deshalb drei Wege, damit trotzdem eine belastbare Distanz herauskommt:</p>
+      <ul>
+        <li><b>Vordergrund:</b> Gerät sichtbar liegen lassen, die App hält den Bildschirm selbst wach. Kommst du aus dem Hintergrund zurück, holt sie eine neue Position und ergänzt die Lücke als Luftlinie – sichtbar als „Unterbrechung überbrückt".</li>
+        <li><b>Position festhalten:</b> Alle paar Meilen antippen, etwa bei jedem Kurswechsel. Aus diesen Punkten wird die Strecke als Streckenzug gerechnet. Das funktioniert auch, wenn das Handy zwischendurch gesperrt war.</li>
+        <li><b>GPX-Track laden:</b> Eine Tracker-App, die im Hintergrund aufzeichnen darf, exportiert eine GPX-Datei; die App liest daraus Distanz, Ablege- und Anlegezeit. Geeignet sind reine GPS-Logger sowie Navigationsprogramme wie Navionics, die Tracks aufzeichnen und exportieren können.</li>
+      </ul>
+      <p>Vierter Weg ohne App: den <b>Logstand</b> des Plotters morgens und abends eintragen. Aus der Differenz zum Vortag schlägt das Logbuch die Distanz vor – das ist die genaueste Zahl, weil sie vom Bordlog kommt.</p>
 
       <h3>Wetter</h3>
       <p>Standort als Koordinaten, Ortsname oder per GPS. Mit <b>Wegpunkt +</b> baust du die geplante Strecke Station für Station auf; daraus werden Probepunkte entlang der Route abgefragt und die Streckenlänge in Seemeilen berechnet. Umkreis fragt zusätzlich vier Punkte rund um dich ab, damit Düsenlagen zwischen den Inseln auffallen.</p>
@@ -852,13 +864,13 @@ var PLAN = {
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "1.9.1";
+var APP_VERSION = "2.0";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 1.9.1"],
+    ["Version", APP_VERSION + " · Cache 2.0"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
@@ -1369,7 +1381,9 @@ async function trkStart(){
     trk.punkte.push([p.timestamp, +jetzt.lat.toFixed(5), +jetzt.lon.toFixed(5)]);
     trkAnzeige();
     $("tMsg").className = "note ok";
-    $("tMsg").textContent = "Messung läuft · " + trk.punkte.length + " Punkte · Bildschirm bleibt an, im Hintergrund stoppt das Betriebssystem das GPS.";
+    $("tMsg").textContent = "Messung läuft · " + trk.punkte.length + " Punkte" +
+      (trk.luecken ? " · " + trk.luecken + " Unterbrechung(en) überbrückt" : "") +
+      " · Bildschirm bleibt an; sperrst du das Handy, wird die Lücke beim Zurückkehren als Luftlinie ergänzt.";
     if(trk.punkte.length % 8 === 0) trkSichern(true);
   }, function(err){
     $("tMsg").className = "note err";
@@ -1419,10 +1433,106 @@ function trkStop(){
 function trkReset(){
   if(!confirm("Laufende Messung verwerfen?")) return;
   trkPause();
-  trk.punkte = []; trk.sm = 0; trk.start = null; trk.letzte = null; trk.kn = null;
+  trk.punkte = []; trk.sm = 0; trk.start = null; trk.letzte = null; trk.kn = null; trk.luecken = 0;
   trkSichern(false); trkAnzeige();
   $("tMsg").className = "note"; $("tMsg").textContent = "Messung verworfen.";
 }
+/* Nach dem Sperren oder Wechseln der App: Lücke geradlinig überbrücken */
+function trkLuecke(){
+  if(!trk.an || !trk.letzte) return;
+  gpsEinmal({timeout:20000, maximumAge:0, enableHighAccuracy:true}).then(function(c){
+    var jetzt = {lat:c.latitude, lon:c.longitude};
+    var m = meter(trk.letzte, jetzt);
+    if(m < 30) return;
+    trk.sm += m / 1852;
+    trk.letzte = jetzt;
+    trk.punkte.push([Date.now(), +jetzt.lat.toFixed(5), +jetzt.lon.toFixed(5)]);
+    trk.luecken = (trk.luecken || 0) + 1;
+    trkSichern(true); trkAnzeige();
+    $("tMsg").className = "note";
+    $("tMsg").textContent = "Lücke überbrückt: " + (m / 1852).toFixed(2).replace(".", ",") +
+      " sm Luftlinie dazugerechnet (" + trk.luecken + ". Unterbrechung). Messung läuft weiter.";
+  }, function(){});
+}
+document.addEventListener("visibilitychange", function(){
+  if(document.hidden || !trk.an) return;
+  /* Watch neu aufsetzen, Android hat ihn im Hintergrund gestoppt */
+  if(trk.watch != null){ navigator.geolocation.clearWatch(trk.watch); trk.watch = null; }
+  trk.an = false;
+  trkStart();
+  setTimeout(trkLuecke, 1500);
+});
+
+/* Position von Hand in die Messung aufnehmen */
+$("tPunkt").onclick = function(){
+  var m = $("tMsg");
+  m.className = "note";
+  m.textContent = "Position wird geholt …";
+  gpsEinmal({timeout:20000, maximumAge:0, enableHighAccuracy:true}).then(function(c){
+    var jetzt = {lat:c.latitude, lon:c.longitude};
+    if(!trk.start) trk.start = Date.now();
+    var zu = 0;
+    if(trk.letzte){ zu = meter(trk.letzte, jetzt) / 1852; trk.sm += zu; }
+    trk.letzte = jetzt;
+    trk.punkte.push([Date.now(), +jetzt.lat.toFixed(5), +jetzt.lon.toFixed(5)]);
+    trkSichern(true); trkAnzeige();
+    m.className = "note ok";
+    m.textContent = "Punkt " + trk.punkte.length + " festgehalten" + (zu ? ", " + zu.toFixed(2).replace(".", ",") + " sm dazu" : "") +
+      ". Summe " + trk.sm.toFixed(1).replace(".", ",") + " sm.";
+  }, function(err){ m.className = "note err"; m.textContent = err.message; });
+};
+
+/* GPX-Datei einer Tracker-App einlesen */
+$("tGpx").onclick = function(){ $("gpxFile").click(); };
+$("gpxFile").onchange = function(ev){
+  var f = ev.target.files[0];
+  if(!f) return;
+  var r = new FileReader();
+  r.onload = function(){
+    var m = $("tMsg");
+    try{
+      var doc = new DOMParser().parseFromString(r.result, "application/xml");
+      var pts = doc.getElementsByTagName("trkpt");
+      if(!pts.length) pts = doc.getElementsByTagName("rtept");
+      if(!pts.length) throw new Error("keine Trackpunkte gefunden");
+      var sm = 0, letzte = null, t0 = null, t1 = null, n = 0;
+      for(var i=0;i<pts.length;i++){
+        var la = parseFloat(pts[i].getAttribute("lat")), lo = parseFloat(pts[i].getAttribute("lon"));
+        if(isNaN(la) || isNaN(lo)) continue;
+        var jetzt = {lat:la, lon:lo};
+        if(letzte){
+          var d = meter(letzte, jetzt);
+          if(d >= 8) { sm += d / 1852; letzte = jetzt; n++; }
+        }else{ letzte = jetzt; n++; }
+        var zt = pts[i].getElementsByTagName("time")[0];
+        if(zt && zt.textContent){
+          var dt = new Date(zt.textContent);
+          if(!isNaN(dt)){ if(!t0) t0 = dt; t1 = dt; }
+        }
+      }
+      var e = eintrag(aktiv);
+      var f2 = function(d){ return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0"); };
+      var txt = "GPX-Track: " + sm.toFixed(1).replace(".", ",") + " sm aus " + n + " Punkten" +
+        (t0 && t1 ? ", " + f2(t0) + " bis " + f2(t1) : "");
+      if(!confirm("In Tag " + aktiv + " übernehmen?\n\n· Distanz " + sm.toFixed(1).replace(".", ",") + " sm" +
+        (zahl(e.distanz) > 0 ? " (ersetzt " + e.distanz + ")" : "") +
+        (t0 && t1 ? "\n· Ablegen " + f2(t0) + ", Anlegen " + f2(t1) : "") + "\n· Notiz in Route")) return;
+      e.distanz = sm.toFixed(1).replace(".", ",");
+      if(t0) e.ablegen = f2(t0);
+      if(t1) e.anlegen = f2(t1);
+      e.route = (e.route ? e.route.trim() + "\n" : "") + txt;
+      lokalSpeichern(); zeichne();
+      m.className = "note ok";
+      m.textContent = txt + " – übernommen.";
+    }catch(err){
+      m.className = "note err";
+      m.textContent = "GPX konnte nicht gelesen werden (" + (err.message || err) + ").";
+    }
+  };
+  r.readAsText(f);
+  ev.target.value = "";
+};
+
 $("tStart").onclick = trkStart;
 $("tStop").onclick = trkStop;
 $("tReset").onclick = trkReset;
@@ -2763,7 +2873,9 @@ function planSichern(){
 function planLaden(){
   var e = data[aktiv] || {};
   var pl = e.plan || {};
-  if($("w_stand")) $("w_stand").value = pl.stand || (setup.lat && setup.lon ? setup.lat + ", " + setup.lon : "");
+  var vorTag = aktiv > 1 ? (data[aktiv-1] || {}) : {};
+  if($("w_stand")) $("w_stand").value = pl.stand || (e.von || "").trim() || (vorTag.nach || "").trim() ||
+    (setup.lat && setup.lon ? setup.lat + ", " + setup.lon : "");
   if($("w_ziel")) $("w_ziel").value = pl.ziel || "";
   if($("w_liege")) $("w_liege").value = pl.liege || e.liegeplatz || "";
   if($("w_offen")) $("w_offen").value = pl.offen || "";
@@ -2785,9 +2897,48 @@ function planLaden(){
 function vorschlaegeBauen(){
   var box = $("vorschlagBox");
   if(!box) return;
-  var e = data[aktiv] || {};
-  var pl = e.plan;
   box.innerHTML = "";
+  var e = data[aktiv] || {};
+
+  /* Ziel des Vortags wird zum Start von heute */
+  var vor = aktiv > 1 ? (data[aktiv-1] || {}) : null;
+  if(vor && (vor.nach || "").trim() && !(e.von || "").trim()){
+    var d0 = document.createElement("div");
+    d0.className = "vorschlag";
+    d0.innerHTML = "<p><b>Aus Tag " + (aktiv-1) + "</b> · dort endete die Etappe in „" + vor.nach.trim() + "“.</p>";
+    var r0 = document.createElement("div");
+    r0.className = "btnrow";
+    var b0 = document.createElement("button");
+    b0.className = "small";
+    b0.textContent = "„" + vor.nach.trim() + "“ als Start übernehmen";
+    b0.onclick = function(){
+      if(!confirm("Start von Tag " + aktiv + " auf „" + vor.nach.trim() + "“ setzen?")) return;
+      eintrag(aktiv).von = vor.nach.trim();
+      if(!eintrag(aktiv).liegeplatz && vor.liegeplatz) eintrag(aktiv).liegeplatz = vor.liegeplatz;
+      lokalSpeichern(); zeichne();
+    };
+    r0.appendChild(b0);
+    /* Logstand-Differenz als Distanzvorschlag */
+    if(zahl(vor.logstand) > 0 && zahl(e.logstand) > zahl(vor.logstand)){
+      var diff = Math.round((zahl(e.logstand) - zahl(vor.logstand)) * 10) / 10;
+      if(Math.abs(zahl(e.distanz) - diff) > 0.5){
+        var b1 = document.createElement("button");
+        b1.className = "small";
+        b1.textContent = "Distanz aus Logstand: " + String(diff).replace(".", ",") + " sm";
+        b1.onclick = function(){
+          if(!confirm("Distanz von Tag " + aktiv + " auf " + String(diff).replace(".", ",") + " sm setzen? (Logstand " +
+            vor.logstand + " → " + e.logstand + ")")) return;
+          eintrag(aktiv).distanz = String(diff).replace(".", ",");
+          lokalSpeichern(); zeichne();
+        };
+        r0.appendChild(b1);
+      }
+    }
+    d0.appendChild(r0);
+    box.appendChild(d0);
+  }
+
+  var pl = e.plan;
   if(!pl || !pl.zeit) return;
 
   var alter = Math.round((Date.now() - new Date(pl.zeit).getTime()) / 60000);
@@ -2975,23 +3126,19 @@ function tagesleiste(){
   if(akt && akt.scrollIntoView) akt.scrollIntoView({block:"nearest", inline:"center"});
 }
 function summen(){
-  var sm = 0, mot = 0, tage = 0;
+  var sm = 0, mbb = 0, msb = 0, tage = 0;
   TAGE.forEach(function(t){
     var e = data[t.n] || {};
-    sm += parseFloat(String(e.distanz||"").replace(",",".")) || 0;
-    mot += (parseFloat(String(e.motorBB||"").replace(",",".")) || 0) + (parseFloat(String(e.motorSB||"").replace(",",".")) || 0);
+    sm += zahl(e.distanz);
+    mbb += zahl(e.motorBB);
+    msb += zahl(e.motorSB);
     if(gefuellt(t.n)) tage++;
   });
   var html = "TAG <b>" + aktiv + "/" + TAGE.length + "</b>" +
     "<span>MIT EINTRÄGEN <b>" + tage + "</b></span>" +
     "<span>GEFAHREN <b>" + sm.toFixed(1) + " sm</b></span>" +
-    "<span>MOTOR <b>" + mot.toFixed(1) + " h</b></span>";
+    "<span>MOTOR BB <b>" + mbb.toFixed(1) + "</b> SB <b>" + msb.toFixed(1) + "</b> ZUS. <b>" + (mbb + msb).toFixed(1) + " h</b></span>";
   if(setup.motBB || setup.motSB){
-    var mbb = 0, msb = 0;
-    TAGE.forEach(function(t){
-      var e = data[t.n] || {};
-      mbb += zahl(e.motorBB); msb += zahl(e.motorSB);
-    });
     html += "<span>ZÄHLER BB <b>" + (zahl(setup.motBB) + mbb).toFixed(1) + "</b> SB <b>" + (zahl(setup.motSB) + msb).toFixed(1) + "</b></span>";
   }
   $("totals").innerHTML = html;
