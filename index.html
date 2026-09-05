@@ -174,7 +174,8 @@ footer .navbtns.hidden{display:none}
 .wtab td:first-child{font-weight:600;white-space:nowrap}
 .funk{background:#F5F7F3;border-left:3px solid var(--ink);border-radius:0 8px 8px 0;padding:9px 11px;margin:0 0 12px;font-family:var(--f-data);font-size:12.5px;line-height:1.55;white-space:pre-line}
 .linkliste{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
-.toc{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 10px}
+.toc-box{padding:10px 12px 4px}
+.toc{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 6px}
 .toc button{min-height:40px;padding:8px 11px;font-family:var(--f-data);font-size:12.5px;font-weight:500;
   border-color:var(--line);color:var(--ink);background:#F5F7F3}
 .toc button:hover{border-color:var(--ink)}
@@ -233,6 +234,7 @@ footer .navbtns.hidden{display:none}
 
 <main>
   <section class="view on" id="viewLog">
+    <div class="sheet toc-box"><div class="toc" id="logToc"></div></div>
     <div class="sheet">
       <h2>Strecke messen</h2>
       <div class="track">
@@ -280,6 +282,7 @@ footer .navbtns.hidden{display:none}
   </section>
 
   <section class="view" id="viewWetter">
+    <div class="sheet toc-box"><div class="toc" id="wetterToc"></div></div>
     <div class="sheet">
       <h2>Wetteranalyse für Segler</h2>
       <div class="btnrow">
@@ -352,10 +355,7 @@ footer .navbtns.hidden{display:none}
   </section>
 
   <section class="view" id="viewWiki">
-    <div class="sheet" id="wikiTocBox">
-      <h2>Inhalt</h2>
-      <div class="toc" id="wikiToc"></div>
-    </div>
+    <div class="sheet toc-box" id="wikiTocBox"><div class="toc" id="wikiToc"></div></div>
     <div class="sheet hilfe">
       <h2>Notruf und Funk</h2>
       <p class="note err">Alle Angaben ohne Gewähr, vor dem Törn im Hafenhandbuch und bei der Basis prüfen. Im Notfall zählt Kanal 16 und DSC, nicht das Handy.</p>
@@ -717,6 +717,7 @@ KOMMEN</div>
   </section>
 
   <section class="view" id="viewSetup">
+    <div class="sheet toc-box"><div class="toc" id="setupToc"></div></div>
     <div class="sheet">
       <h2>Törn und Schiff</h2>
       <div class="grid">
@@ -732,7 +733,11 @@ KOMMEN</div>
         <div class="f"><label for="t_gpsBug">GPS-Antenne bis Bugrolle (m)</label><input id="t_gpsBug" type="text" autocomplete="off" inputmode="decimal" placeholder="12"></div>
         <div class="f"><label for="t_laenge">Bootslänge (m)</label><input id="t_laenge" type="text" autocomplete="off" inputmode="decimal" placeholder="13,96"></div>
       </div>
-      <div class="btnrow"><button class="small" id="zPruefen">Zählerstände prüfen</button></div>
+      <div class="btnrow">
+        <button class="small" id="zPruefen">Zählerstände prüfen</button>
+        <button class="small" id="zZurueck">Stände einen Tag zurückschieben</button>
+        <button class="small" id="zVor">Rückgängig (einen Tag vor)</button>
+      </div>
       <p class="note" id="tornInfo"></p>
       <p class="note" id="zInfo"></p>
     </div>
@@ -800,6 +805,7 @@ KOMMEN</div>
     <div id="exportOut" class="hidden"></div>
   </section>
   <section class="view" id="viewInfo">
+    <div class="sheet toc-box"><div class="toc" id="infoToc"></div></div>
     <div class="sheet">
       <h2>Über diese App</h2>
       <div class="kv" id="infoKv"></div>
@@ -878,6 +884,7 @@ KOMMEN</div>
 
       <h3>Stammdaten</h3>
       <p>Boot, Skipper, Reisezeitraum, Personen und Motorstunden bei Übernahme. Aus den Startwerten rechnet die Kopfzeile die aktuellen Zählerstände.</p>
+      <p>Für die Motoren und den Generator gilt: Startstand in die Stammdaten, danach jeden Tag den aktuellen Stand ins Tagesfeld. Stimmt die Zuordnung nicht, hilft <b>Zählerstände prüfen</b> mit einem Bericht, <b>Stände einen Tag zurückschieben</b> verschiebt die ganze Reihe um einen Tag (Tag 1 wandert in die Stammdaten) und <b>Rückgängig</b> nimmt das wieder zurück.</p>
       <p>Die Wetterschwellen legen fest, ab wann etwas gelb oder rot ist – für Wind, Böen, Welle, Böenfaktor, Druckfall, Nachtzeitraum sowie die Grenzen für Anker, Boje und Marina. Leere Felder fallen auf den Standard zurück, unplausible Kombinationen werden rot gemeldet.</p>
 
       <h3>Info</h3>
@@ -1003,13 +1010,13 @@ var PLAN = {
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "2.4";
+var APP_VERSION = "2.6";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 2.4"],
+    ["Version", APP_VERSION + " · Cache 2.6"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
@@ -2022,40 +2029,40 @@ function bootProfil(){
   for(var i=0;i<BOOTE.length;i++){ if(BOOTE[i].passt(t)) return BOOTE[i]; }
   return null;
 }
-/* Sprungmarken für das Wiki, nach dem Aufbau des Schiffsprofils erzeugen */
-function wikiTocBauen(){
-  var box = $("wikiToc");
+/* Sprungmarken: baut aus den Überschriften einer Ansicht eine Schnellauswahl */
+function tocBauen(viewId, boxId, rueck){
+  var box = $(boxId);
   if(!box) return;
   box.innerHTML = "";
   var kopfHoehe = (document.querySelector("header") || {}).offsetHeight || 120;
-  var bloecke = Array.prototype.slice.call(document.querySelectorAll("#viewWiki .sheet"));
-  bloecke.forEach(function(sh, i){
-    if(sh.id === "wikiTocBox") return;
+  var springe = function(el){
+    var y = el.getBoundingClientRect().top + window.scrollY - kopfHoehe - 8;
+    window.scrollTo({top: Math.max(0, y), behavior: "smooth"});
+  };
+  var bloecke = Array.prototype.slice.call(document.querySelectorAll("#" + viewId + " .sheet"));
+  var lfd = 0;
+  bloecke.forEach(function(sh){
+    if(sh.classList.contains("toc-box")) return;
     var h = sh.querySelector("h2");
-    if(!h) return;
-    if(!sh.id) sh.id = "wiki" + i;
+    if(!h || h.classList.contains("big")) return;
+    lfd++;
+    if(!sh.id) sh.id = viewId + "-abschnitt" + lfd;
     var b = document.createElement("button");
     b.textContent = h.textContent;
-    b.onclick = function(){
-      var y = sh.getBoundingClientRect().top + window.scrollY - kopfHoehe - 8;
-      window.scrollTo({top: Math.max(0, y), behavior: "smooth"});
-    };
+    b.onclick = function(){ springe(sh); };
     box.appendChild(b);
 
-    /* Rücksprung an das Ende jedes Blocks */
-    if(!sh.querySelector(".zurueck")){
+    if(rueck && !sh.querySelector(".zurueck")){
       var z = document.createElement("div");
       z.className = "zurueck";
       var zb = document.createElement("button");
       zb.textContent = "↑ Inhalt";
-      zb.onclick = function(){
-        var y2 = $("wikiTocBox").getBoundingClientRect().top + window.scrollY - kopfHoehe - 8;
-        window.scrollTo({top: Math.max(0, y2), behavior: "smooth"});
-      };
+      zb.onclick = function(){ springe(box.parentNode); };
       z.appendChild(zb);
       sh.appendChild(z);
     }
   });
+  if(lfd < 2) box.innerHTML = "";
 }
 
 function profilBauen(){
@@ -2806,6 +2813,7 @@ function analyseZeigen(a, zentrum, ortName, zielName){
   });
   karteSetzen("wind");
   $("wUeber").disabled = false;
+  tocBauen("viewWetter", "wetterToc", false);
 }
 
 async function analyseStarten(){
@@ -3786,6 +3794,7 @@ function zeichne(){
     form.appendChild(s);
   });
   tagesleiste(); summen(); vorschlaegeBauen(); kopfAnwenden(); ankerFelder();
+  tocBauen("viewLog", "logToc", false);
 }
 
 /* ================= Ansichten ================= */
@@ -3796,7 +3805,11 @@ function ansichtSetzen(v){
   $("viewSetup").classList.toggle("on", v === "setup");
   if(v === "wetter") planLaden();
   $("viewWiki").classList.toggle("on", v === "wiki");
-  if(v === "wiki"){ profilBauen(); wikiTocBauen(); }
+  if(v === "wiki"){ profilBauen(); tocBauen("viewWiki", "wikiToc", true); }
+  if(v === "wetter") tocBauen("viewWetter", "wetterToc", false);
+  if(v === "setup") tocBauen("viewSetup", "setupToc", true);
+  if(v === "info") tocBauen("viewInfo", "infoToc", true);
+  if(v === "log") tocBauen("viewLog", "logToc", false);
   $("viewInfo").classList.toggle("on", v === "info");
   if(v === "info") infoBauen();
   $("navbtns").classList.toggle("hidden", v !== "log");
@@ -4202,6 +4215,74 @@ $("btnExcel").onclick = function(){
     setStatus("Excel-Export fehlgeschlagen", true);
   }
 };
+/* Einmalige Korrektur: Zählerstände um einen Tag verschieben.
+   richtung -1: Tag 1 wandert in die Stammdaten, Tag 2 nach Tag 1 usw.
+   richtung +1: das Gegenteil, als Rücknahme. */
+function zaehlerSchieben(richtung){
+  var felder = [
+    {f:"motorBB", s:"motBB", l:"Motor BB"},
+    {f:"motorSB", s:"motSB", l:"Motor SB"},
+    {f:"generator", s:"gen", l:"Generator"}
+  ];
+  var vorschau = [], aenderung = false;
+
+  felder.forEach(function(x){
+    var alt = {};
+    TAGE.forEach(function(t){ alt[t.n] = (data[t.n] || {})[x.f] || ""; });
+    var altStart = setup[x.s] || "";
+    var neu = {}, neuStart = altStart;
+
+    if(richtung < 0){
+      neuStart = alt[1] || altStart;
+      for(var n=1;n<=TAGE.length;n++) neu[n] = alt[n+1] || "";
+    }else{
+      for(var m=TAGE.length;m>=2;m--) neu[m] = alt[m-1] || "";
+      neu[1] = altStart;
+      neuStart = "";
+    }
+
+    var zeilen = [];
+    if(String(neuStart) !== String(altStart)) zeilen.push("Startstand: " + (altStart || "leer") + " → " + (neuStart || "leer"));
+    for(var k=1;k<=Math.min(TAGE.length, 4);k++){
+      if(String(neu[k] || "") !== String(alt[k] || "")) zeilen.push("Tag " + k + ": " + (alt[k] || "leer") + " → " + (neu[k] || "leer"));
+    }
+    var weitere = 0;
+    for(var q=5;q<=TAGE.length;q++){ if(String(neu[q] || "") !== String(alt[q] || "")) weitere++; }
+    if(weitere) zeilen.push("… und " + weitere + " weitere Tage");
+    if(zeilen.length){
+      aenderung = true;
+      vorschau.push(x.l + ":\n    " + zeilen.join("\n    "));
+    }
+    x.neu = neu; x.neuStart = neuStart;
+  });
+
+  if(!aenderung){
+    $("zInfo").className = "note";
+    $("zInfo").textContent = "Es gibt nichts zu verschieben.";
+    return;
+  }
+
+  if(!confirm((richtung < 0 ? "Zählerstände um einen Tag ZURÜCK schieben?" : "Verschiebung RÜCKGÄNGIG machen?") +
+      "\n\n" + vorschau.join("\n\n") + "\n\nMit dem anderen Knopf lässt sich das wieder umkehren.")) return;
+
+  felder.forEach(function(x){
+    TAGE.forEach(function(t){
+      var e = eintrag(t.n);
+      if(x.neu[t.n]) e[x.f] = x.neu[t.n];
+      else delete e[x.f];
+    });
+    setup[x.s] = x.neuStart;
+  });
+
+  setupFelder(); lokalSpeichern(); summen(); zeichne();
+  $("zInfo").className = "note ok";
+  $("zInfo").textContent = (richtung < 0
+    ? "Verschoben. Startstände jetzt: BB " + (setup.motBB || "–") + " · SB " + (setup.motSB || "–") + " · Gen " + (setup.gen || "–") + "."
+    : "Rückgängig gemacht.") + " Prüfe mit „Zählerstände prüfen“, ob die Laufzeiten stimmen.";
+}
+$("zZurueck").onclick = function(){ zaehlerSchieben(-1); };
+$("zVor").onclick = function(){ zaehlerSchieben(1); };
+
 $("zPruefen").onclick = function(){
   var p = $("zInfo");
   var felder = [
@@ -4337,7 +4418,7 @@ $("s_modell").addEventListener("change", function(){
     setup[k] = $("t_" + k).value;
     if(k === "start" || k === "ende" || k === "personen"){ tageBauen(); zeichne(); trkLaden(); }
     else { tageBauen(); summen(); }
-    if(k === "typ"){ profilBauen(); wikiTocBauen(); }
+    if(k === "typ"){ profilBauen(); tocBauen("viewWiki", "wikiToc", true); }
     lokalSpeichern();
   });
   $("t_" + k).addEventListener("input", function(){
