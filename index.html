@@ -7,7 +7,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Logbuch – Red Twin II 2026</title>
+<title>Logbuch – Segeltörn</title>
 <style>
 :root{
   --ink:#0E2430;--ink-soft:#3C5663;--paper:#F0F2EC;--card:#FFFFFF;--line:#C6CFC9;
@@ -30,8 +30,23 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);color:#EDF1EE;padd
   font-family:var(--f-data);font-size:11.5px;min-height:32px;padding:4px 9px;margin:2px 0 0}
 .totals{flex:1;min-width:0;display:flex;gap:14px;font-family:var(--f-data);font-size:11.5px;color:#9FB8BD;letter-spacing:.05em;margin:4px 0 8px;flex-wrap:wrap}
 .totals b{color:#F4F7F4;font-weight:600}
-nav{display:flex;gap:2px;margin:2px 0 0;overflow-x:auto;scrollbar-width:none}
-nav::-webkit-scrollbar{display:none}
+.hdrBtn{flex:0 0 auto;background:transparent;border:1px solid #38525E;color:#DCE6E8;border-radius:9px;
+  font-size:19px;line-height:1;min-height:42px;min-width:42px;padding:0 10px}
+.hdrBtn:active{background:#16303D}
+.menu{position:absolute;left:0;right:0;top:100%;z-index:40;background:var(--ink);
+  border-top:1px solid #38525E;box-shadow:0 12px 24px rgba(0,0,0,.35);max-height:70vh;overflow-y:auto}
+.menu.hidden{display:none}
+.menuInner{padding:8px 12px 16px;max-width:720px;margin:0 auto}
+.menuHaupt{display:flex;align-items:center;justify-content:space-between;width:100%;background:transparent;border:0;
+  border-bottom:1px solid #24404C;color:#EDF1EE;font-family:var(--f-display);text-transform:uppercase;
+  letter-spacing:.08em;font-size:15px;padding:13px 2px;min-height:50px}
+.menuHaupt[aria-current="true"]{color:var(--brass)}
+.menuHaupt span{font-family:var(--f-data);font-size:11px;letter-spacing:0;text-transform:none;color:#8FA8AE}
+.menuUnter{display:none;padding:2px 0 8px}
+.menuUnter.auf{display:block}
+.menuUnter button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#C3D5D8;
+  font-family:var(--f-body);font-size:14.5px;padding:10px 4px 10px 16px;min-height:44px;border-bottom:1px solid #1A3440}
+.menuUnter button:active{color:#fff}
 nav button{flex:0 0 auto;min-width:82px;background:transparent;border:0;border-bottom:2px solid transparent;color:#8FA8AE;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-size:11.5px;padding:9px 2px;min-height:40px;white-space:nowrap}
 nav button[aria-selected="true"]{color:#F4F7F4;border-bottom-color:var(--brass)}
 .ruler{position:relative;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -174,7 +189,7 @@ footer .navbtns.hidden{display:none}
 .wtab td:first-child{font-weight:600;white-space:nowrap}
 .funk{background:#F5F7F3;border-left:3px solid var(--ink);border-radius:0 8px 8px 0;padding:9px 11px;margin:0 0 12px;font-family:var(--f-data);font-size:12.5px;line-height:1.55;white-space:pre-line}
 .linkliste{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
-.toc-box{padding:10px 12px 4px}
+.toc-box{display:none}
 .toc{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 6px}
 .toc button{min-height:40px;padding:8px 11px;font-family:var(--f-data);font-size:12.5px;font-weight:500;
   border-color:var(--line);color:var(--ink);background:#F5F7F3}
@@ -205,23 +220,19 @@ footer .navbtns.hidden{display:none}
 
 <header>
   <div class="brand">
+    <button class="hdrBtn" id="menuBtn" aria-label="Menü öffnen" aria-expanded="false">☰</button>
     <img class="logo" src="./logo.png" alt="Meer geht immer – The Buttons">
     <div class="titel">
-      <h1>Logbuch</h1>
-      <span class="boat" id="brandBoot">RED TWIN II · LAGOON 450F</span>
+      <h1 id="viewTitel">Logbuch</h1>
+      <span class="boat" id="brandBoot">BOOT IN DEN STAMMDATEN EINTRAGEN</span>
     </div>
+    <button class="hdrBtn" id="setupBtn" aria-label="Stammdaten und Einstellungen" title="Stammdaten">⚙</button>
   </div>
   <div class="kopfzeile">
     <div class="totals" id="totals"></div>
     <button class="kopfBtn" id="kopfToggle" aria-expanded="true" title="Tagesleiste ein- und ausklappen"></button>
   </div>
-  <nav id="nav">
-    <button data-v="log" aria-selected="true">Logbuch</button>
-    <button data-v="wetter" aria-selected="false">Wetter</button>
-    <button data-v="wiki" aria-selected="false">Wiki</button>
-    <button data-v="setup" aria-selected="false">Stammdaten</button>
-    <button data-v="info" aria-selected="false">Info</button>
-  </nav>
+  <div class="menu hidden" id="menuPanel"><div class="menuInner" id="menuInner"></div></div>
   <div class="ruler" id="ruler"><div class="days" id="days"></div></div>
 </header>
 
@@ -255,6 +266,15 @@ footer .navbtns.hidden{display:none}
       </div>
       <p class="note" id="tMsg"></p>
     </div>
+    <div class="sheet">
+      <h2>Ablegen und Anlegen</h2>
+      <div class="btnrow">
+        <button class="small primary" id="bAblegen">Ablegen jetzt</button>
+        <button class="small primary" id="bAnlegen">Anlegen jetzt</button>
+      </div>
+      <p class="note" id="bMsg"></p>
+    </div>
+
     <div class="sheet">
       <h2>Ankerwache</h2>
       <div class="grid">
@@ -400,20 +420,20 @@ footer .navbtns.hidden{display:none}
 
       <h3>Seenotfall – Lebensgefahr</h3>
       <div class="funk">MAYDAY MAYDAY MAYDAY
-HIER IST Red Twin II, Red Twin II, Red Twin II
+HIER IST <span class="bn">BOOTSNAME</span> (dreimal)
 Rufzeichen ..., MMSI ...
-MAYDAY Red Twin II
+MAYDAY <span class="bn">BOOTSNAME</span>
 POSITION 43 Grad 35 Minuten Nord, 015 Grad 55 Minuten Ost
 ART DER NOT: Wassereinbruch, Boot sinkt
 BENÖTIGE Hilfe: sofortige Rettung
-6 PERSONEN AN BORD, davon 1 Kind
+<span class="bp">PERSONEN</span> PERSONEN AN BORD
 ENDE</div>
       <p>Vorher DSC-Notalarm mit dem roten Knopf senden, dann diesen Spruch auf Kanal 16 sprechen. Langsam, deutlich, notfalls wiederholen.</p>
 
       <h3>Dringlichkeit – ernst, aber keine Lebensgefahr</h3>
       <div class="funk">PAN PAN PAN PAN PAN PAN
 AN ALLE, AN ALLE, AN ALLE
-HIER IST Red Twin II, Red Twin II, Red Twin II
+HIER IST <span class="bn">BOOTSNAME</span> (dreimal)
 POSITION ...
 Ruderschaden, treibe auf Küste zu, benötige Schlepphilfe
 ENDE</div>
@@ -421,23 +441,23 @@ ENDE</div>
       <h3>Sicherheit – Warnung</h3>
       <div class="funk">SÉCURITÉ SÉCURITÉ SÉCURITÉ
 AN ALLE
-HIER IST Red Twin II
+HIER IST <span class="bn">BOOTSNAME</span>
 Treibender Container in Position ...
 ENDE</div>
 
       <h3>Mann über Bord</h3>
       <div class="funk">MAYDAY MAYDAY MAYDAY
-HIER IST Red Twin II (3x)
-MAYDAY Red Twin II, POSITION ...
+HIER IST <span class="bn">BOOTSNAME</span> (dreimal)
+MAYDAY <span class="bn">BOOTSNAME</span>, POSITION ...
 PERSON ÜBER BORD, 1 Person im Wasser
 BENÖTIGE sofortige Suchhilfe
 ENDE</div>
       <p>Sofort: MOB-Knopf am Plotter, Rettungsring mit Licht werfen, ein Crewmitglied zeigt dauerhaft auf die Person, Motor an, Segel bergen.</p>
 
       <h3>Anruf einer Marina oder Küstenfunkstelle</h3>
-      <div class="funk">Marina Kremik, Marina Kremik
-HIER IST Segelyacht Red Twin II
-Katamaran, 13,96 Meter lang, 7,84 Meter breit
+      <div class="funk">MARINA, MARINA
+HIER IST Segelyacht <span class="bn">BOOTSNAME</span>
+Katamaran, <span class="bl">LÄNGE</span> Meter lang, <span class="bw">BREITE</span> Meter breit
 Bitten um Liegeplatz für heute Nacht
 KOMMEN</div>
       <p>Bei einem Kat immer die Breite mit angeben, sonst wird ein Platz zugewiesen, der nicht passt.</p>
@@ -550,7 +570,7 @@ KOMMEN</div>
       <ul>
         <li>1 Seemeile = 1852 m = eine Bogenminute Breite. Distanzen in der Karte immer an der <b>seitlichen</b> Breitenskala abgreifen, nie oben oder unten.</li>
         <li>Distanz = Fahrt × Zeit. Bei 6 kn sind 30 sm genau 5 Stunden – ohne Manöver und Ankermanöver gerechnet.</li>
-        <li>Etappenplanung: für den 450F unter Motor 6 bis 7 kn, unter Segel 5 bis 8 kn rechnen. Ankunft immer mindestens zwei Stunden vor Sonnenuntergang legen.</li>
+        <li>Etappenplanung: für einen Charterkat 40 bis 46 Fuß unter Motor 6 bis 7 kn, unter Segel 5 bis 8 kn rechnen. Ankunft immer mindestens zwei Stunden vor Sonnenuntergang legen.</li>
         <li>Kimmsicht in sm ≈ 2,1 × Wurzel aus der Augeshöhe in Metern. Vom Flybridge aus (3 m) sind das rund 3,6 sm.</li>
       </ul>
 
@@ -635,10 +655,10 @@ KOMMEN</div>
       <h3>Groß: Traveller, Bullenstander, Cunningham</h3>
       <ul>
         <li><b>Traveller</b> steuert den Anstellwinkel ohne Schotänderung. In der Böe Traveller nach Lee statt Schot fieren – das Profil bleibt erhalten.</li>
-        <li><b>Bullenstander</b> auf allen Kursen ab raumschots. Eine Patenthalse mit dem Baum eines 450F ist ein Schaden an Beschlag, Dach oder Kopf.</li>
+        <li><b>Bullenstander</b> auf allen Kursen ab raumschots. Eine Patenthalse mit dem Baum eines großen Kats ist ein Schaden an Beschlag, Dach oder Kopf.</li>
         <li><b>Cunningham</b> streckt das Vorliek, holt den Bauch nach vorn und macht das Segel bei viel Wind flacher.</li>
         <li><b>Achterliekstrecker</b> nur leicht anziehen, bis das Flattern aufhört. Zu straff bremst.</li>
-        <li>Beim 450F führt die Großschot fast senkrecht vom Dach zum Baum und übernimmt damit die Aufgabe des Baumniederholers. Fierst du die Schot, öffnet das Achterliek stark – deshalb in der Böe zuerst den Traveller nutzen.</li>
+        <li>Bei vielen Charterkats führt die Großschot fast senkrecht vom Hardtop zum Baum und übernimmt damit die Aufgabe des Baumniederholers. Fierst du die Schot, öffnet das Achterliek stark – deshalb in der Böe zuerst den Traveller nutzen.</li>
       </ul>
 
       <h3>Wollfäden lesen</h3>
@@ -721,8 +741,11 @@ KOMMEN</div>
     <div class="sheet">
       <h2>Törn und Schiff</h2>
       <div class="grid">
-        <div class="f"><label for="t_boot">Bootsname</label><input id="t_boot" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Red Twin II"></div>
-        <div class="f"><label for="t_typ">Bootstyp</label><input id="t_typ" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Lagoon 450F"></div>
+        <div class="f"><label for="t_boot">Bootsname</label><input id="t_boot" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Name des Bootes"></div>
+        <div class="f wide"><label for="t_profil">Bootsauswahl</label>
+          <select id="t_profil"></select>
+        </div>
+        <div class="f"><label for="t_typ">Bootstyp</label><input id="t_typ" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="wird aus der Auswahl gefüllt"></div>
         <div class="f wide"><label for="t_skipper">Skipper</label><input id="t_skipper" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Name des Skippers"></div>
         <div class="f"><label for="t_start">Reise von</label><input id="t_start" type="date"></div>
         <div class="f"><label for="t_ende">Reise bis</label><input id="t_ende" type="date"></div>
@@ -736,8 +759,10 @@ KOMMEN</div>
         <div class="f"><label for="t_rpmStd">Ø Drehzahl Standard (1/min)</label><input id="t_rpmStd" type="text" autocomplete="off" inputmode="numeric" placeholder="2200"></div>
         <div class="f"><label for="t_leerlauf">Verbrauch im Leerlauf (l/h)</label><input id="t_leerlauf" type="text" autocomplete="off" inputmode="decimal" placeholder="0,6"></div>
         <div class="f"><label for="t_verbrGen">Verbrauch Generator (l/h)</label><input id="t_verbrGen" type="text" autocomplete="off" inputmode="decimal" placeholder="1,8"></div>
-        <div class="f"><label for="t_tank">Tankinhalt Diesel (l)</label><input id="t_tank" type="text" autocomplete="off" inputmode="decimal" placeholder="1040"></div>
-        <div class="f"><label for="t_laenge">Bootslänge (m)</label><input id="t_laenge" type="text" autocomplete="off" inputmode="decimal" placeholder="13,96"></div>
+        <div class="f"><label for="t_tank">Tankinhalt Diesel (l)</label><input id="t_tank" type="text" autocomplete="off" inputmode="decimal" placeholder="z. B. 1040"></div>
+        <div class="f"><label for="t_ortRadius">Ortserkennung: Radius (m)</label><input id="t_ortRadius" type="text" autocomplete="off" inputmode="numeric" placeholder="250"></div>
+        <div class="f"><label for="t_laenge">Bootslänge (m)</label><input id="t_laenge" type="text" autocomplete="off" inputmode="decimal" placeholder="z. B. 12,80"></div>
+        <div class="f"><label for="t_breite">Bootsbreite (m)</label><input id="t_breite" type="text" autocomplete="off" inputmode="decimal" placeholder="z. B. 7,20"></div>
       </div>
       <div class="btnrow">
         <button class="small" id="zPruefen">Zählerstände prüfen</button>
@@ -820,14 +845,14 @@ KOMMEN</div>
 
     <div class="sheet hilfe">
       <h2>Kurzanleitung</h2>
-      <p>Die App hat fünf Reiter. Oben umschalten, bei schmalen Bildschirmen ist die Leiste seitlich verschiebbar.</p>
+      <p>Navigiert wird über die beiden Knöpfe in der Kopfzeile: links das Menü mit den drei Strichen, rechts das Zahnrad für die Stammdaten.</p>
       <ul>
-        <li><b>Logbuch</b> – Tageseinträge und GPS-Streckenmessung</li>
-        <li><b>Wetter</b> – Analyse für Fahrt und Nacht, Karte, amtlicher Bericht</li>
-        <li><b>Wiki</b> – Notruf, Funksprüche, Regeln, Seezeichen, Links</li>
-        <li><b>Stammdaten</b> – Boot, Törn, Schwellenwerte, Speicher, Export</li>
-        <li><b>Info</b> – Version, Modelle, Quellen, Haftungsausschluss</li>
+        <li><b>☰ Menü</b> – Logbuch, Wetter, Wiki und Info. Der aktive Bereich zeigt seine Abschnitte als Unterpunkte; ein Tipp darauf springt direkt hin. Nochmal auf den Hauptpunkt tippen klappt die Liste zu.</li>
+        <li><b>⚙ Zahnrad</b> – Stammdaten: Boot, Törn, Zähler und Verbrauch, Schwellenwerte, Speicher, Synchronisation und Export. Absichtlich getrennt vom Menü, weil man dort selten hin muss.</li>
       </ul>
+
+      <h3>Ablegen und Anlegen</h3>
+      <p>Zwei Knöpfe erfassen Zeit und Position mit einem Tipp. <b>Ablegen</b> nimmt am ersten Tag die aktuelle GPS-Position, an allen weiteren Tagen die letzte bekannte Position des Vortags – also den Anlegepunkt oder die Ankerposition, was zuletzt gespeichert wurde. <b>Anlegen</b> nimmt immer die aktuelle Position und trägt als Ziel den nächstgelegenen Eintrag der Revierliste ein, falls einer innerhalb des in den Stammdaten eingestellten Radius liegt (voreingestellt 250 m). Sonst kommen die Koordinaten ins Zielfeld – bei einer namenlosen Bucht ist das die brauchbarere Angabe. Beim Ankersetzen gilt dasselbe. Beides landet zusätzlich als Zeile im Routenfeld.</p>
 
       <h3>Logbuch</h3>
       <p>Oben die Tagesleiste: Tagesnummer, Wochentag und Datum. Ein grüner Strich zeigt, dass für den Tag etwas erfasst ist. Unten rechts blätterst du mit „Tag" vor und zurück. Jede Eingabe wird sofort gespeichert, du musst nichts bestätigen.</p>
@@ -889,7 +914,8 @@ KOMMEN</div>
       </ul>
 
       <h3>Stammdaten</h3>
-      <p>Boot, Skipper, Reisezeitraum, Personen und Motorstunden bei Übernahme. Aus den Startwerten rechnet die Kopfzeile die aktuellen Zählerstände.</p>
+      <p>Beim ersten Start als Erstes hier ausfüllen: <b>Bootsauswahl</b> setzt Typ, Länge, Breite, Tankinhalt, Verbrauch, Bezugsdrehzahl, Antennenversatz und die Reffgrenzen in einem Schritt; hinterlegt sind elf gängige Charterkatamarane. „Sonstige" lässt alle Felder frei für eigene Werte. Dazu Bootsname, Skipper, Reisezeitraum, Personen und die Startstände der Zähler.</p>
+      <p>Länge, Breite und Bootsname erscheinen automatisch in den Funksprüchen im Wiki, die Reffgrenzen in der Wetteranalyse.</p>
       <p>Aus den Laufzeiten schätzt die App den Dieselverbrauch, drehzahlabhängig. In den Stammdaten stehen der Verbrauch je Motor bei einer Bezugsdrehzahl (voreingestellt 3,0 l/h bei 2200 1/min), der Leerlaufverbrauch und eine Standarddrehzahl; im Tageseintrag trägst du die mittlere Drehzahl des Tages ein. Weil der Propeller die Leistung mit der dritten Potenz der Drehzahl aufnimmt, wird der Bezugswert kubisch skaliert – 1800 statt 2200 spart also viel mehr als die Differenz vermuten lässt. Die Schätzung erscheint in der Kopfzeile, im Tageshinweis, im Excel-Export als Tagesspalte und im Info-Reiter.</p>
       <p>Für die Motoren und den Generator gilt: Startstand in die Stammdaten, danach jeden Tag den aktuellen Stand ins Tagesfeld. Stimmt die Zuordnung nicht, hilft <b>Zählerstände prüfen</b> mit einem Bericht, <b>Stände einen Tag zurückschieben</b> verschiebt die ganze Reihe um einen Tag (Tag 1 wandert in die Stammdaten) und <b>Rückgängig</b> nimmt das wieder zurück.</p>
       <p>Die Wetterschwellen legen fest, ab wann etwas gelb oder rot ist – für Wind, Böen, Welle, Böenfaktor, Druckfall, Nachtzeitraum sowie die Grenzen für Anker, Boje und Marina. Leere Felder fallen auf den Standard zurück, unplausible Kombinationen werden rot gemeldet.</p>
@@ -971,6 +997,9 @@ KOMMEN</div>
       <h3>Verantwortung des Skippers</h3>
       <p>Alle Entscheidungen über Auslaufen, Route, Liegeplatz, Ankern und Sicherheit trifft ausschließlich der Skipper nach eigener Einschätzung, guter Seemannschaft und den geltenden Vorschriften. Ampeln, Schwellenwerte und Empfehlungen dieser App sind unverbindliche Anhaltspunkte, keine Freigabe und keine Warnung im rechtlichen Sinne.</p>
 
+      <h3>Schiffsdaten und Reffempfehlungen</h3>
+      <p>Die hinterlegten Bootsprofile enthalten gerundete Herstellerangaben und übliche Charterausstattung; Ausrüstung, Tankgrößen und Motorisierung weichen im Einzelfall ab. Reffgrenzen sind Erfahrungswerte für normale Beladung, keine Vorgabe des Herstellers oder Vercharterers. Maßgeblich sind das Handbuch des Schiffes, die Einweisung der Basis und die Einschätzung des Skippers.</p>
+
       <h3>Daten und Verfügbarkeit</h3>
       <p>Wetterdaten stammen von Open-Meteo, die Karte von Windy, amtliche Berichte vom DHMZ. Für Richtigkeit, Vollständigkeit, Aktualität und Verfügbarkeit dieser fremden Dienste wird keine Haftung übernommen. GPS-Messungen können durch Empfang, Gerät und Betriebssystem verfälscht oder unterbrochen werden; Distanzen und Positionen sind Näherungswerte.</p>
 
@@ -997,37 +1026,21 @@ KOMMEN</div>
 
 <script>
 /* ================= Törndaten ================= */
-var PLAN = {
-  "29.08.2026":{p:5, hint:"Check-in Kremik, Übernahmeprotokoll, Großeinkauf"},
-  "30.08.2026":{p:5, hint:"Ablegen früh"},
-  "31.08.2026":{p:5, hint:""},
-  "01.09.2026":{p:5, hint:"Grillabend Lotusgrill"},
-  "02.09.2026":{p:6, hint:"Trogir – 6. Crewmitglied kommt an Bord"},
-  "03.09.2026":{p:6, hint:""},
-  "04.09.2026":{p:6, hint:"Skradin: Wasser und Proviant für die Kornaten bunkern"},
-  "05.09.2026":{p:6, hint:"Kornati NP – kein Landstrom, kein Wasser"},
-  "06.09.2026":{p:6, hint:"Kornati NP"},
-  "07.09.2026":{p:6, hint:"Kornati NP"},
-  "08.09.2026":{p:6, hint:"Kornati NP"},
-  "09.09.2026":{p:6, hint:"Split – Grillabend"},
-  "10.09.2026":{p:6, hint:"Tanken Milna / Brac"},
-  "11.09.2026":{p:6, hint:"Rückkehr Kremik, letzter Abend an Bord"},
-  "12.09.2026":{p:6, hint:"Rückgabe 09:00, Zählerstände dokumentieren"}
-};
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "2.8";
+var APP_VERSION = "4.0.1";
 var APP_STAND = "28.08.2026";
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 2.8"],
+    ["Version", APP_VERSION + " · Cache 4.0.1"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
     ["Revierliste", REVIER.length + " Häfen und Buchten, Umag bis Cavtat"],
+    ["Bootsprofile", (BOOTE.length - 1) + " Katamarane plus eigene Werte" + (bootProfil() ? " · aktiv: " + bootProfil().name : "")],
     ["Diesel geschätzt", (function(){ var d = dieselSchaetzung(); return d.ges > 0
       ? Math.round(d.ges) + " l (Motoren " + Math.round(d.mot) + " l, Generator " + Math.round(d.gen) + " l)"
       : "noch keine Laufzeiten erfasst"; })()],
@@ -1131,10 +1144,10 @@ var SCHEMA = [
 /* ================= Zustand ================= */
 var LS_KEY = "logbuch2026";
 var data = {}, setup = {provider:"om", key:"", lat:"", lon:"", ziel:"",
-  boot:"Red Twin II", typ:"Lagoon 450F", skipper:"", start:"2026-08-29", ende:"2026-09-12",
-  personen:"6", motBB:"", motSB:"", gen:"", sw:null, modell:"italia_meteo_arpae_icon_2i", amt:"",
-  gpsBug:"12", laenge:"13,96", verbrMot:"3,0", verbrGen:"1,8", tank:"1040",
-  rpmRef:"2200", rpmStd:"2200", leerlauf:"0,6",
+  boot:"", typ:"", skipper:"", start:"", ende:"",
+  personen:"4", motBB:"", motSB:"", gen:"", sw:null, modell:"italia_meteo_arpae_icon_2i", amt:"",
+  gpsBug:"", laenge:"", breite:"", verbrMot:"3,0", verbrGen:"1,8", tank:"", profil:"",
+  rpmRef:"2200", rpmStd:"2200", leerlauf:"0,6", ortRadius:"250",
   gistToken:"", gistId:"", syncStand:""};
 
 /* Schwellen für die Wettereinstufung – vom Skipper einstellbar */
@@ -1283,15 +1296,20 @@ function zahl(v){ var x = parseFloat(String(v == null ? "" : v).replace(",", "."
 /* Tagesliste aus dem eingestellten Reisezeitraum */
 function tageBauen(){
   var a = new Date(setup.start + "T12:00:00"), b = new Date(setup.ende + "T12:00:00");
-  if(isNaN(a) || isNaN(b) || b < a){ a = new Date("2026-08-29T12:00:00"); b = new Date("2026-09-12T12:00:00"); }
+  if(isNaN(a) || isNaN(b) || b < a){
+    a = new Date(); a.setHours(12,0,0,0);
+    b = new Date(a.getTime() + 7 * 86400000);
+    var f0 = function(d){ return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); };
+    if(!setup.start) setup.start = f0(a);
+    if(!setup.ende) setup.ende = f0(b);
+  }
   var n = Math.round((b - a) / 86400000) + 1;
   if(n > 120) n = 120;
   TAGE = [];
   for(var i=0;i<n;i++){
     var d = new Date(a.getTime() + i * 86400000);
     var ds = String(d.getDate()).padStart(2,"0") + "." + String(d.getMonth()+1).padStart(2,"0") + "." + d.getFullYear();
-    var pl = PLAN[ds];
-    TAGE.push({n:i+1, d:ds, wt:WT[d.getDay()], p: pl ? pl.p : (parseInt(setup.personen, 10) || 6), hint: pl ? pl.hint : ""});
+    TAGE.push({n:i+1, d:ds, wt:WT[d.getDay()], p: parseInt(setup.personen, 10) || 4, hint: ""});
   }
   if(aktiv > TAGE.length) aktiv = TAGE.length;
   if(aktiv < 1) aktiv = 1;
@@ -1302,7 +1320,10 @@ function tageBauen(){
       ". Einträge hängen an der Tagesnummer: verschiebst du den Zeitraum, wandern vorhandene Einträge mit der Nummer, nicht mit dem Datum.";
   }
   var bb = $("brandBoot");
-  if(bb) bb.textContent = ((setup.boot || "Boot") + " · " + (setup.typ || "")).toUpperCase().trim().replace(/·\s*$/, "");
+  if(bb){
+    var bez = ((setup.boot || "") + (setup.typ ? " · " + setup.typ : "")).trim();
+    bb.textContent = bez ? bez.toUpperCase() : "BOOT IN DEN STAMMDATEN EINTRAGEN";
+  }
 }
 var aktiv = 1, ansicht = "log";
 var lsOk = true, dateiHandle = null, tLocal = null, tDatei = null;
@@ -1380,14 +1401,14 @@ async function handleLoeschen(){ try{ var db = await idb(); db.transaction("h","
 async function ortWaehlen(){
   try{
     if(window.showSaveFilePicker){
-      var h = await window.showSaveFilePicker({suggestedName:"Logbuch_RedTwinII.json", types:[{description:"Logbuch", accept:{"application/json":[".json"]}}]});
+      var h = await window.showSaveFilePicker({suggestedName:"Logbuch.json", types:[{description:"Logbuch", accept:{"application/json":[".json"]}}]});
       dateiHandle = h; await handleSpeichern(h); await dateiSchreiben();
       storeInfo("Ziel: " + h.name + " · wird bei jeder Eingabe mitgeschrieben", "ok");
     }else if(window.showDirectoryPicker){
       var dir = await window.showDirectoryPicker({mode:"readwrite"});
-      dateiHandle = await dir.getFileHandle("Logbuch_RedTwinII.json", {create:true});
+      dateiHandle = await dir.getFileHandle("Logbuch.json", {create:true});
       await handleSpeichern(dateiHandle); await dateiSchreiben();
-      storeInfo("Ziel: Ordner " + dir.name + " / Logbuch_RedTwinII.json", "ok");
+      storeInfo("Ziel: Ordner " + dir.name + " / Logbuch.json", "ok");
     }else{
       storeInfo("Dieser Browser kann keinen Ordner öffnen. Nutze „Backup in Downloads“ und aktiviere in Edge „Speicherort vor jedem Download erfragen“.", "err");
     }
@@ -1974,21 +1995,29 @@ async function geoNominatim(text){
   return liste[0];
 }
 /* Nächstgelegener Eintrag der Revierliste, für die Benennung von Koordinaten */
-function revierNah(lat, lon, maxSm){
+function ortRadius(){
+  var r = zahl(setup.ortRadius);
+  return r > 0 ? r : 250;
+}
+function revierNah(lat, lon, maxMeter){
+  var grenze = maxMeter || ortRadius();
   var best = null, bestD = 1e9;
   REVIER.forEach(function(r){
-    var d = meter({lat:lat, lon:lon}, {lat:r.lat, lon:r.lon}) / 1852;
+    var d = meter({lat:lat, lon:lon}, {lat:r.lat, lon:r.lon});
     if(d < bestD){ bestD = d; best = r; }
   });
-  return (best && bestD <= (maxSm || 3)) ? {name:best.n, sm:bestD} : null;
+  return (best && bestD <= grenze) ? {name:best.n, m:bestD, sm:bestD / 1852} : null;
+}
+/* Name eines Punktes: bekannter Ort im Radius, sonst die Koordinaten */
+function ortName(lat, lon){
+  var nah = revierNah(lat, lon);
+  return nah ? nah.name : lat.toFixed(4) + " / " + lon.toFixed(4);
 }
 
 async function ortSuchen(text){
   var k = parseKoord(text);
   if(k){
-    var nah = revierNah(k.lat, k.lon, 3);
-    return {lat:k.lat, lon:k.lon, quelle:"Koordinaten",
-      name: nah ? (nah.sm < 0.6 ? nah.name : "bei " + nah.name) : k.lat.toFixed(3) + " / " + k.lon.toFixed(3)};
+    return {lat:k.lat, lon:k.lon, quelle:"Koordinaten", name: ortName(k.lat, k.lon)};
   }
 
   var r = revierSuchen(text);
@@ -2004,44 +2033,103 @@ async function ortSuchen(text){
   throw new Error("Ort „" + text + "“ nicht gefunden. Öffne die Stelle in Google Maps, halte sie gedrückt, kopiere die Koordinaten und füge sie hier ein.");
 }
 
-/* ================= Schiffsprofile ================= */
-var BOOTE = [{
-  id:"lagoon450",
-  passt: function(t){
-    var x = ortNorm(t);
-    return x.indexOf("lagoon") >= 0 && (x.indexOf("450") >= 0 || x.indexOf("45 f") >= 0);
-  },
-  name:"Lagoon 450 F",
-  daten:"13,96 m Länge · 7,84 m Breite · 1,30 m Tiefgang · rund 16 t leer · Großsegel etwa 74 m², Genua etwa 47 m²",
-  reff:[
-    {bis:12,  kurz:"Volltuch", l:"bis 12 kn wahr", t:"Volles Groß, volle Genua. Darunter läuft der Kat träge, Motorunterstützung erwägen."},
-    {bis:16,  kurz:"Volltuch, wachsam", l:"12 bis 16 kn",   t:"Volltuch, aber Reffleinen klar und Crew eingeteilt. Am Wind wird es hier schon lebhaft."},
-    {bis:21,  kurz:"1. Reff", l:"16 bis 21 kn",   t:"Erstes Reff im Groß. Genua eine Umdrehung einrollen, sobald das Ruder anfängt zu ziehen."},
-    {bis:26,  kurz:"2. Reff", l:"21 bis 26 kn",   t:"Zweites Reff, Genua deutlich reduziert. Halbwind und raumer Kurs bleiben angenehm, am Wind wird es nass."},
-    {bis:32,  kurz:"3. Reff / Genua allein", l:"26 bis 32 kn",   t:"Drittes Reff oder Groß bergen und unter Genua allein laufen. Etappe nur, wenn ein sicherer Hafen in Reichweite ist."},
-    {bis:999, kurz:"nicht fahren", l:"über 32 kn",     t:"Nicht mehr fahren. Marina oder rundum geschützte Bucht, Segel gesichert, Bimini abbauen."}
-  ],
-  kurse:[
-    {l:"Am Wind", grad:"30 bis 60°", d:-3, t:"Scheinbarer Wind deutlich stärker, Boot arbeitet gegen die Welle – eine Stufe früher reffen."},
-    {l:"Halber Wind", grad:"60 bis 120°", d:0, t:"Referenzkurs der Tabelle, schnellster und angenehmster Kurs."},
-    {l:"Raumschots", grad:"120 bis 150°", d:3, t:"Etwas mehr Wind tragbar, Bullenstander setzen."},
-    {l:"Vor dem Wind", grad:"150 bis 180°", d:5, t:"Scheinbarer Wind täuscht um die eigene Fahrt zu wenig vor. Vor dem Anluven reffen, sonst steht plötzlich alles zu viel."}
-  ],
-  hinweise:[
-    "Der Kat krängt nicht als Vorwarnung. Die übliche Warnung durch Schräglage fehlt komplett – deshalb nach Wind reffen, nicht nach Gefühl.",
-    "Reffen vor dem Fallwind, nicht darin: an der Leeseite der Inseln und vor Kanalausgängen frühzeitig eine Stufe wegnehmen.",
-    "Großschot nie in der Klemme lassen. Bei Böen ist Fieren die einzige Reaktion, die dem Rigg hilft.",
-    "Auf raumen Kursen Bullenstander setzen. Eine Patenthalse mit diesem Baum ist ein ernster Schaden.",
-    "Anlegen ist bei diesem Schiff das eigentliche Windproblem: 7,8 m Breite und viel Aufbau, ab 20 kn Seitenwind Crew und Leinen vorher einteilen.",
-    "Drehen auf der Stelle über die Motoren, nicht über das Ruder – ein Motor vor, einer zurück."
-  ]
-}];
+/* ================= Schiffsprofile =================
+   Werte sind Herstellerangaben bzw. übliche Charterausstattung, gerundet.
+   Reffgrenzen gelten für wahren Wind bei halbem Wind und normaler Beladung. */
+var KURSBAENDER = [
+  {l:"Am Wind", grad:"30 bis 60°", d:-3, t:"Scheinbarer Wind deutlich stärker, Boot arbeitet gegen die Welle – eine Stufe früher reffen."},
+  {l:"Halber Wind", grad:"60 bis 120°", d:0, t:"Referenzkurs der Tabelle, schnellster und angenehmster Kurs."},
+  {l:"Raumschots", grad:"120 bis 150°", d:3, t:"Etwas mehr Wind tragbar, Bullenstander setzen."},
+  {l:"Vor dem Wind", grad:"150 bis 180°", d:5, t:"Scheinbarer Wind täuscht um die eigene Fahrt zu wenig vor. Vor dem Anluven reffen, sonst steht plötzlich alles zu viel."}
+];
+
+function reffTabelle(r1, r2, r3, stopp){
+  return [
+    {bis:r1 - 4, kurz:"Volltuch", l:"bis " + (r1 - 4) + " kn wahr", t:"Volles Groß, volle Genua. Darunter läuft der Kat träge, Motorunterstützung erwägen."},
+    {bis:r1, kurz:"Volltuch, wachsam", l:(r1 - 4) + " bis " + r1 + " kn", t:"Noch Volltuch, aber Reffleinen klar und Crew eingeteilt. Am Wind wird es hier schon lebhaft."},
+    {bis:r2, kurz:"1. Reff", l:r1 + " bis " + r2 + " kn", t:"Erstes Reff im Groß. Genua eine Umdrehung einrollen, sobald das Ruder anfängt zu ziehen."},
+    {bis:r3, kurz:"2. Reff", l:r2 + " bis " + r3 + " kn", t:"Zweites Reff, Genua deutlich reduziert. Halbwind und raumer Kurs bleiben angenehm, am Wind wird es nass."},
+    {bis:stopp, kurz:"3. Reff / Genua allein", l:r3 + " bis " + stopp + " kn", t:"Drittes Reff oder Groß bergen und unter Genua allein laufen. Etappe nur, wenn ein sicherer Hafen in Reichweite ist."},
+    {bis:999, kurz:"nicht fahren", l:"über " + stopp + " kn", t:"Nicht mehr fahren. Marina oder rundum geschützte Bucht, Segel gesichert, Bimini abbauen."}
+  ];
+}
+
+var KAT_HINWEISE = [
+  "Der Kat krängt nicht als Vorwarnung. Die übliche Warnung durch Schräglage fehlt komplett – deshalb nach Wind reffen, nicht nach Gefühl.",
+  "Reffen vor dem Fallwind, nicht darin: an der Leeseite der Inseln und vor Kanalausgängen frühzeitig eine Stufe wegnehmen.",
+  "Großschot nie in der Klemme lassen. Bei Böen ist Fieren die einzige Reaktion, die dem Rigg hilft.",
+  "Auf raumen Kursen Bullenstander setzen. Eine Patenthalse mit diesem Baum ist ein ernster Schaden.",
+  "Anlegen ist bei einem Kat das eigentliche Windproblem: viel Breite und viel Aufbau, ab 20 kn Seitenwind Crew und Leinen vorher einteilen.",
+  "Drehen auf der Stelle über die Motoren, nicht über das Ruder – ein Motor vor, einer zurück."
+];
+
+var BOOTE = [
+  {id:"lagoon40",  name:"Lagoon 40",      laenge:"11,74", breite:"6,76", tiefgang:"1,35", tank:"600",  wasser:"300",
+   motorPS:"2 × 45", verbrMot:"2,4", rpmRef:"2200", gpsBug:"10", reff:[15,20,25,30]},
+  {id:"lagoon42",  name:"Lagoon 42",      laenge:"12,80", breite:"7,70", tiefgang:"1,25", tank:"600",  wasser:"300",
+   motorPS:"2 × 45", verbrMot:"2,6", rpmRef:"2200", gpsBug:"11", reff:[16,21,26,31]},
+  {id:"lagoon450", name:"Lagoon 450 F",   laenge:"13,96", breite:"7,84", tiefgang:"1,30", tank:"1040", wasser:"700",
+   motorPS:"2 × 57", verbrMot:"3,0", rpmRef:"2200", gpsBug:"12", reff:[16,21,26,32]},
+  {id:"lagoon46",  name:"Lagoon 46",      laenge:"13,99", breite:"7,96", tiefgang:"1,35", tank:"1040", wasser:"700",
+   motorPS:"2 × 57", verbrMot:"3,1", rpmRef:"2200", gpsBug:"12", reff:[17,22,27,33]},
+  {id:"bali42",    name:"Bali 4.2",       laenge:"12,85", breite:"7,20", tiefgang:"1,25", tank:"800",  wasser:"700",
+   motorPS:"2 × 45", verbrMot:"2,7", rpmRef:"2200", gpsBug:"11", reff:[15,20,25,30],
+   extra:["Das große Kippfenster im Salon ist Segen und Falle: bei Welle und Spritzwasser vorher schließen, sonst steht Wasser im Schiff.",
+          "Das offene Vordeck statt Trampolin nimmt bei Am-Wind-Kursen Wasser auf – Luken und Staufächer vorn dicht halten."]},
+  {id:"bali40",    name:"Bali 4.0 / Catspace", laenge:"11,90", breite:"6,50", tiefgang:"1,20", tank:"400", wasser:"400",
+   motorPS:"2 × 30", verbrMot:"2,0", rpmRef:"2400", gpsBug:"10", reff:[15,19,24,29],
+   extra:["Mit 30 PS je Seite ist die Motorreserve knapp: bei Bora gegen Welle kommt der Kat kaum voran, Etappen kürzer planen."]},
+  {id:"astrea42",  name:"Fountaine Pajot Astréa 42", laenge:"12,58", breite:"7,20", tiefgang:"1,25", tank:"600", wasser:"600",
+   motorPS:"2 × 45", verbrMot:"2,6", rpmRef:"2300", gpsBug:"11", reff:[16,21,26,31]},
+  {id:"elba45",    name:"Fountaine Pajot Elba 45",   laenge:"13,50", breite:"7,50", tiefgang:"1,30", tank:"800", wasser:"700",
+   motorPS:"2 × 50", verbrMot:"2,9", rpmRef:"2300", gpsBug:"12", reff:[17,22,27,32]},
+  {id:"nautitech40", name:"Nautitech 40 Open",       laenge:"11,98", breite:"6,91", tiefgang:"1,35", tank:"400", wasser:"350",
+   motorPS:"2 × 30", verbrMot:"2,2", rpmRef:"2400", gpsBug:"10", reff:[17,22,27,32],
+   extra:["Die beiden Außensteuerstände geben gute Sicht auf die Segel, aber keinen Wetterschutz – Ölzeug früh anziehen.",
+          "Der Nautitech segelt spitzer als ein Lagoon und reagiert direkter; dafür ist er empfindlicher gegen Übertrimm."]},
+  {id:"leopard45", name:"Leopard 45",     laenge:"13,63", breite:"7,42", tiefgang:"1,55", tank:"700", wasser:"700",
+   motorPS:"2 × 45", verbrMot:"3,0", rpmRef:"2400", gpsBug:"12", reff:[17,22,27,33],
+   extra:["Mit 1,55 m der tiefste in dieser Liste: in flachen Buchten und an alten Steinmolen genauer aufs Echolot achten."]},
+  {id:"excess11",  name:"Excess 11",      laenge:"11,33", breite:"6,73", tiefgang:"1,35", tank:"400", wasser:"300",
+   motorPS:"2 × 45", verbrMot:"2,4", rpmRef:"2300", gpsBug:"10", reff:[16,21,26,31]},
+  {id:"sonstige",  name:"Sonstige (eigene Werte)", laenge:"", breite:"", tiefgang:"", tank:"", wasser:"",
+   motorPS:"", verbrMot:"", rpmRef:"", gpsBug:"", reff:null}
+];
+
+function bootDaten(b){
+  var t = [];
+  if(b.laenge) t.push(b.laenge + " m Länge");
+  if(b.breite) t.push(b.breite + " m Breite");
+  if(b.tiefgang) t.push(b.tiefgang + " m Tiefgang");
+  if(b.motorPS) t.push(b.motorPS + " PS");
+  if(b.tank) t.push(b.tank + " l Diesel");
+  if(b.wasser) t.push(b.wasser + " l Wasser");
+  return t.join(" · ");
+}
 
 function bootProfil(){
-  var t = setup.typ || "";
-  for(var i=0;i<BOOTE.length;i++){ if(BOOTE[i].passt(t)) return BOOTE[i]; }
-  return null;
+  var p = null;
+  if(setup.profil) p = BOOTE.filter(function(b){ return b.id === setup.profil; })[0] || null;
+  if(!p && setup.typ){
+    /* Schreibweisen wie „Lagoon 450F" und „Lagoon 450 F" sollen zusammenfinden */
+    var eng = function(x){ return ortNorm(x).replace(/\s+/g, ""); };
+    var q = eng(setup.typ);
+    p = BOOTE.filter(function(b){
+      if(!b.reff) return false;
+      var n = eng(b.name);
+      return q && (n.indexOf(q) >= 0 || q.indexOf(n) >= 0);
+    })[0] || null;
+    if(p) setup.profil = p.id;
+  }
+  if(!p || !p.reff) return null;
+  return {
+    id:p.id, name:p.name, daten:bootDaten(p),
+    reff:reffTabelle(p.reff[0], p.reff[1], p.reff[2], p.reff[3]),
+    kurse:KURSBAENDER,
+    hinweise:KAT_HINWEISE.concat(p.extra || [])
+  };
 }
+
 /* Sprungmarken: baut aus den Überschriften einer Ansicht eine Schnellauswahl */
 function tocBauen(viewId, boxId, rueck){
   var box = $(boxId);
@@ -2064,7 +2152,6 @@ function tocBauen(viewId, boxId, rueck){
     b.textContent = h.textContent;
     b.onclick = function(){ springe(sh); };
     box.appendChild(b);
-
     if(rueck && !sh.querySelector(".zurueck")){
       var z = document.createElement("div");
       z.className = "zurueck";
@@ -2083,9 +2170,10 @@ function profilBauen(){
   if(!box) return;
   var b = bootProfil();
   if(!b){
-    box.innerHTML = '<div class="sheet hilfe"><h2>Schiffsprofil</h2>' +
-      '<p>Für den in den Stammdaten eingetragenen Bootstyp „' + (setup.typ || "–") +
-      '" liegt keine Reffempfehlung vor. Hinterlegt ist derzeit der Lagoon 450 F.</p></div>';
+    box.innerHTML = '<div class="sheet hilfe"><h2>Reffempfehlung</h2>' +
+      '<p>Für den eingetragenen Bootstyp „' + (setup.typ || "–") + '" liegen keine Werte vor. ' +
+      'Wähle in den Stammdaten unter <b>Bootsauswahl</b> ein Modell, dann erscheint hier die Reff- und Kurstabelle. ' +
+      'Bei „Sonstige" gelten deine eigenen Reffgrenzen aus den Wetterschwellen.</p></div>';
     return;
   }
   var h = '<div class="sheet hilfe"><h2>Reffempfehlung ' + b.name + '</h2>' +
@@ -2100,12 +2188,12 @@ function profilBauen(){
     b.kurse.forEach(function(k){
       var von = vorher > 0 ? Math.max(0, vorher + k.d) : 0;
       var bis = r.bis >= 999 ? null : r.bis + k.d;
-      h += "<td>" + (bis == null ? "über " + (von) + " kn" : (von > 0 ? von + " bis " + bis : "bis " + bis) + " kn") + "</td>";
+      h += "<td>" + (bis == null ? "über " + von + " kn" : (von > 0 ? von + " bis " + bis : "bis " + bis) + " kn") + "</td>";
     });
     h += "</tr>";
   });
   h += "</table>";
-  h += "<h3>Was in welcher Stufe zu tun ist</h3><table class=\"wtab\"><tr><th>Stufe</th><th>Maßnahme</th></tr>";
+  h += '<h3>Was in welcher Stufe zu tun ist</h3><table class="wtab"><tr><th>Stufe</th><th>Maßnahme</th></tr>';
   b.reff.forEach(function(r){ h += "<tr><td>" + r.kurz + "</td><td>" + r.t + "</td></tr>"; });
   h += "</table>";
   h += "<h3>Kursabhängigkeit</h3><ul>";
@@ -2113,7 +2201,7 @@ function profilBauen(){
   h += "</ul>";
   h += "<h3>Was diesen Kat ausmacht</h3><ul>";
   b.hinweise.forEach(function(x){ h += "<li>" + x + "</li>"; });
-  h += '</ul><p class="note">Angaben für wahren Wind und normale Beladung. Bei sechs Personen, vollen Tanks und Welle eher eine Stufe früher reffen. Deine eigenen Reffgrenzen stehen in den Stammdaten (aktuell ' +
+  h += '</ul><p class="note">Angaben für wahren Wind und normale Beladung. Voll besetzt, mit vollen Tanks und Welle eher eine Stufe früher reffen. Deine eigenen Reffgrenzen stehen in den Stammdaten (aktuell ' +
     sw("reff1") + ' und ' + sw("reff2") + ' kn).</p></div>';
   box.innerHTML = h;
 }
@@ -3022,6 +3110,101 @@ $("wUeber").onclick = function(){
   $("wMsg").textContent = "In Tag " + aktiv + " übernommen.";
 };
 
+/* ================= Ablegen und Anlegen ================= */
+function jetztZeit(){
+  var d = new Date();
+  return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+}
+/* Letzte bekannte Position des Vortags: Anlegepunkt, sonst Ankerposition */
+function vortagPosition(){
+  for(var n = aktiv - 1; n >= 1; n--){
+    var e = data[n] || {};
+    if(e.endPos && e.endPos.lat != null) return {lat:e.endPos.lat, lon:e.endPos.lon, quelle:"Anlegeposition Tag " + n};
+    if(e.anker && e.anker.lat != null) return {lat:e.anker.lat, lon:e.anker.lon, quelle:"Ankerposition Tag " + n};
+  }
+  return null;
+}
+function posText(p){ return p.lat.toFixed(5) + " / " + p.lon.toFixed(5); }
+
+function ablegenErfassen(){
+  var m = $("bMsg"), e = eintrag(aktiv), zeit = jetztZeit();
+  var vortag = aktiv > 1 ? vortagPosition() : null;
+
+  var fertig = function(pos, quelle){
+    if(e.ablegen && !confirm("In Tag " + aktiv + " steht schon eine Ablegezeit (" + e.ablegen + "). Auf " + zeit + " ändern?")) return;
+    e.ablegen = zeit;
+    e.startPos = {lat:pos.lat, lon:pos.lon, zeit:new Date().toISOString(), quelle:quelle};
+    e.route = (e.route ? e.route.trim() + "\n" : "") + "Abgelegt " + zeit + " · " + posText(pos) + " (" + quelle + ")";
+    lokalSpeichern(); zeichne();
+    var m2 = $("bMsg");
+    m2.className = "note ok";
+    m2.textContent = "Ablegen " + zeit + " · " + posText(pos) + " · " + quelle +
+      ". Für die Streckenmessung „Start ab hier“ drücken.";
+  };
+
+  if(vortag){
+    fertig(vortag, vortag.quelle);
+    return;
+  }
+  m.className = "note";
+  m.textContent = aktiv > 1 ? "Kein Liegeplatz vom Vortag gespeichert, hole aktuelle Position …" : "Position wird geholt …";
+  gpsEinmal({timeout:20000, maximumAge:60000, enableHighAccuracy:true}).then(function(c){
+    fertig({lat:c.latitude, lon:c.longitude}, "GPS jetzt, ±" + Math.round(c.accuracy || 10) + " m");
+  }, function(err){
+    var m3 = $("bMsg");
+    m3.className = "note err";
+    m3.textContent = err.message + " – Zeit " + zeit + " wurde trotzdem eingetragen.";
+    if(!e.ablegen){ e.ablegen = zeit; lokalSpeichern(); zeichne(); }
+  });
+}
+
+function anlegenErfassen(){
+  var m = $("bMsg"), e = eintrag(aktiv), zeit = jetztZeit();
+  m.className = "note";
+  m.textContent = "Position wird geholt …";
+  gpsEinmal({timeout:20000, maximumAge:30000, enableHighAccuracy:true}).then(function(c){
+    var pos = {lat:c.latitude, lon:c.longitude};
+    if(e.anlegen && !confirm("In Tag " + aktiv + " steht schon eine Anlegezeit (" + e.anlegen + "). Auf " + zeit + " ändern?")) return;
+    e.anlegen = zeit;
+    e.endPos = {lat:pos.lat, lon:pos.lon, zeit:new Date().toISOString()};
+    e.route = (e.route ? e.route.trim() + "\n" : "") + "Angelegt " + zeit + " · " + posText(pos) +
+      " (GPS ±" + Math.round(c.accuracy || 10) + " m)";
+    setup.lat = pos.lat.toFixed(4); setup.lon = pos.lon.toFixed(4);
+    var nah = revierNah(pos.lat, pos.lon);
+    if(!(e.nach || "").trim()) e.nach = nah ? nah.name : posText(pos);
+    lokalSpeichern(); setupFelder(); zeichne();
+    var m2 = $("bMsg");
+    m2.className = "note ok";
+    m2.textContent = "Anlegen " + zeit + " · " + posText(pos) +
+      (nah
+        ? " · " + nah.name + " (" + Math.round(nah.m) + " m)"
+        : " · kein Eintrag der Revierliste innerhalb " + ortRadius() + " m, als Ziel wurden die Koordinaten eingetragen") +
+      (trk.an ? " · GPS-Messung läuft noch, mit „Etappe beenden“ abschließen." : "");
+  }, function(err){
+    var m3 = $("bMsg");
+    m3.className = "note err";
+    m3.textContent = err.message + " – Zeit " + zeit + " wurde trotzdem eingetragen.";
+    if(!e.anlegen){ e.anlegen = zeit; lokalSpeichern(); zeichne(); }
+  });
+}
+
+$("bAblegen").onclick = ablegenErfassen;
+$("bAnlegen").onclick = anlegenErfassen;
+
+function bMsgSetzen(){
+  var m = $("bMsg");
+  if(!m) return;
+  var e = data[aktiv] || {};
+  var teile = [];
+  if(e.ablegen) teile.push("Ablegen " + e.ablegen + (e.startPos ? " · " + posText(e.startPos) : ""));
+  if(e.anlegen) teile.push("Anlegen " + e.anlegen + (e.endPos ? " · " + posText(e.endPos) : ""));
+  m.className = "note";
+  m.textContent = teile.length ? teile.join("  |  ")
+    : (aktiv > 1 && vortagPosition()
+        ? "Beim Ablegen wird die " + vortagPosition().quelle + " übernommen, beim Anlegen die aktuelle GPS-Position."
+        : "Beide Knöpfe erfassen Zeit und aktuelle GPS-Position.");
+}
+
 /* ================= Ankerwache ================= */
 var ankerWatch = null;
 
@@ -3095,9 +3278,12 @@ $("aSetzen").onclick = function(){
     e.anker = {lat:pos.lat, lon:pos.lon, zeit:new Date().toISOString(), kette:kette, tiefe:tiefe,
       kurs:kurs, offset:offset, genau:Math.round(c.accuracy || 10),
       radius:schwoiRadius(kette, tiefe, c.accuracy), abstand:0, peilung:null};
+    var ankerOrt = revierNah(pos.lat, pos.lon);
     e.route = (e.route ? e.route.trim() + "\n" : "") +
       "Anker " + new Date().toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}) + " auf " +
-      pos.lat.toFixed(5) + " / " + pos.lon.toFixed(5) + " · Kette " + kette + " m bei " + tiefe + " m · Radius " + e.anker.radius + " m";
+      pos.lat.toFixed(5) + " / " + pos.lon.toFixed(5) + (ankerOrt ? " (" + ankerOrt.name + ")" : "") +
+      " · Kette " + kette + " m bei " + tiefe + " m · Radius " + e.anker.radius + " m";
+    if(!(e.nach || "").trim()) e.nach = ankerOrt ? ankerOrt.name : pos.lat.toFixed(4) + " / " + pos.lon.toFixed(4);
     if(!e.liegeplatz) e.liegeplatz = "Anker frei";
     lokalSpeichern(); zeichne(); ankerFelder();
     var m2 = $("aMsg");
@@ -3366,7 +3552,7 @@ function vorschlaegeBauen(){
 }
 
 /* ================= Synchronisation über GitHub Gist ================= */
-var GIST_DATEI = "logbuch-red-twin-ii.json";
+var GIST_DATEI = "segel-logbuch.json";
 
 function syncInfoZeigen(txt, kl){
   var p = $("syncInfo");
@@ -3934,6 +4120,7 @@ function zeichne(){
   });
   tagesleiste(); summen(); vorschlaegeBauen(); kopfAnwenden(); ankerFelder();
   tocBauen("viewLog", "logToc", false);
+  bMsgSetzen();
 }
 
 /* ================= Ansichten ================= */
@@ -3944,7 +4131,7 @@ function ansichtSetzen(v){
   $("viewSetup").classList.toggle("on", v === "setup");
   if(v === "wetter") planLaden();
   $("viewWiki").classList.toggle("on", v === "wiki");
-  if(v === "wiki"){ profilBauen(); tocBauen("viewWiki", "wikiToc", true); }
+  if(v === "wiki"){ profilBauen(); funkFuellen(); tocBauen("viewWiki", "wikiToc", true); }
   if(v === "wetter") tocBauen("viewWetter", "wetterToc", false);
   if(v === "setup") tocBauen("viewSetup", "setupToc", true);
   if(v === "info") tocBauen("viewInfo", "infoToc", true);
@@ -3953,13 +4140,94 @@ function ansichtSetzen(v){
   if(v === "info") infoBauen();
   $("navbtns").classList.toggle("hidden", v !== "log");
   kopfAnwenden();
-  Array.prototype.forEach.call($("nav").children, function(b){
-    b.setAttribute("aria-selected", b.getAttribute("data-v") === v ? "true" : "false");
-  });
+  var titel = {log:"Logbuch", wetter:"Wetter", wiki:"Wiki", setup:"Stammdaten", info:"Info"};
+  if($("viewTitel")) $("viewTitel").textContent = titel[v] || "Logbuch";
+  menueBauen();
   window.scrollTo({top:0});
 }
-Array.prototype.forEach.call($("nav").children, function(b){
-  b.onclick = function(){ ansichtSetzen(b.getAttribute("data-v")); };
+/* ---------- Aufklappmenü ---------- */
+var MENUE = [
+  {v:"log", l:"Logbuch", view:"viewLog"},
+  {v:"wetter", l:"Wetter", view:"viewWetter"},
+  {v:"wiki", l:"Wiki", view:"viewWiki"},
+  {v:"info", l:"Info", view:"viewInfo"}
+];
+function menueOffen(auf){
+  var p = $("menuPanel");
+  p.classList.toggle("hidden", !auf);
+  $("menuBtn").setAttribute("aria-expanded", auf ? "true" : "false");
+  $("menuBtn").textContent = auf ? "✕" : "☰";
+}
+/* Bootsname, Maße und Crewgröße in die Funksprüche einsetzen */
+function funkFuellen(){
+  var setzen = function(kl, wert){
+    Array.prototype.forEach.call(document.querySelectorAll("." + kl), function(el){ el.textContent = wert; });
+  };
+  setzen("bn", setup.boot || "BOOTSNAME");
+  setzen("bl", setup.laenge || "…");
+  setzen("bw", setup.breite || "…");
+  setzen("bp", setup.personen || "…");
+}
+
+function menueBauen(){
+  var box = $("menuInner");
+  if(!box) return;
+  if(typeof profilBauen === "function" && $("bootProfil") && !$("bootProfil").innerHTML) profilBauen();
+  var kopfHoehe = (document.querySelector("header") || {}).offsetHeight || 120;
+  box.innerHTML = "";
+  MENUE.forEach(function(m){
+    var abschnitte = Array.prototype.slice.call(document.querySelectorAll("#" + m.view + " .sheet"))
+      .filter(function(sh){
+        if(sh.classList.contains("toc-box")) return false;
+        var h = sh.querySelector("h2");
+        return h && !h.classList.contains("big");
+      });
+
+    var haupt = document.createElement("button");
+    haupt.className = "menuHaupt";
+    haupt.setAttribute("aria-current", ansicht === m.v ? "true" : "false");
+    haupt.innerHTML = m.l + "<span>" + abschnitte.length + (abschnitte.length === 1 ? " Abschnitt" : " Abschnitte") + "</span>";
+    var unter = document.createElement("div");
+    unter.className = "menuUnter" + (ansicht === m.v ? " auf" : "");
+
+    haupt.onclick = function(){
+      if(ansicht !== m.v){
+        ansichtSetzen(m.v);
+        menueOffen(true);
+        return;
+      }
+      unter.classList.toggle("auf");
+    };
+
+    abschnitte.forEach(function(sh, i){
+      if(!sh.id) sh.id = m.view + "-abschnitt" + i;
+      var b = document.createElement("button");
+      b.textContent = "› " + sh.querySelector("h2").textContent;
+      b.onclick = function(){
+        if(ansicht !== m.v) ansichtSetzen(m.v);
+        menueOffen(false);
+        setTimeout(function(){
+          var y = sh.getBoundingClientRect().top + window.scrollY - kopfHoehe - 8;
+          window.scrollTo({top: Math.max(0, y), behavior: "smooth"});
+        }, 60);
+      };
+      unter.appendChild(b);
+    });
+
+    box.appendChild(haupt);
+    box.appendChild(unter);
+  });
+}
+$("menuBtn").onclick = function(){
+  var auf = $("menuPanel").classList.contains("hidden");
+  if(auf) menueBauen();
+  menueOffen(auf);
+};
+$("setupBtn").onclick = function(){ menueOffen(false); ansichtSetzen("setup"); };
+document.addEventListener("click", function(ev){
+  if($("menuPanel").classList.contains("hidden")) return;
+  if($("menuPanel").contains(ev.target) || ev.target === $("menuBtn")) return;
+  menueOffen(false);
 });
 
 /* ================= Export ================= */
@@ -4326,7 +4594,7 @@ $("btnUpdate").onclick = async function(){
   }
 };
 $("btnBackup").onclick = function(){
-  download("Logbuch_RedTwinII_" + new Date().toISOString().slice(0,10) + ".json", JSON.stringify({eintraege:data, setup:setup}, null, 1), "application/json");
+  download("Logbuch_" + (setup.boot || "Boot").replace(/[^\wÄÖÜäöüß-]+/g, "_") + "_" + new Date().toISOString().slice(0,10) + ".json", JSON.stringify({eintraege:data, setup:setup}, null, 1), "application/json");
   setStatus("Backup abgelegt");
 };
 $("btnRestore").onclick = function(){ $("file").click(); };
@@ -4542,14 +4810,64 @@ function modellFeldBauen(){
   });
 }
 
+function profilFeldBauen(){
+  var sel = $("t_profil");
+  if(!sel || sel.options.length) return;
+  var leer = document.createElement("option");
+  leer.value = ""; leer.textContent = "– bitte wählen –";
+  sel.appendChild(leer);
+  BOOTE.forEach(function(b){
+    var o = document.createElement("option");
+    o.value = b.id;
+    o.textContent = b.name + (b.laenge ? " · " + b.laenge + " m" : "");
+    sel.appendChild(o);
+  });
+}
+
+/* Werte eines Profils in die Stammdaten schreiben */
+function profilAnwenden(id){
+  var b = BOOTE.filter(function(x){ return x.id === id; })[0];
+  if(!b) return;
+  if(id === "sonstige"){
+    setup.profil = "sonstige";
+    lokalSpeichern(); profilBauen();
+    $("zInfo").className = "note";
+    $("zInfo").textContent = "Eigene Werte: Bootstyp, Länge, Breite, Tank, Verbrauch, Bezugsdrehzahl und Antennenversatz von Hand eintragen. Die Reffgrenzen kommen dann aus den Wetterschwellen.";
+    return;
+  }
+  var uebernehmen = [
+    ["typ", b.name], ["laenge", b.laenge], ["breite", b.breite], ["tank", b.tank],
+    ["verbrMot", b.verbrMot], ["rpmRef", b.rpmRef], ["rpmStd", b.rpmRef], ["gpsBug", b.gpsBug]
+  ];
+  var liste = uebernehmen.filter(function(x){ return x[1]; })
+    .map(function(x){ return "· " + x[0] + ": " + (setup[x[0]] ? setup[x[0]] + " → " : "") + x[1]; }).join("\n");
+  if(!confirm("Werte von " + b.name + " übernehmen?\n\n" + liste +
+      "\n· Reffgrenzen: " + b.reff[0] + " / " + b.reff[1] + " kn" +
+      "\n\nBootsname, Törndaten und deine Logbucheinträge bleiben unberührt.")){
+    $("t_profil").value = setup.profil || "";
+    return;
+  }
+  uebernehmen.forEach(function(x){ if(x[1]) setup[x[0]] = x[1]; });
+  setup.profil = b.id;
+  if(!setup.sw) setup.sw = swStandard();
+  setup.sw.reff1 = b.reff[0];
+  setup.sw.reff2 = b.reff[1];
+  setup.sw.windRot = Math.max(zahl(setup.sw.windRot) || 0, b.reff[1]);
+  setupFelder(); swGridBauen(); lokalSpeichern(); tageBauen(); summen(); zeichne(); profilBauen();
+  $("zInfo").className = "note ok";
+  $("zInfo").textContent = b.name + " übernommen: " + bootDaten(b) + " · Reff 1 ab " + b.reff[0] + " kn, Reff 2 ab " + b.reff[1] + " kn.";
+}
+
 function setupFelder(){
+  profilFeldBauen();
+  if($("t_profil")) $("t_profil").value = setup.profil || "";
   modellFeldBauen();
   if($("y_token")) $("y_token").value = setup.gistToken || "";
   if($("y_gist")) $("y_gist").value = setup.gistId || "";
   syncInfoZeigen();
   if($("s_modell")) $("s_modell").value = setup.modell || "best_match";
   if($("w_amt") && !$("w_amt").value && setup.amt) $("w_amt").value = setup.amt;
-  ["boot","typ","skipper","start","ende","personen","motBB","motSB","gen","gpsBug","laenge","verbrMot","verbrGen","tank","rpmRef","rpmStd","leerlauf"].forEach(function(k){
+  ["boot","typ","skipper","start","ende","personen","motBB","motSB","gen","gpsBug","laenge","breite","verbrMot","verbrGen","tank","rpmRef","rpmStd","leerlauf","ortRadius"].forEach(function(k){
     var el = $("t_" + k);
     if(el) el.value = setup[k] || "";
   });
@@ -4561,6 +4879,11 @@ function setupFelder(){
   if(!$("w_ziel").value && setup.ziel) $("w_ziel").value = setup.ziel;
   if(setup.offen != null && $("w_offen")) $("w_offen").value = setup.offen;
 }
+$("t_profil").addEventListener("change", function(){
+  var id = $("t_profil").value;
+  if(!id){ setup.profil = ""; lokalSpeichern(); profilBauen(); return; }
+  profilAnwenden(id);
+});
 $("s_modell").addEventListener("change", function(){
   setup.modell = $("s_modell").value;
   lokalSpeichern();
@@ -4572,12 +4895,13 @@ $("s_modell").addEventListener("change", function(){
     if(k === "provider") zeichne();
   });
 });
-["boot","typ","skipper","start","ende","personen","motBB","motSB","gen","gpsBug","laenge","verbrMot","verbrGen","tank","rpmRef","rpmStd","leerlauf"].forEach(function(k){
+["boot","typ","skipper","start","ende","personen","motBB","motSB","gen","gpsBug","laenge","breite","verbrMot","verbrGen","tank","rpmRef","rpmStd","leerlauf","ortRadius"].forEach(function(k){
   $("t_" + k).addEventListener("change", function(){
     setup[k] = $("t_" + k).value;
     if(k === "start" || k === "ende" || k === "personen"){ tageBauen(); zeichne(); trkLaden(); }
     else { tageBauen(); summen(); }
-    if(k === "typ"){ profilBauen(); tocBauen("viewWiki", "wikiToc", true); }
+    if(k === "typ" || k === "laenge" || k === "breite"){ profilBauen(); funkFuellen(); }
+    if(k === "boot" || k === "personen") funkFuellen();
     lokalSpeichern();
   });
   $("t_" + k).addEventListener("input", function(){
@@ -4631,6 +4955,8 @@ window.addEventListener("beforeunload", function(e){
   });
   try{
     zeichne();
+    funkFuellen();
+    menueBauen();
     trkLaden();
     if(lsOk) setStatus("Bereit · Gerätespeicher aktiv");
   }catch(e){

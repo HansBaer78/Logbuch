@@ -1,11 +1,11 @@
-/* Logbuch Red Twin II – Offline-Betrieb und saubere Updates.
+/* Segel-Logbuch – Offline-Betrieb und saubere Updates.
    Strategie:
    - Seite selbst (Navigation): immer zuerst aus dem Netz, Cache nur als Rückfall.
      Damit erscheint eine neue Version ohne Löschen der Browserdaten.
    - Übrige Dateien: aus dem Cache, im Hintergrund aktualisiert.
    Gespeicherte Logbucheinträge liegen im localStorage und werden hiervon nie berührt. */
 
-var VERSION = "2.8";
+var VERSION = "4.0.1";
 var CACHE = "logbuch-" + VERSION;
 var DATEIEN = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./logo.png"];
 
