@@ -7,7 +7,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Logbuch – Segeltörn</title>
+<title>5B Cruise Log</title>
 <style>
 :root{
   --ink:#0E2430;--ink-soft:#3C5663;--paper:#F0F2EC;--card:#FFFFFF;--line:#C6CFC9;
@@ -221,7 +221,7 @@ footer .navbtns.hidden{display:none}
 <header>
   <div class="brand">
     <button class="hdrBtn" id="menuBtn" aria-label="Menü öffnen" aria-expanded="false">☰</button>
-    <img class="logo" src="./logo.png" alt="Meer geht immer – The Buttons">
+    <img class="logo" src="./logo.png" alt="5B Cruise Log">
     <div class="titel">
       <h1 id="viewTitel">Logbuch</h1>
       <span class="boat" id="brandBoot">BOOT IN DEN STAMMDATEN EINTRAGEN</span>
@@ -739,6 +739,20 @@ KOMMEN</div>
   <section class="view" id="viewSetup">
     <div class="sheet toc-box"><div class="toc" id="setupToc"></div></div>
     <div class="sheet">
+      <h2>Reisen</h2>
+      <div class="grid">
+        <div class="f wide"><label for="r_liste">Aktive Reise</label><select id="r_liste"></select></div>
+      </div>
+      <div class="btnrow">
+        <button class="small primary" id="rNeu">Neue Reise</button>
+        <button class="small" id="rKopie">Neue Reise mit diesem Schiff</button>
+        <button class="small" id="rName">Umbenennen</button>
+        <button class="small warn" id="rWeg">Reise löschen</button>
+      </div>
+      <p class="note" id="rInfo"></p>
+    </div>
+
+    <div class="sheet">
       <h2>Törn und Schiff</h2>
       <div class="grid">
         <div class="f"><label for="t_boot">Bootsname</label><input id="t_boot" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Name des Bootes"></div>
@@ -766,8 +780,6 @@ KOMMEN</div>
       </div>
       <div class="btnrow">
         <button class="small" id="zPruefen">Zählerstände prüfen</button>
-        <button class="small" id="zZurueck">Stände einen Tag zurückschieben</button>
-        <button class="small" id="zVor">Rückgängig (einen Tag vor)</button>
       </div>
       <p class="note" id="tornInfo"></p>
       <p class="note" id="zInfo"></p>
@@ -826,11 +838,15 @@ KOMMEN</div>
       <button class="primary" id="btnUpdate">Nach Updates suchen</button>
       <button class="primary" id="btnBackup">Backup in Downloads</button>
       <button id="btnRestore">Backup laden</button>
-      <button id="btnExcel">Excel-Export (.xlsx)</button>
+      <button id="btnExcel">Excel: aktive Reise</button>
+      <button id="btnExcelAlle">Excel: alle Reisen</button>
+      <button id="btnPdf">PDF erzeugen</button>
+      <button id="btnPdfMail">PDF per Mail teilen</button>
       <button id="btnDiag">Diagnosebericht</button>
       <button id="btnText">Logbuch als Text</button>
       <button id="btnPrint">Drucken / PDF</button>
       <button class="warn" id="btnClear">Aktuellen Tag leeren</button>
+      <button id="btnFeedback">Rückmeldung an den Support</button>
       <input type="file" id="file" accept=".json,application/json" hidden>
     </div>
     <div id="exportOut" class="hidden"></div>
@@ -850,6 +866,16 @@ KOMMEN</div>
         <li><b>☰ Menü</b> – Logbuch, Wetter, Wiki und Info. Der aktive Bereich zeigt seine Abschnitte als Unterpunkte; ein Tipp darauf springt direkt hin. Nochmal auf den Hauptpunkt tippen klappt die Liste zu.</li>
         <li><b>⚙ Zahnrad</b> – Stammdaten: Boot, Törn, Zähler und Verbrauch, Schwellenwerte, Speicher, Synchronisation und Export. Absichtlich getrennt vom Menü, weil man dort selten hin muss.</li>
       </ul>
+
+      <h3>Mehrere Reisen</h3>
+      <p>Im Zahnrad ganz oben liegt der Block <b>Reisen</b>. Jede Reise hat ihr eigenes Schiff, eigene Crew, eigene Törndaten, eigene Zählerstände, eigene Wetterschwellen und eigene Tageseinträge – beliebig viele.</p>
+      <ul>
+        <li><b>Neue Reise</b> legt eine leere Reise an</li>
+        <li><b>Neue Reise mit diesem Schiff</b> übernimmt Boot, Maße, Verbrauch und Schwellen, lässt aber Törndaten, Zähler und Einträge leer – für den nächsten Törn mit demselben Charterboot</li>
+        <li><b>Umbenennen</b> und <b>Reise löschen</b>; die letzte Reise lässt sich nicht löschen</li>
+        <li>Wechseln über die Auswahlliste, die aktuelle Reise wird vorher gespeichert</li>
+      </ul>
+      <p>Wettermodell, Synchronisation und Token gelten geräteweit für alle Reisen. Backup und Synchronisation umfassen immer alle Reisen. Excel-Export, Textausgabe und Ausdruck betreffen die aktive Reise und tragen deren Namen im Kopf und im Dateinamen.</p>
 
       <h3>Ablegen und Anlegen</h3>
       <p>Zwei Knöpfe erfassen Zeit und Position mit einem Tipp. <b>Ablegen</b> nimmt am ersten Tag die aktuelle GPS-Position, an allen weiteren Tagen die letzte bekannte Position des Vortags – also den Anlegepunkt oder die Ankerposition, was zuletzt gespeichert wurde. <b>Anlegen</b> nimmt immer die aktuelle Position und trägt als Ziel den nächstgelegenen Eintrag der Revierliste ein, falls einer innerhalb des in den Stammdaten eingestellten Radius liegt (voreingestellt 250 m). Sonst kommen die Koordinaten ins Zielfeld – bei einer namenlosen Bucht ist das die brauchbarere Angabe. Beim Ankersetzen gilt dasselbe. Beides landet zusätzlich als Zeile im Routenfeld.</p>
@@ -917,7 +943,7 @@ KOMMEN</div>
       <p>Beim ersten Start als Erstes hier ausfüllen: <b>Bootsauswahl</b> setzt Typ, Länge, Breite, Tankinhalt, Verbrauch, Bezugsdrehzahl, Antennenversatz und die Reffgrenzen in einem Schritt; hinterlegt sind elf gängige Charterkatamarane. „Sonstige" lässt alle Felder frei für eigene Werte. Dazu Bootsname, Skipper, Reisezeitraum, Personen und die Startstände der Zähler.</p>
       <p>Länge, Breite und Bootsname erscheinen automatisch in den Funksprüchen im Wiki, die Reffgrenzen in der Wetteranalyse.</p>
       <p>Aus den Laufzeiten schätzt die App den Dieselverbrauch, drehzahlabhängig. In den Stammdaten stehen der Verbrauch je Motor bei einer Bezugsdrehzahl (voreingestellt 3,0 l/h bei 2200 1/min), der Leerlaufverbrauch und eine Standarddrehzahl; im Tageseintrag trägst du die mittlere Drehzahl des Tages ein. Weil der Propeller die Leistung mit der dritten Potenz der Drehzahl aufnimmt, wird der Bezugswert kubisch skaliert – 1800 statt 2200 spart also viel mehr als die Differenz vermuten lässt. Die Schätzung erscheint in der Kopfzeile, im Tageshinweis, im Excel-Export als Tagesspalte und im Info-Reiter.</p>
-      <p>Für die Motoren und den Generator gilt: Startstand in die Stammdaten, danach jeden Tag den aktuellen Stand ins Tagesfeld. Stimmt die Zuordnung nicht, hilft <b>Zählerstände prüfen</b> mit einem Bericht, <b>Stände einen Tag zurückschieben</b> verschiebt die ganze Reihe um einen Tag (Tag 1 wandert in die Stammdaten) und <b>Rückgängig</b> nimmt das wieder zurück.</p>
+      <p>Für die Motoren und den Generator gilt: Startstand in die Stammdaten, danach jeden Tag den aktuellen Stand ins Tagesfeld – am besten abends, wenn die Maschinen aus sind. Die Laufzeit je Tag ist die Differenz zum vorigen Stand. <b>Zählerstände prüfen</b> zeigt einen Bericht mit Rechenweg und meldet unplausible Werte.</p>
       <p>Die Wetterschwellen legen fest, ab wann etwas gelb oder rot ist – für Wind, Böen, Welle, Böenfaktor, Druckfall, Nachtzeitraum sowie die Grenzen für Anker, Boje und Marina. Leere Felder fallen auf den Standard zurück, unplausible Kombinationen werden rot gemeldet.</p>
 
       <h3>Info</h3>
@@ -933,7 +959,11 @@ KOMMEN</div>
         <li><b>Speicherort wählen</b> – zusätzlich in eine eigene Datei schreiben</li>
         <li><b>Backup in Downloads</b> – JSON-Datei, mit „Backup laden" zurückholbar</li>
         <li><b>Diagnosebericht</b> – vollständiger Text zum Weitergeben bei Rückfragen: Schwellen, Zähler mit Rechenweg, alle Tageseinträge samt Anker, GPS-Messung und Wetterplanung, die letzte Analyse und das Fehlerprotokoll</li>
-        <li><b>Excel-Export</b> – zwei Blätter, Logbuch und Stammdaten, zum Weitergeben</li>
+        <li><b>Excel: aktive Reise</b> – zwei Blätter, Logbuch und Stammdaten</li>
+        <li><b>Excel: alle Reisen</b> – ein Tabellenblatt je Reise plus Stammdaten der aktiven</li>
+        <li><b>PDF erzeugen</b> – vollständiges Logbuch der aktiven Reise als PDF</li>
+        <li><b>PDF per Mail teilen</b> – übergibt die PDF an die Teilen-Funktion des Geräts, also an Mail, WhatsApp oder Drive. Geht das nicht, landet sie in den Downloads und die E-Mail öffnet sich mit dem Hinweis, sie anzuhängen.</li>
+        <li><b>Rückmeldung an den Support</b> – erzeugt eine Infodatei mit App-Version, Stammdaten, Schwellenwerten und Fehlerprotokoll und öffnet eine E-Mail an support@5buttons.eu. Anmerkungen bitte in die Mail schreiben. Logbuchtexte, Positionen und Zugangsdaten werden nicht übertragen.</li>
         <li><b>Drucken / PDF</b> – mit Logo, Bootsname und Törnzeitraum als Kopf</li>
       </ul>
 
@@ -1029,18 +1059,22 @@ KOMMEN</div>
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "4.0.1";
+var APP_VERSION = "5.3.2";
 var APP_STAND = "28.08.2026";
+var APP_NAME = "5B Cruise Log";
+var APP_KURZ = "5BCL";   /* nur für Dateinamen und das Startbildschirm-Symbol */
 var APP_AUTOR = "M. Button";
 
 function infoBauen(){
   var eintraege = [
-    ["Version", APP_VERSION + " · Cache 4.0.1"],
+    ["App", APP_NAME + " · 5buttons.eu"],
+    ["Version", APP_VERSION + " · Cache 5.3.2"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
     ["Revierliste", REVIER.length + " Häfen und Buchten, Umag bis Cavtat"],
     ["Bootsprofile", (BOOTE.length - 1) + " Katamarane plus eigene Werte" + (bootProfil() ? " · aktiv: " + bootProfil().name : "")],
+    ["Reisen", reisen.length + " gespeichert · aktiv: " + ((reiseObj(aktivReise) || {}).name || "-")],
     ["Diesel geschätzt", (function(){ var d = dieselSchaetzung(); return d.ges > 0
       ? Math.round(d.ges) + " l (Motoren " + Math.round(d.mot) + " l, Generator " + Math.round(d.gen) + " l)"
       : "noch keine Laufzeiten erfasst"; })()],
@@ -1143,12 +1177,33 @@ var SCHEMA = [
 
 /* ================= Zustand ================= */
 var LS_KEY = "logbuch2026";
-var data = {}, setup = {provider:"om", key:"", lat:"", lon:"", ziel:"",
-  boot:"", typ:"", skipper:"", start:"", ende:"",
-  personen:"4", motBB:"", motSB:"", gen:"", sw:null, modell:"italia_meteo_arpae_icon_2i", amt:"",
-  gpsBug:"", laenge:"", breite:"", verbrMot:"3,0", verbrGen:"1,8", tank:"", profil:"",
-  rpmRef:"2200", rpmStd:"2200", leerlauf:"0,6", ortRadius:"250",
-  gistToken:"", gistId:"", syncStand:""};
+var data = {};
+function setupStandard(){
+  return {provider:"om", key:"", lat:"", lon:"", ziel:"", offen:"",
+    boot:"", typ:"", skipper:"", start:"", ende:"",
+    personen:"4", motBB:"", motSB:"", gen:"", sw:null, modell:"italia_meteo_arpae_icon_2i", amt:"",
+    gpsBug:"", laenge:"", breite:"", verbrMot:"3,0", verbrGen:"1,8", tank:"", profil:"",
+    rpmRef:"2200", rpmStd:"2200", leerlauf:"0,6", ortRadius:"250",
+    gistToken:"", gistId:"", syncStand:""};
+}
+var setup = setupStandard();
+
+/* Reisen: jede Reise hat eigene Stammdaten und eigene Tageseinträge */
+var reisen = [];
+var aktivReise = "";
+var GLOBAL_KEYS = ["gistToken","gistId","syncStand","modell","kopfZu"];
+
+function reiseObj(id){
+  for(var i=0;i<reisen.length;i++){ if(reisen[i].id === id) return reisen[i]; }
+  return null;
+}
+function reiseName(st){
+  var teile = [];
+  if(st.boot) teile.push(st.boot);
+  if(st.start) teile.push(st.start.slice(0,4));
+  return teile.length ? teile.join(" ") : "Neue Reise";
+}
+function reiseNeuId(){ return "r" + Date.now().toString(36) + Math.floor(Math.random()*1000); }
 
 /* Schwellen für die Wettereinstufung – vom Skipper einstellbar */
 var SW_DEF = [
@@ -1345,11 +1400,21 @@ function banner(t){ var b = $("banner"); b.textContent = t; b.classList.remove("
 function nz(v){ return v == null || isNaN(v) ? 0 : v; }
 
 /* ---------- Gerätespeicher ---------- */
+/* Aktuelle Reise zurückschreiben und den Gesamtstand bauen */
+function speicherStand(){
+  var r = reiseObj(aktivReise);
+  if(r){ r.eintraege = data; r.setup = setup; r.name = r.name || reiseName(setup); }
+  var glob = {};
+  GLOBAL_KEYS.forEach(function(k){ glob[k] = setup[k] != null ? setup[k] : ""; });
+  return {v:2, aktiv:aktivReise, global:glob,
+    reisen: reisen.map(function(x){ return {id:x.id, name:x.name, setup:x.setup, eintraege:x.eintraege}; })};
+}
+
 function lokalSpeichern(){
   clearTimeout(tLocal);
   tLocal = setTimeout(function(){
     try{
-      localStorage.setItem(LS_KEY, JSON.stringify({eintraege:data, setup:setup}));
+      localStorage.setItem(LS_KEY, JSON.stringify(speicherStand()));
       lsOk = true;
       var t = new Date();
       setStatus("Gespeichert " + String(t.getHours()).padStart(2,"0") + ":" + String(t.getMinutes()).padStart(2,"0") + (dateiHandle ? " · Datei" : ""));
@@ -1361,18 +1426,80 @@ function lokalSpeichern(){
   }, 350);
   dateiSpeichern();
 }
+function standUebernehmen(o){
+  if(o && o.v === 2 && Array.isArray(o.reisen)){
+    reisen = o.reisen.map(function(x){
+      return {id:x.id || reiseNeuId(), name:x.name || "Reise", setup:x.setup || setupStandard(), eintraege:x.eintraege || {}};
+    });
+    aktivReise = o.aktiv && reiseObj(o.aktiv) ? o.aktiv : (reisen[0] ? reisen[0].id : "");
+    if(o.global){
+      reisen.forEach(function(r){
+        GLOBAL_KEYS.forEach(function(k){ if(o.global[k] != null && o.global[k] !== "") r.setup[k] = o.global[k]; });
+      });
+    }
+  }else if(o && (o.eintraege || o.setup)){
+    /* Format vor den Reisen: wird zur ersten Reise */
+    var st = Object.assign(setupStandard(), o.setup || {});
+    reisen = [{id:reiseNeuId(), name:reiseName(st), setup:st, eintraege:o.eintraege || {}}];
+    aktivReise = reisen[0].id;
+  }
+  if(!reisen.length){
+    reisen = [{id:reiseNeuId(), name:"Neue Reise", setup:setupStandard(), eintraege:{}}];
+    aktivReise = reisen[0].id;
+  }
+  var r = reiseObj(aktivReise);
+  setup = Object.assign(setupStandard(), r.setup || {});
+  data = r.eintraege || {};
+  r.setup = setup; r.eintraege = data;
+}
+
 function lokalLaden(){
   try{
     var raw = localStorage.getItem(LS_KEY);
-    if(raw){
-      var o = JSON.parse(raw);
-      data = o.eintraege || {};
-      if(o.setup) setup = Object.assign(setup, o.setup);
-    }
+    standUebernehmen(raw ? JSON.parse(raw) : null);
   }catch(e){
     lsOk = false;
+    standUebernehmen(null);
     banner("Der Gerätespeicher ist in dieser Umgebung gesperrt.");
   }
+}
+
+function reiseWechseln(id){
+  var r = reiseObj(id);
+  if(!r) return;
+  if(trk.an) trkPause();
+  var akt = reiseObj(aktivReise);
+  if(akt){ akt.setup = setup; akt.eintraege = data; }
+  aktivReise = id;
+  var neuSetup = Object.assign(setupStandard(), r.setup || {});
+  if(akt) GLOBAL_KEYS.forEach(function(k){ if(akt.setup[k]) neuSetup[k] = akt.setup[k]; });
+  setup = neuSetup;
+  data = r.eintraege || {};
+  r.setup = setup; r.eintraege = data;
+  aktiv = 1;
+  letzteAnalyse = null;
+  wps = [];
+  if(!setup.sw) setup.sw = swStandard();
+  lokalSpeichern();
+  tageBauen(); setupFelder(); swGridBauen(); zeichne(); trkLaden(); ankerFelder();
+  funkFuellen(); profilBauen(); menueBauen(); reiseListeBauen();
+}
+
+function reiseAnlegen(vorlage){
+  var name = prompt("Name der neuen Reise:", "Reise " + (reisen.length + 1));
+  if(name === null) return;
+  var st = setupStandard();
+  if(vorlage){
+    var v = reiseObj(aktivReise);
+    if(v) st = Object.assign(st, JSON.parse(JSON.stringify(v.setup)));
+    st.start = ""; st.ende = ""; st.motBB = ""; st.motSB = ""; st.gen = "";
+    st.lat = ""; st.lon = ""; st.ziel = ""; st.amt = "";
+  }
+  GLOBAL_KEYS.forEach(function(k){ if(setup[k]) st[k] = setup[k]; });
+  var neu = {id:reiseNeuId(), name:(name.trim() || "Neue Reise"), setup:st, eintraege:{}};
+  reisen.push(neu);
+  lokalSpeichern();
+  reiseWechseln(neu.id);
 }
 
 /* ---------- Datei am gewählten Ort ---------- */
@@ -1401,14 +1528,14 @@ async function handleLoeschen(){ try{ var db = await idb(); db.transaction("h","
 async function ortWaehlen(){
   try{
     if(window.showSaveFilePicker){
-      var h = await window.showSaveFilePicker({suggestedName:"Logbuch.json", types:[{description:"Logbuch", accept:{"application/json":[".json"]}}]});
+      var h = await window.showSaveFilePicker({suggestedName:"5BCL.json", types:[{description:"Logbuch", accept:{"application/json":[".json"]}}]});
       dateiHandle = h; await handleSpeichern(h); await dateiSchreiben();
       storeInfo("Ziel: " + h.name + " · wird bei jeder Eingabe mitgeschrieben", "ok");
     }else if(window.showDirectoryPicker){
       var dir = await window.showDirectoryPicker({mode:"readwrite"});
-      dateiHandle = await dir.getFileHandle("Logbuch.json", {create:true});
+      dateiHandle = await dir.getFileHandle("5BCL.json", {create:true});
       await handleSpeichern(dateiHandle); await dateiSchreiben();
-      storeInfo("Ziel: Ordner " + dir.name + " / Logbuch.json", "ok");
+      storeInfo("Ziel: Ordner " + dir.name + " / 5BCL.json", "ok");
     }else{
       storeInfo("Dieser Browser kann keinen Ordner öffnen. Nutze „Backup in Downloads“ und aktiviere in Edge „Speicherort vor jedem Download erfragen“.", "err");
     }
@@ -3552,7 +3679,7 @@ function vorschlaegeBauen(){
 }
 
 /* ================= Synchronisation über GitHub Gist ================= */
-var GIST_DATEI = "segel-logbuch.json";
+var GIST_DATEI = "5b-cruise-log.json";
 
 function syncInfoZeigen(txt, kl){
   var p = $("syncInfo");
@@ -3565,16 +3692,14 @@ function syncInfoZeigen(txt, kl){
 }
 
 function syncNutzlast(){
+  var st = speicherStand();
+  if(st.global) delete st.global.gistToken;
+  st.reisen.forEach(function(r){ if(r.setup) r.setup = Object.assign({}, r.setup, {gistToken:""}); });
   return JSON.stringify({
     app: APP_VERSION,
     stand: new Date().toISOString(),
     geraet: navigator.userAgent.slice(0, 60),
-    eintraege: data,
-    setup: (function(){
-      var o = {};
-      Object.keys(setup).forEach(function(k){ if(k !== "gistToken") o[k] = setup[k]; });
-      return o;
-    })()
+    stand2: st
   }, null, 1);
 }
 
@@ -3616,22 +3741,26 @@ async function syncRunter(){
     if(!f) throw new Error("Datei im Gist nicht gefunden");
     var inhalt = f.truncated && f.raw_url ? await (await fetch(f.raw_url)).text() : f.content;
     var o = JSON.parse(inhalt);
-    var fremd = o.eintraege || {};
-    var anzFremd = Object.keys(fremd).length;
-    var anzLokal = Object.keys(data).filter(function(k){ return gefuellt(k); }).length;
-    if(!confirm("Vom " + (o.stand ? new Date(o.stand).toLocaleString("de-DE") : "unbekannt") +
-      ", App " + (o.app || "?") + "\n\n" + anzFremd + " Tage aus der Cloud übernehmen?\n" +
-      "Lokal sind " + anzLokal + " Tage gefüllt. Gleiche Tage werden ersetzt, zusätzliche lokale Tage bleiben.\n\n" +
-      "Vorher ein Backup zu ziehen ist ratsam.")) { syncInfoZeigen(); return; }
-    Object.keys(fremd).forEach(function(k){ data[k] = fremd[k]; });
-    if(o.setup){
-      var behalte = {gistToken:setup.gistToken, gistId:setup.gistId};
-      setup = Object.assign(setup, o.setup, behalte);
+    var token = setup.gistToken, gid = setup.gistId;
+    if(o.stand2 && o.stand2.v === 2){
+      if(!confirm("Stand vom " + (o.stand ? new Date(o.stand).toLocaleString("de-DE") : "unbekannt") +
+        ", App " + (o.app || "?") + "\n\n" + o.stand2.reisen.length + " Reisen übernehmen?\n" +
+        "Alle Reisen auf diesem Gerät werden ersetzt. Vorher ein Backup zu ziehen ist ratsam.")) { syncInfoZeigen(); return; }
+      standUebernehmen(o.stand2);
+    }else{
+      var fremd = o.eintraege || {};
+      if(!confirm("Älterer Stand mit einer Reise (" + Object.keys(fremd).length + " Tage). Als zusätzliche Reise anlegen?")) { syncInfoZeigen(); return; }
+      var st2 = Object.assign(setupStandard(), o.setup || {});
+      var neu2 = {id:reiseNeuId(), name:reiseName(st2) + " (Sync)", setup:st2, eintraege:fremd};
+      reisen.push(neu2); aktivReise = neu2.id; setup = st2; data = fremd;
     }
+    setup.gistToken = token; setup.gistId = gid;
     setup.syncStand = new Date().toISOString();
+    aktiv = 1;
     lokalSpeichern();
     tageBauen(); setupFelder(); swGridBauen(); zeichne(); trkLaden(); ankerFelder();
-    syncInfoZeigen("Übernommen: " + anzFremd + " Tage vom " + (o.stand ? new Date(o.stand).toLocaleString("de-DE") : "?"), "ok");
+    funkFuellen(); profilBauen(); menueBauen(); reiseListeBauen();
+    syncInfoZeigen("Übernommen: " + reisen.length + " Reisen vom " + (o.stand ? new Date(o.stand).toLocaleString("de-DE") : "?"), "ok");
   }catch(e){
     syncInfoZeigen("Herunterladen fehlgeschlagen: " + (e.message || e), "err");
   }
@@ -3659,10 +3788,12 @@ $("yWeg").onclick = function(){
 /* ================= Diagnosebericht ================= */
 function diagnoseText(){
   var t = [];
-  t.push("LOGBUCH-DIAGNOSE");
+  t.push(APP_NAME.toUpperCase() + " – DIAGNOSE");
   t.push("App " + APP_VERSION + " · " + new Date().toLocaleString("de-DE"));
   t.push("Betrieb: " + location.protocol + " · Speicher: " + (lsOk ? "ok" : "gesperrt") +
     (dateiHandle ? " + Datei" : "") + " · Modell: " + modellInfo(setup.modell).l);
+  var rAkt = reiseObj(aktivReise);
+  t.push("Reise: " + (rAkt ? rAkt.name : "-") + " · " + reisen.length + " Reisen gespeichert");
   t.push("Törn: " + (TAGE.length ? TAGE[0].d + " bis " + TAGE[TAGE.length-1].d + " (" + TAGE.length + " Tage)" : "-") +
     " · aktiver Tag: " + aktiv);
 
@@ -3831,11 +3962,14 @@ async function diagnoseZeigen(){
 
 /* ================= Logbuch-Oberfläche ================= */
 function eintrag(n){ if(!data[n]) data[n] = {}; return data[n]; }
+/* Automatisch gesetzte Felder zählen nicht als Eintrag */
+var LEER_IGNORIEREN = ["trackDaten","trackLaufend","plan","personen"];
 function gefuellt(n){
   var e = data[n];
   if(!e) return false;
   for(var k in e){
-    if(k === "trackDaten" || k === "trackLaufend") continue;
+    if(LEER_IGNORIEREN.indexOf(k) >= 0) continue;
+    if(k === "anker" || k === "startPos" || k === "endPos") return true;
     if(String(e[k]).trim() !== "") return true;
   }
   return false;
@@ -4232,13 +4366,14 @@ document.addEventListener("click", function(ev){
 
 /* ================= Export ================= */
 function alsText(){
-  var out = "LOGBUCH · " + (setup.boot || "") + " · " + (setup.typ || "") +
+  var rA = reiseObj(aktivReise);
+  var out = APP_NAME.toUpperCase() + " · " + (rA ? rA.name : "") + "\n" + (setup.boot || "") + " · " + (setup.typ || "") +
     "\nTörn " + (TAGE.length ? TAGE[0].d + " bis " + TAGE[TAGE.length-1].d : "") +
     (setup.skipper ? "\nSkipper: " + setup.skipper : "") +
     (setup.motBB || setup.motSB ? "\nMotorstunden bei Übernahme: BB " + (setup.motBB || "–") + " · SB " + (setup.motSB || "–") +
       (setup.gen ? " · Generator " + setup.gen : "") : "") +
     "\n========================================================\n" +
-    "Erstellt mit Logbuch " + APP_VERSION + " (" + APP_AUTOR + "). Privates Hilfsmittel ohne Gewähr,\n" +
+    "Erstellt mit " + APP_NAME + " " + APP_VERSION + " (" + APP_AUTOR + "). Privates Hilfsmittel ohne Gewähr,\n" +
     "kein amtliches Schiffstagebuch.\n";
   TAGE.forEach(function(t){
     if(!gefuellt(t.n)) return;
@@ -4333,6 +4468,9 @@ function xZelle(spalte, zeile, wert, stil, zahlenwert){
   if(wert === "" || wert == null) return '<c r="' + ref + '"' + st + '/>';
   return '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + xEsc(wert) + '</t></is></c>';
 }
+var xlsxNurBlatt = false;
+function xlsxBlatt(){ xlsxNurBlatt = true; return xlsxBauen(); }
+
 function xBlatt(zeilen, spalten, einfrieren){
   var cols = "";
   if(spalten){
@@ -4348,7 +4486,26 @@ function xBlatt(zeilen, spalten, einfrieren){
     view + cols + '<sheetData>' + zeilen.join("") + '</sheetData></worksheet>';
 }
 
-function xlsxBauen(){
+/* Tabellenblatt für eine Reise erzeugen (Daten werden vorübergehend aktiv gesetzt) */
+function blattFuerReise(r){
+  var altData = data, altSetup = setup, altTage = TAGE, altAktiv = aktivReise;
+  data = r.eintraege || {};
+  setup = Object.assign(setupStandard(), r.setup || {});
+  aktivReise = r.id;
+  tageBauen();
+  var erg = xlsxBlatt();
+  data = altData; setup = altSetup; TAGE = altTage; aktivReise = altAktiv;
+  return erg;
+}
+function blattName(n, benutzt){
+  var name = String(n || "Reise").replace(/[\[\]:*?\/\\]/g, " ").slice(0, 28).trim() || "Reise";
+  var basis = name, i = 2;
+  while(benutzt.indexOf(name) >= 0){ name = basis.slice(0, 25) + " " + i; i++; }
+  benutzt.push(name);
+  return name;
+}
+
+function xlsxBauen(alleReisen){
   /* --- Blatt 1: Logbuch --- */
   var zeilen = [], nr = 1;
   var kopf = "";
@@ -4396,6 +4553,7 @@ function xlsxBauen(){
 
   var breiten = XL_COLS.map(function(c){ return c.w; });
   var blatt1 = xBlatt(zeilen, breiten, true);
+  if(xlsxNurBlatt){ xlsxNurBlatt = false; return blatt1; }
 
   /* --- Blatt 2: Stammdaten --- */
   var sm = 0;
@@ -4403,6 +4561,7 @@ function xlsxBauen(){
   var lbb = motorLauf("motorBB"), lsb = motorLauf("motorSB"), lgn = motorLauf("generator");
   var mbb = lbb.std, msb = lsb.std, gen = lgn.std;
   var paare = [
+    ["Reise", (reiseObj(aktivReise) || {}).name || ""],
     ["Boot", setup.boot], ["Bootstyp", setup.typ], ["Skipper", setup.skipper],
     ["Törn von", TAGE.length ? TAGE[0].d : ""], ["Törn bis", TAGE.length ? TAGE[TAGE.length-1].d : ""],
     ["Reisetage", String(TAGE.length)], ["Personen an Bord (Standard)", setup.personen],
@@ -4435,7 +4594,9 @@ function xlsxBauen(){
 
   var z2 = [];
   z2.push('<row r="1"><c r="A1" s="1" t="inlineStr"><is><t>Stammdaten</t></is></c>' +
-          '<c r="B1" s="1" t="inlineStr"><is><t>' + xEsc((setup.boot || "") + (setup.typ ? " · " + setup.typ : "")) + '</t></is></c></row>');
+          '<c r="B1" s="1" t="inlineStr"><is><t>' +
+          xEsc(((reiseObj(aktivReise) || {}).name ? (reiseObj(aktivReise).name + " · ") : "") +
+               (setup.boot || "") + (setup.typ ? " · " + setup.typ : "")) + '</t></is></c></row>');
   paare.forEach(function(pr, k){
     var r = k + 3;
     z2.push('<row r="' + r + '">' + xZelle(0, r, pr[0], pr[1] === "" && pr[0] !== "" ? 1 : 0) + xZelle(1, r, pr[1], 0) + '</row>');
@@ -4464,14 +4625,39 @@ function xlsxBauen(){
     '<cellStyles count="1"><cellStyle name="Standard" xfId="0" builtinId="0"/></cellStyles>' +
     '</styleSheet>';
 
+  /* Blätter zusammenstellen: aktive Reise oder alle */
+  var blaetter = [];
+  if(alleReisen){
+    var benutzt = [];
+    reisen.forEach(function(r){
+      var voll = Object.keys(r.eintraege || {}).length > 0;
+      if(!voll) return;
+      blaetter.push({name: blattName(r.name, benutzt), xml: blattFuerReise(r)});
+    });
+    if(!blaetter.length) blaetter.push({name:"Logbuch", xml:blatt1});
+    blaetter.push({name:"Stammdaten aktiv", xml:blatt2});
+  }else{
+    blaetter.push({name:"Logbuch", xml:blatt1});
+    blaetter.push({name:"Stammdaten", xml:blatt2});
+  }
+
+  var typen = "", sheetsXml = "", rels = "", teile2 = [];
+  blaetter.forEach(function(b, i){
+    var nr = i + 1;
+    typen += '<Override PartName="/xl/worksheets/sheet' + nr + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';
+    sheetsXml += '<sheet name="' + xEsc(b.name) + '" sheetId="' + nr + '" r:id="rId' + nr + '"/>';
+    rels += '<Relationship Id="rId' + nr + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + nr + '.xml"/>';
+    teile2.push({name:"xl/worksheets/sheet" + nr + ".xml", text:b.xml});
+  });
+  rels += '<Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>';
+
   var dateien = [
     {name:"[Content_Types].xml", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
       '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
       '<Default Extension="xml" ContentType="application/xml"/>' +
       '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
-      '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
-      '<Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+      typen +
       '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
       '</Types>'},
     {name:"_rels/.rels", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
@@ -4480,18 +4666,11 @@ function xlsxBauen(){
       '</Relationships>'},
     {name:"xl/workbook.xml", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
-      '<sheets><sheet name="Logbuch" sheetId="1" r:id="rId1"/><sheet name="Stammdaten" sheetId="2" r:id="rId2"/></sheets>' +
-      '</workbook>'},
+      '<sheets>' + sheetsXml + '</sheets></workbook>'},
     {name:"xl/_rels/workbook.xml.rels", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
-      '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/>' +
-      '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
-      '</Relationships>'},
-    {name:"xl/styles.xml", text:styles},
-    {name:"xl/worksheets/sheet1.xml", text:blatt1},
-    {name:"xl/worksheets/sheet2.xml", text:blatt2}
-  ];
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + rels + '</Relationships>'},
+    {name:"xl/styles.xml", text:styles}
+  ].concat(teile2);
   return zipBauen(dateien);
 }
 
@@ -4555,6 +4734,161 @@ function zipBauen(dateien){
   return out;
 }
 
+
+/* ================= PDF-Erzeugung (ohne Fremdbibliothek) ================= */
+function pdfText(t){
+  /* Umlaute nach WinAnsi, Sonderzeichen maskieren */
+  return String(t == null ? "" : t)
+    .replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)")
+    .replace(/[\u2013\u2014]/g, "-").replace(/[\u201E\u201C\u201D]/g, '"')
+    .replace(/[\u2018\u2019]/g, "'").replace(/\u00b7/g, "-").replace(/\u2192/g, "->")
+    .replace(/\u00b0/g, "\\260").replace(/\u00e4/g, "\\344").replace(/\u00f6/g, "\\366")
+    .replace(/\u00fc/g, "\\374").replace(/\u00c4/g, "\\304").replace(/\u00d6/g, "\\326")
+    .replace(/\u00dc/g, "\\334").replace(/\u00df/g, "\\337").replace(/\u00e9/g, "\\351")
+    .replace(/[^\x20-\x7e\\]/g, "");
+}
+function pdfUmbruch(zeile, breite){
+  var worte = String(zeile).split(" "), raus = [], akt = "";
+  worte.forEach(function(w){
+    if((akt + " " + w).trim().length <= breite){ akt = (akt ? akt + " " : "") + w; }
+    else { if(akt) raus.push(akt); akt = w; }
+  });
+  if(akt) raus.push(akt);
+  return raus.length ? raus : [""];
+}
+
+/* Erzeugt ein A4-PDF aus Textzeilen. Zeilen, die mit "# " beginnen, werden fett gesetzt. */
+function pdfBauen(titel, zeilen){
+  var seiten = [], akt = [], maxZeilen = 62, breite = 95;
+  var zeilenAufbereitet = [];
+  zeilen.forEach(function(z){
+    var fett = z.indexOf("# ") === 0;
+    var txt = fett ? z.slice(2) : z;
+    pdfUmbruch(txt, fett ? 70 : breite).forEach(function(teil, i){
+      zeilenAufbereitet.push({t: (i > 0 ? "   " : "") + teil, f: fett});
+    });
+  });
+  zeilenAufbereitet.forEach(function(z){
+    akt.push(z);
+    if(akt.length >= maxZeilen){ seiten.push(akt); akt = []; }
+  });
+  if(akt.length || !seiten.length) seiten.push(akt);
+
+  var objekte = [];
+  var anzahl = seiten.length;
+  var seitenIds = [], inhaltIds = [];
+  for(var i=0;i<anzahl;i++){ seitenIds.push(4 + i * 2); inhaltIds.push(5 + i * 2); }
+
+  objekte[1] = "<< /Type /Catalog /Pages 2 0 R >>";
+  objekte[2] = "<< /Type /Pages /Kids [" + seitenIds.map(function(id){ return id + " 0 R"; }).join(" ") +
+    "] /Count " + anzahl + " >>";
+  objekte[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>";
+  objekte[0] = null;
+  var fontFett = 3 + anzahl * 2 + 1;
+
+  seiten.forEach(function(sz, k){
+    var y = 800, inhalt = "BT\n";
+    inhalt += "/F1 9 Tf\n12 TL\n40 " + y + " Td\n";
+    if(k === 0){
+      inhalt += "/F2 14 Tf\n(" + pdfText(titel) + ") Tj\n0 -20 Td\n/F1 9 Tf\n";
+    }
+    sz.forEach(function(z){
+      inhalt += (z.f ? "/F2 10 Tf\n" : "/F1 9 Tf\n") + "(" + pdfText(z.t) + ") Tj\n0 -12 Td\n";
+    });
+    inhalt += "/F1 7 Tf\n(Seite " + (k+1) + " von " + anzahl + ") Tj\n";
+    inhalt += "ET";
+    objekte[seitenIds[k]] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] " +
+      "/Resources << /Font << /F1 3 0 R /F2 " + fontFett + " 0 R >> >> /Contents " + inhaltIds[k] + " 0 R >>";
+    objekte[inhaltIds[k]] = "<< /Length " + inhalt.length + " >>\nstream\n" + inhalt + "\nendstream";
+  });
+  objekte[fontFett] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>";
+
+  var kopf = "%PDF-1.4\n";
+  var teile = [kopf], pos = kopf.length, offsets = [];
+  for(var n=1;n<objekte.length;n++){
+    if(objekte[n] == null) continue;
+    offsets[n] = pos;
+    var block = n + " 0 obj\n" + objekte[n] + "\nendobj\n";
+    teile.push(block);
+    pos += block.length;
+  }
+  var maxObj = objekte.length;
+  var xref = "xref\n0 " + maxObj + "\n0000000000 65535 f \n";
+  for(var m=1;m<maxObj;m++){
+    xref += offsets[m] != null
+      ? String(offsets[m]).padStart(10, "0") + " 00000 n \n"
+      : "0000000000 65535 f \n";
+  }
+  teile.push(xref);
+  teile.push("trailer\n<< /Size " + maxObj + " /Root 1 0 R >>\nstartxref\n" + pos + "\n%%EOF");
+
+  var txt = teile.join("");
+  var bytes = new Uint8Array(txt.length);
+  for(var q=0;q<txt.length;q++) bytes[q] = txt.charCodeAt(q) & 0xFF;
+  return bytes;
+}
+
+/* Logbuch der aktiven Reise als PDF-Zeilen */
+function pdfZeilen(){
+  var r = reiseObj(aktivReise);
+  var z = [];
+  z.push((setup.boot || "") + (setup.typ ? " · " + setup.typ : "") + (setup.skipper ? " · Skipper " + setup.skipper : ""));
+  z.push("Törn " + (TAGE.length ? TAGE[0].d + " bis " + TAGE[TAGE.length-1].d : "-") +
+    " · " + TAGE.length + " Tage · erstellt " + new Date().toLocaleString("de-DE"));
+  var l1 = motorLauf("motorBB"), l2 = motorLauf("motorSB"), lg = motorLauf("generator");
+  var sm = 0;
+  TAGE.forEach(function(t){ sm += zahl((data[t.n] || {}).distanz); });
+  z.push("Gesamt " + sm.toFixed(1) + " sm · Motor BB " + l1.std.toFixed(1) + " h · SB " + l2.std.toFixed(1) +
+    " h · Generator " + lg.std.toFixed(1) + " h · Diesel ca. " + Math.round(dieselSchaetzung().ges) + " l");
+  z.push("");
+
+  TAGE.forEach(function(t){
+    if(!gefuellt(t.n)) return;
+    var e = data[t.n];
+    z.push("# Tag " + t.n + " · " + t.wt + " " + t.d);
+    SCHEMA.forEach(function(g){
+      var zeilen = [];
+      g.felder.forEach(function(f){
+        var v = (e[f.k] == null ? "" : String(e[f.k])).trim();
+        if(v) zeilen.push(f.l + ": " + v.replace(/\n/g, " / "));
+      });
+      if(zeilen.length){
+        z.push("  " + g.titel.toUpperCase());
+        zeilen.forEach(function(x){ z.push("    " + x); });
+      }
+    });
+    z.push("");
+  });
+  z.push("Erstellt mit " + APP_NAME + " " + APP_VERSION + " · privates Hilfsmittel ohne Gewähr, kein amtliches Schiffstagebuch.");
+  return z;
+}
+
+function pdfDatei(){
+  var r = reiseObj(aktivReise);
+  var name = APP_KURZ + "_" + ((r && r.name) || setup.boot || "Reise").replace(/[^\wÄÖÜäöüß-]+/g, "_") + ".pdf";
+  return {name:name, bytes:pdfBauen((r ? r.name : "Logbuch"), pdfZeilen())};
+}
+
+/* Datei teilen, sonst herunterladen */
+async function dateiTeilen(name, bytes, typ, text){
+  var blob = new Blob([bytes], {type:typ});
+  try{
+    var f = new File([blob], name, {type:typ});
+    if(navigator.canShare && navigator.canShare({files:[f]})){
+      await navigator.share({files:[f], title:name, text:text || ""});
+      return "geteilt";
+    }
+  }catch(e){
+    if(e && e.name === "AbortError") return "abgebrochen";
+  }
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
+  return "geladen";
+}
+
 /* ================= Bedienung ================= */
 $("btnPick").onclick = ortWaehlen;
 $("btnWriteNow").onclick = async function(){
@@ -4594,7 +4928,8 @@ $("btnUpdate").onclick = async function(){
   }
 };
 $("btnBackup").onclick = function(){
-  download("Logbuch_" + (setup.boot || "Boot").replace(/[^\wÄÖÜäöüß-]+/g, "_") + "_" + new Date().toISOString().slice(0,10) + ".json", JSON.stringify({eintraege:data, setup:setup}, null, 1), "application/json");
+  download(APP_KURZ + "_alle_Reisen_" + new Date().toISOString().slice(0,10) + ".json",
+    JSON.stringify(speicherStand(), null, 1), "application/json");
   setStatus("Backup abgelegt");
 };
 $("btnRestore").onclick = function(){ $("file").click(); };
@@ -4604,11 +4939,23 @@ $("file").onchange = function(ev){
   var r = new FileReader();
   r.onload = function(){
     try{
-      var o = JSON.parse(r.result), neu = o.eintraege || o;
-      Object.keys(neu).forEach(function(k){ data[k] = neu[k]; });
-      if(o.setup) setup = Object.assign(setup, o.setup);
-      lokalSpeichern(); zeichne(); setupFelder(); trkLaden();
-      setStatus("Backup geladen");
+      var o = JSON.parse(r.result);
+      if(o && o.v === 2 && Array.isArray(o.reisen)){
+        if(!confirm("Backup mit " + o.reisen.length + " Reisen laden?\n\nAlle Reisen auf diesem Gerät werden ersetzt.")) return;
+        standUebernehmen(o);
+      }else{
+        if(!confirm("Älteres Backup mit einer Reise laden? Es wird als zusätzliche Reise angelegt.")) return;
+        var st = Object.assign(setupStandard(), o.setup || {});
+        var neu = {id:reiseNeuId(), name:reiseName(st) + " (Backup)", setup:st, eintraege:o.eintraege || o};
+        reisen.push(neu);
+        aktivReise = neu.id;
+        setup = st; data = neu.eintraege;
+      }
+      aktiv = 1;
+      lokalSpeichern();
+      tageBauen(); setupFelder(); swGridBauen(); zeichne(); trkLaden(); ankerFelder();
+      funkFuellen(); profilBauen(); menueBauen(); reiseListeBauen();
+      setStatus("Backup geladen: " + reisen.length + " Reisen");
     }catch(e){ setStatus("Datei nicht lesbar", true); }
   };
   r.readAsText(f);
@@ -4620,90 +4967,111 @@ $("btnText").onclick = function(){
   o.classList.remove("hidden");
   if(o.scrollIntoView) o.scrollIntoView({behavior:"smooth", block:"start"});
 };
-$("btnExcel").onclick = function(){
+function excelErzeugen(alle){
+  var gefuellteTage = 0;
+  TAGE.forEach(function(t){ if(gefuellt(t.n)) gefuellteTage++; });
+  var reisenMitDaten = reisen.filter(function(r){ return Object.keys(r.eintraege || {}).length > 0; }).length;
+  if(!alle && !gefuellteTage){ setStatus("Die aktive Reise enthält noch keine Einträge", true); return; }
+  if(alle && !reisenMitDaten){ setStatus("Es gibt noch keine Reise mit Einträgen", true); return; }
   try{
-    var bytes = xlsxBauen();
-    var name = "Logbuch_" + (setup.boot || "Boot").replace(/[^\wÄÖÜäöüß-]+/g, "_") + "_" +
-      new Date().toISOString().slice(0,10) + ".xlsx";
+    var bytes = xlsxBauen(alle);
+    var r = reiseObj(aktivReise);
+    var rN = alle ? "alle_Reisen"
+      : ((r && r.name) || setup.boot || "Logbuch").replace(/[^\wÄÖÜäöüß-]+/g, "_");
+    var name = APP_KURZ + "_" + rN + "_" + new Date().toISOString().slice(0,10) + ".xlsx";
     var blob = new Blob([bytes], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = name;
     a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
-    setStatus("Excel-Datei erstellt: " + name);
+    setStatus("Excel-Datei erstellt: " + name + (alle ? " · " + reisenMitDaten + " Reisen" : ""));
   }catch(e){
-    setStatus("Excel-Export fehlgeschlagen", true);
+    setStatus("Excel-Export fehlgeschlagen: " + (e && e.message ? e.message : e), true);
   }
-};
-/* Einmalige Korrektur: Zählerstände um einen Tag verschieben.
-   richtung -1: Tag 1 wandert in die Stammdaten, Tag 2 nach Tag 1 usw.
-   richtung +1: das Gegenteil, als Rücknahme. */
-function zaehlerSchieben(richtung){
-  var felder = [
-    {f:"motorBB", s:"motBB", l:"Motor BB"},
-    {f:"motorSB", s:"motSB", l:"Motor SB"},
-    {f:"generator", s:"gen", l:"Generator"}
-  ];
-  var vorschau = [], aenderung = false;
-
-  felder.forEach(function(x){
-    var alt = {};
-    TAGE.forEach(function(t){ alt[t.n] = (data[t.n] || {})[x.f] || ""; });
-    var altStart = setup[x.s] || "";
-    var neu = {}, neuStart = altStart;
-
-    if(richtung < 0){
-      neuStart = alt[1] || altStart;
-      for(var n=1;n<=TAGE.length;n++) neu[n] = alt[n+1] || "";
-    }else{
-      for(var m=TAGE.length;m>=2;m--) neu[m] = alt[m-1] || "";
-      neu[1] = altStart;
-      neuStart = "";
-    }
-
-    var zeilen = [];
-    if(String(neuStart) !== String(altStart)) zeilen.push("Startstand: " + (altStart || "leer") + " → " + (neuStart || "leer"));
-    for(var k=1;k<=Math.min(TAGE.length, 4);k++){
-      if(String(neu[k] || "") !== String(alt[k] || "")) zeilen.push("Tag " + k + ": " + (alt[k] || "leer") + " → " + (neu[k] || "leer"));
-    }
-    var weitere = 0;
-    for(var q=5;q<=TAGE.length;q++){ if(String(neu[q] || "") !== String(alt[q] || "")) weitere++; }
-    if(weitere) zeilen.push("… und " + weitere + " weitere Tage");
-    if(zeilen.length){
-      aenderung = true;
-      vorschau.push(x.l + ":\n    " + zeilen.join("\n    "));
-    }
-    x.neu = neu; x.neuStart = neuStart;
-  });
-
-  if(!aenderung){
-    $("zInfo").className = "note";
-    $("zInfo").textContent = "Es gibt nichts zu verschieben.";
-    return;
-  }
-
-  if(!confirm((richtung < 0 ? "Zählerstände um einen Tag ZURÜCK schieben?" : "Verschiebung RÜCKGÄNGIG machen?") +
-      "\n\n" + vorschau.join("\n\n") + "\n\nMit dem anderen Knopf lässt sich das wieder umkehren.")) return;
-
-  felder.forEach(function(x){
-    TAGE.forEach(function(t){
-      var e = eintrag(t.n);
-      if(x.neu[t.n]) e[x.f] = x.neu[t.n];
-      else delete e[x.f];
-    });
-    setup[x.s] = x.neuStart;
-  });
-
-  setupFelder(); lokalSpeichern(); summen(); zeichne();
-  $("zInfo").className = "note ok";
-  $("zInfo").textContent = (richtung < 0
-    ? "Verschoben. Startstände jetzt: BB " + (setup.motBB || "–") + " · SB " + (setup.motSB || "–") + " · Gen " + (setup.gen || "–") + "."
-    : "Rückgängig gemacht.") + " Prüfe mit „Zählerstände prüfen“, ob die Laufzeiten stimmen.";
 }
-$("zZurueck").onclick = function(){ zaehlerSchieben(-1); };
-$("zVor").onclick = function(){ zaehlerSchieben(1); };
+$("btnExcelAlle").onclick = function(){ excelErzeugen(true); };
 
+$("btnPdf").onclick = function(){
+  var d0 = pdfDatei();
+  dateiTeilen(d0.name, d0.bytes, "application/pdf", "").then(function(w){
+    setStatus(w === "geteilt" ? "PDF geteilt" : "PDF erstellt: " + d0.name);
+  });
+};
+
+$("btnPdfMail").onclick = async function(){
+  var d0 = pdfDatei();
+  var r = reiseObj(aktivReise);
+  var betreff = "Logbuch " + (r ? r.name : "") + (setup.boot ? " · " + setup.boot : "");
+  var erg = await dateiTeilen(d0.name, d0.bytes, "application/pdf", betreff);
+  if(erg === "geteilt"){ setStatus("PDF an die gewählte App übergeben"); return; }
+  if(erg === "abgebrochen"){ setStatus("Teilen abgebrochen"); return; }
+  setStatus("PDF liegt in den Downloads – E-Mail wird geöffnet, Datei dort anhängen");
+  setTimeout(function(){
+    location.href = "mailto:?subject=" + encodeURIComponent(betreff) +
+      "&body=" + encodeURIComponent("Im Anhang das Logbuch als PDF.\n\n" +
+        "Hinweis: Die Datei " + d0.name + " liegt in den Downloads und muss hier von Hand angehängt werden.\n\n" +
+        (setup.boot ? setup.boot + (setup.typ ? " · " + setup.typ : "") + "\n" : "") +
+        (TAGE.length ? "Törn " + TAGE[0].d + " bis " + TAGE[TAGE.length-1].d : ""));
+  }, 600);
+};
+
+/* ---------- Rückmeldung an den Support ---------- */
+function feedbackText(){
+  var r = reiseObj(aktivReise);
+  var t = [];
+  t.push("RÜCKMELDUNG ZUR APP");
+  t.push(APP_NAME + " " + APP_VERSION + " · " + new Date().toLocaleString("de-DE"));
+  t.push("Betrieb: " + location.protocol + " · Speicher " + (lsOk ? "ok" : "gesperrt") + " · Gerät: " + navigator.userAgent.slice(0, 90));
+  t.push("Reisen gespeichert: " + reisen.length + " · aktiv: " + (r ? r.name : "-"));
+  t.push("");
+  t.push("STAMMDATEN DER AKTIVEN REISE");
+  [["boot","Boot"],["typ","Bootstyp"],["profil","Bootsprofil"],["skipper","Skipper"],["start","Törn von"],["ende","Törn bis"],
+   ["personen","Personen"],["laenge","Länge"],["breite","Breite"],["tank","Tank"],["verbrMot","Verbrauch Motor"],
+   ["verbrGen","Verbrauch Generator"],["rpmRef","Bezugsdrehzahl"],["rpmStd","Standarddrehzahl"],["leerlauf","Leerlauf"],
+   ["gpsBug","GPS bis Bug"],["ortRadius","Ortsradius"],["modell","Wettermodell"],["motBB","Startstand BB"],
+   ["motSB","Startstand SB"],["gen","Startstand Generator"]].forEach(function(x){
+    if(setup[x[0]]) t.push("  " + x[1] + ": " + setup[x[0]]);
+  });
+  t.push("");
+  t.push("WETTERSCHWELLEN");
+  SW_DEF.forEach(function(d){
+    var eigen = setup.sw && setup.sw[d.k] != null && zahl(setup.sw[d.k]) !== d.v;
+    t.push("  " + d.l + ": " + sw(d.k) + (eigen ? " (Standard " + d.v + ")" : ""));
+  });
+  t.push("");
+  t.push("UMFANG");
+  var tage = 0, sm = 0;
+  TAGE.forEach(function(tg){ if(gefuellt(tg.n)) tage++; sm += zahl((data[tg.n] || {}).distanz); });
+  t.push("  Erfasste Tage in der aktiven Reise: " + tage + " von " + TAGE.length + " · " + sm.toFixed(1) + " sm");
+  t.push("  Fehlerprotokoll: " + (fehlerLog.length ? fehlerLog.join(" | ") : "leer"));
+  t.push("");
+  t.push("Es werden keine Logbuchtexte, Positionen oder Zugangsdaten übertragen.");
+  return t.join("\n");
+}
+
+$("btnFeedback").onclick = async function(){
+  var txt = feedbackText();
+  var name = APP_KURZ + "_Info_" + new Date().toISOString().slice(0,10) + ".txt";
+  var enc = new TextEncoder();
+  var betreff = "Rückmeldung " + APP_NAME + " " + APP_VERSION;
+  var koerper = "Bitte hier die Anmerkungen zur App eintragen:\n\n\n\n" +
+    "-- technische Angaben im Anhang --";
+  var erg = await dateiTeilen(name, enc.encode(txt), "text/plain", betreff);
+  setTimeout(function(){
+    location.href = "mailto:support@5buttons.eu?subject=" + encodeURIComponent(betreff) +
+      "&body=" + encodeURIComponent(koerper + (erg === "geladen"
+        ? "\n\nHinweis: Die Datei " + name + " liegt in den Downloads und muss hier von Hand angehängt werden."
+        : ""));
+  }, 700);
+  setStatus(erg === "geteilt"
+    ? "Info geteilt – bitte Anmerkungen in die E-Mail schreiben"
+    : "Infodatei erstellt – E-Mail wird geöffnet, Datei anhängen und Anmerkungen schreiben");
+};
+
+$("btnExcel").onclick = function(){ excelErzeugen(false); };
+
+/* Zählerstände prüfen: Rechenweg und Plausibilität */
 $("zPruefen").onclick = function(){
   var p = $("zInfo");
   var felder = [
@@ -4723,53 +5091,36 @@ $("zPruefen").onclick = function(){
       bericht.push(x.l + ": keine Tageseinträge" + (start ? ", Startstand " + start : ""));
       return;
     }
-    var erster = staende[0], letzter = staende[staende.length-1];
+    var erster = staende[0], letzter = staende[staende.length - 1];
     var basis = start || erster.v;
     bericht.push(x.l + ": " + staende.length + " Einträge, Tag " + erster.n + " = " + erster.v +
       " bis Tag " + letzter.n + " = " + letzter.v + (start ? ", Startstand " + start : ", kein Startstand") +
       " → gerechnet " + basis + " bis " + letzter.v + " = " + (Math.round((letzter.v - basis) * 10) / 10) + " h");
     if(start && erster.v < start){
-      bericht.push("  Achtung " + x.l + ": Tag " + erster.n + " (" + erster.v + ") liegt unter dem Startstand (" + start +
-        ") – Startstand prüfen, sonst wird zu viel gerechnet.");
+      bericht.push("Achtung " + x.l + ": Tag " + erster.n + " (" + erster.v + ") liegt unter dem Startstand (" + start + ").");
     }
-    if(!start && erster.v > 0) vorschlag.push(x);
-    /* Plausibilität: fallende Stände deuten auf Stundeneingaben hin */
     for(var i=1;i<staende.length;i++){
       if(staende[i].v < staende[i-1].v){
-        bericht.push("  Achtung " + x.l + ": Tag " + staende[i].n + " (" + staende[i].v +
-          ") liegt unter Tag " + staende[i-1].n + " (" + staende[i-1].v + ") – dort stehen wohl Stunden statt Zählerstände.");
+        bericht.push("Achtung " + x.l + ": Tag " + staende[i].n + " (" + staende[i].v + ") liegt unter Tag " +
+          staende[i-1].n + " (" + staende[i-1].v + ") – dort stehen wohl Stunden statt Zählerstände.");
         break;
       }
     }
+    if(!start) vorschlag.push({x:x, erster:erster});
   });
 
   p.className = "note";
   p.textContent = bericht.join(" · ");
+  if(!vorschlag.length){ p.textContent += " · Startstände sind gesetzt."; return; }
 
-  if(!vorschlag.length){
-    p.textContent += " · Startstände sind gesetzt, nichts zu tun.";
-    return;
-  }
-  var txt = vorschlag.map(function(x){
-    var erster = null;
-    TAGE.forEach(function(t){
-      if(erster) return;
-      var v = zahl((data[t.n] || {})[x.f]);
-      if(v > 0) erster = {n:t.n, v:v};
-    });
-    x.erster = erster;
-    return x.l + ": " + erster.v + " (aus Tag " + erster.n + ")";
-  }).join("\n· ");
-
+  var txt = vorschlag.map(function(v){ return v.x.l + ": " + v.erster.v + " (aus Tag " + v.erster.n + ")"; }).join("\n· ");
   if(!confirm("Als Startstand in die Stammdaten übernehmen?\n\n· " + txt +
       "\n\nDer Wert im Tageseintrag bleibt stehen; dieser Tag zählt dann null Stunden.")) return;
-  vorschlag.forEach(function(x){
-    setup[x.s] = String(x.erster.v).replace(".", ",");
-  });
+  vorschlag.forEach(function(v){ setup[v.x.s] = String(v.erster.v).replace(".", ","); });
   setupFelder(); lokalSpeichern(); summen(); zeichne();
   $("zInfo").className = "note ok";
-  $("zInfo").textContent = "Startstände übernommen: " + vorschlag.map(function(x){ return x.l + " " + x.erster.v; }).join(" · ") +
-    ". Die Laufzeiten werden jetzt ab diesen Werten gerechnet.";
+  $("zInfo").textContent = "Startstände übernommen: " +
+    vorschlag.map(function(v){ return v.x.l + " " + v.erster.v; }).join(" · ") + ".";
 };
 
 $("btnDiag").onclick = diagnoseZeigen;
@@ -4777,11 +5128,14 @@ $("wDiag").onclick = function(){
   diagnoseZeigen();
   ansichtSetzen("setup");
 };
+
 $("btnPrint").onclick = function(){
-  $("dkBoot").textContent = (setup.boot || "Logbuch") + (setup.typ ? " · " + setup.typ : "");
+  var rD = reiseObj(aktivReise);
+  $("dkBoot").textContent = (rD && rD.name ? rD.name + " · " : "") +
+    (setup.boot || "Logbuch") + (setup.typ ? " · " + setup.typ : "");
   $("dkZeit").textContent = (TAGE.length ? "Törn " + TAGE[0].d + " bis " + TAGE[TAGE.length-1].d : "") +
     (setup.skipper ? " · Skipper " + setup.skipper : "");
-  $("dkHinweis").textContent = "Logbuch " + APP_VERSION + " · " + APP_AUTOR + " · privates Hilfsmittel ohne Gewähr, kein amtliches Schiffstagebuch";
+  $("dkHinweis").textContent = APP_NAME + " " + APP_VERSION + " · " + APP_AUTOR + " · privates Hilfsmittel ohne Gewähr, kein amtliches Schiffstagebuch";
   window.print();
 };
 $("btnClear").onclick = function(){
@@ -4808,6 +5162,40 @@ function modellFeldBauen(){
     o.textContent = m.l + (m.max < 168 ? " · bis " + m.max + " h" : "");
     sel.appendChild(o);
   });
+}
+
+function reiseListeBauen(){
+  var sel = $("r_liste");
+  if(!sel) return;
+  sel.innerHTML = "";
+  reisen.forEach(function(r){
+    var tage = Object.keys(r.eintraege || {}).filter(function(k){
+      var e = r.eintraege[k];
+      if(!e) return false;
+      for(var f in e){
+        if(LEER_IGNORIEREN.indexOf(f) >= 0) continue;
+        if(f === "anker" || f === "startPos" || f === "endPos") return true;
+        if(String(e[f]).trim() !== "") return true;
+      }
+      return false;
+    }).length;
+    var o = document.createElement("option");
+    o.value = r.id;
+    o.textContent = r.name + (r.setup && r.setup.boot ? " · " + r.setup.boot : "") +
+      (r.setup && r.setup.start ? " · ab " + r.setup.start.split("-").reverse().join(".") : "") +
+      " · " + tage + " Tage erfasst";
+    sel.appendChild(o);
+  });
+  sel.value = aktivReise;
+  var i = $("rInfo");
+  if(i){
+    var r2 = reiseObj(aktivReise);
+    i.className = "note";
+    i.textContent = reisen.length + (reisen.length === 1 ? " Reise gespeichert" : " Reisen gespeichert") +
+      (r2 ? " · aktiv: " + r2.name : "") +
+      ". Jede Reise hat eigenes Schiff, eigene Crew, eigene Törndaten, Zähler und Einträge. " +
+      "Wetterschwellen und Bootsprofil gehören ebenfalls zur Reise; Wettermodell und Synchronisation gelten für alle.";
+  }
 }
 
 function profilFeldBauen(){
@@ -4879,6 +5267,41 @@ function setupFelder(){
   if(!$("w_ziel").value && setup.ziel) $("w_ziel").value = setup.ziel;
   if(setup.offen != null && $("w_offen")) $("w_offen").value = setup.offen;
 }
+$("r_liste").addEventListener("change", function(){
+  var id = $("r_liste").value;
+  if(id === aktivReise) return;
+  var r = reiseObj(id);
+  if(!r) return;
+  if(!confirm("Zur Reise „" + r.name + "“ wechseln?\n\nDie aktuelle Reise wird gespeichert.")){
+    $("r_liste").value = aktivReise;
+    return;
+  }
+  reiseWechseln(id);
+  setStatus("Reise gewechselt: " + r.name);
+});
+$("rNeu").onclick = function(){ reiseAnlegen(false); };
+$("rKopie").onclick = function(){ reiseAnlegen(true); };
+$("rName").onclick = function(){
+  var r = reiseObj(aktivReise);
+  if(!r) return;
+  var n = prompt("Name der Reise:", r.name);
+  if(n === null) return;
+  r.name = n.trim() || r.name;
+  lokalSpeichern(); reiseListeBauen();
+};
+$("rWeg").onclick = function(){
+  var r = reiseObj(aktivReise);
+  if(!r) return;
+  if(reisen.length < 2){ $("rInfo").className = "note err"; $("rInfo").textContent = "Die letzte Reise lässt sich nicht löschen."; return; }
+  var tage = Object.keys(r.eintraege || {}).length;
+  if(!confirm("Reise „" + r.name + "“ mit " + tage + " Tageseinträgen endgültig löschen?\n\nVorher ein Backup zu ziehen ist ratsam.")) return;
+  reisen = reisen.filter(function(x){ return x.id !== r.id; });
+  var neu = reisen[0].id;
+  aktivReise = "";
+  reiseWechseln(neu);
+  setStatus("Reise gelöscht");
+};
+
 $("t_profil").addEventListener("change", function(){
   var id = $("t_profil").value;
   if(!id){ setup.profil = ""; lokalSpeichern(); profilBauen(); return; }
@@ -4898,6 +5321,11 @@ $("s_modell").addEventListener("change", function(){
 ["boot","typ","skipper","start","ende","personen","motBB","motSB","gen","gpsBug","laenge","breite","verbrMot","verbrGen","tank","rpmRef","rpmStd","leerlauf","ortRadius"].forEach(function(k){
   $("t_" + k).addEventListener("change", function(){
     setup[k] = $("t_" + k).value;
+    if(k === "boot" || k === "start"){
+      var rr = reiseObj(aktivReise);
+      if(rr && (!rr.name || rr.name === "Neue Reise" || /^Reise \d+$/.test(rr.name))) rr.name = reiseName(setup);
+      reiseListeBauen();
+    }
     if(k === "start" || k === "ende" || k === "personen"){ tageBauen(); zeichne(); trkLaden(); }
     else { tageBauen(); summen(); }
     if(k === "typ" || k === "laenge" || k === "breite"){ profilBauen(); funkFuellen(); }
@@ -4954,6 +5382,7 @@ window.addEventListener("beforeunload", function(e){
     if(new Date(p2[2], p2[1]-1, p2[0]).toDateString() === heute.toDateString()) aktiv = t.n;
   });
   try{
+    reiseListeBauen();
     zeichne();
     funkFuellen();
     menueBauen();

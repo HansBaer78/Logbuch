@@ -1,11 +1,11 @@
-/* Segel-Logbuch – Offline-Betrieb und saubere Updates.
+/* 5B Cruise Log – Offline-Betrieb und saubere Updates.
    Strategie:
    - Seite selbst (Navigation): immer zuerst aus dem Netz, Cache nur als Rückfall.
      Damit erscheint eine neue Version ohne Löschen der Browserdaten.
    - Übrige Dateien: aus dem Cache, im Hintergrund aktualisiert.
    Gespeicherte Logbucheinträge liegen im localStorage und werden hiervon nie berührt. */
 
-var VERSION = "4.0.1";
+var VERSION = "5.3.2";
 var CACHE = "logbuch-" + VERSION;
 var DATEIEN = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./logo.png"];
 

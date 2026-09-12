@@ -1,7 +1,7 @@
 {
-  "name": "Segel-Logbuch",
-  "short_name": "Logbuch",
-  "description": "Schiffstagebuch, Wetteranalyse und Nachschlagewerk für Segeltörns in Kroatien",
+  "name": "5B Cruise Log",
+  "short_name": "5BCL",
+  "description": "Schiffstagebuch, Wetteranalyse und Nachschlagewerk für Segeltörns",
   "lang": "de",
   "start_url": "./index.html",
   "scope": "./",
