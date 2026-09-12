@@ -30,21 +30,21 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);color:#EDF1EE;padd
   font-family:var(--f-data);font-size:11.5px;min-height:32px;padding:4px 9px;margin:2px 0 0}
 .totals{flex:1;min-width:0;display:flex;gap:14px;font-family:var(--f-data);font-size:11.5px;color:#9FB8BD;letter-spacing:.05em;margin:4px 0 8px;flex-wrap:wrap}
 .totals b{color:#F4F7F4;font-weight:600}
-.hdrBtn{flex:0 0 auto;background:transparent;border:1px solid #38525E;color:#DCE6E8;border-radius:9px;
+.hdrBtn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid #38525E;color:#DCE6E8;border-radius:9px;
   font-size:19px;line-height:1;min-height:42px;min-width:42px;padding:0 10px}
 .hdrBtn:active{background:#16303D}
 .menu{position:absolute;left:0;right:0;top:100%;z-index:40;background:var(--ink);
   border-top:1px solid #38525E;box-shadow:0 12px 24px rgba(0,0,0,.35);max-height:70vh;overflow-y:auto}
 .menu.hidden{display:none}
 .menuInner{padding:8px 12px 16px;max-width:720px;margin:0 auto}
-.menuHaupt{display:flex;align-items:center;justify-content:space-between;width:100%;background:transparent;border:0;
+.menuHaupt{display:flex;align-items:center;justify-content:space-between;width:100%;background:transparent;border:0;border-radius:0;
   border-bottom:1px solid #24404C;color:#EDF1EE;font-family:var(--f-display);text-transform:uppercase;
   letter-spacing:.08em;font-size:15px;padding:13px 2px;min-height:50px}
 .menuHaupt[aria-current="true"]{color:var(--brass)}
 .menuHaupt span{font-family:var(--f-data);font-size:11px;letter-spacing:0;text-transform:none;color:#8FA8AE}
 .menuUnter{display:none;padding:2px 0 8px}
 .menuUnter.auf{display:block}
-.menuUnter button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#C3D5D8;
+.menuUnter button{display:block;width:100%;text-align:left;background:transparent;border:0;border-radius:0;color:#C3D5D8;
   font-family:var(--f-body);font-size:14.5px;padding:10px 4px 10px 16px;min-height:44px;border-bottom:1px solid #1A3440}
 .menuUnter button:active{color:#fff}
 nav button{flex:0 0 auto;min-width:82px;background:transparent;border:0;border-bottom:2px solid transparent;color:#8FA8AE;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-size:11.5px;padding:9px 2px;min-height:40px;white-space:nowrap}
@@ -128,18 +128,33 @@ input[inputmode="decimal"],input[inputmode="numeric"],input[type="time"]{font-fa
 textarea{min-height:88px;resize:vertical;line-height:1.5}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(14,36,48,.14)}
 select{background-image:linear-gradient(45deg,transparent 50%,var(--ink-soft) 50%),linear-gradient(135deg,var(--ink-soft) 50%,transparent 50%);background-position:calc(100% - 18px) 21px,calc(100% - 13px) 21px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
-.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
-.tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
-button{font-family:var(--f-body);font-size:14px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--ink);border-radius:8px;padding:11px 14px;min-height:46px;cursor:pointer}
-button.primary{background:var(--ink);color:#F4F7F4}
-button.warn{border-color:var(--buoy);color:var(--buoy)}
-button.small{min-height:38px;padding:7px 11px;font-size:12.5px;font-family:var(--f-data)}
-button:disabled{opacity:.45}
-button:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+/* Knöpfe: eine Größe, eine Form, drei Rollen */
+.btnrow,.tools{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));
+  gap:8px;margin:0 0 14px;align-items:stretch;
+}
+.tools{margin-bottom:6px}
+button{
+  font-family:var(--f-body);font-size:14px;font-weight:600;line-height:1.25;
+  color:var(--ink);background:#F7F9F6;border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;min-height:48px;cursor:pointer;text-align:center;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:border-color .12s ease, background-color .12s ease;
+}
+button:hover{border-color:var(--ink-soft);background:#F1F4EF}
+button:active{background:#E8EDE8}
+button.primary{background:var(--ink);color:#F4F7F4;border-color:var(--ink)}
+button.primary:hover{background:#16303D}
+button.warn{border-color:#E0BDB8;color:var(--buoy);background:#FCF6F5}
+button.warn:hover{border-color:var(--buoy)}
+button.small{min-height:44px;padding:10px 12px;font-size:13px}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.btnrow.eng{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
 footer{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(240,242,236,.96);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;backdrop-filter:blur(6px)}
 footer .status{flex:1;font-family:var(--f-data);font-size:11px;color:var(--ink-soft)}
 footer .status.err{color:var(--buoy)}
-footer button{padding:10px 13px;font-family:var(--f-data);font-size:13px}
+footer button{padding:10px 14px;font-size:13.5px;min-height:44px;border-radius:9px}
 footer .navbtns{display:flex;gap:8px}
 footer .navbtns.hidden{display:none}
 .banner{background:#FBEEEC;border:1px solid var(--buoy);color:#7E2A21;border-radius:var(--r);padding:10px 12px;font-size:13.5px;margin:0 12px 12px;max-width:720px}
@@ -191,15 +206,16 @@ footer .navbtns.hidden{display:none}
 .linkliste{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
 .toc-box{display:none}
 .toc{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 6px}
-.toc button{min-height:40px;padding:8px 11px;font-family:var(--f-data);font-size:12.5px;font-weight:500;
-  border-color:var(--line);color:var(--ink);background:#F5F7F3}
+.toc button{min-height:40px;padding:8px 11px;font-size:12.5px;font-weight:500}
 .toc button:hover{border-color:var(--ink)}
 .zurueck{display:flex;justify-content:flex-end;margin:2px 0 8px}
-.zurueck button{min-height:34px;padding:5px 10px;font-family:var(--f-data);font-size:11.5px;
-  border-color:var(--line);color:var(--ink-soft);background:transparent}
+.zurueck{display:block;text-align:right}
+.zurueck button{min-height:36px;padding:6px 12px;font-size:12px;color:var(--ink-soft);background:transparent;border-color:transparent}
+.zurueck button:hover{border-color:var(--line);background:#F5F7F3}
 .wp{display:flex;gap:6px;align-items:center;margin:0 0 6px}
 .wp input{flex:1}
-.wp button{min-height:46px;padding:0 12px;border-color:var(--line);color:var(--ink-soft)}
+.wp{display:flex;gap:6px}
+.wp button{min-height:48px;width:52px;padding:0;color:var(--ink-soft);font-size:18px}
 .wpKopf{display:flex;justify-content:space-between;align-items:center;margin:0 0 4px}
 .wpKopf label{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-soft);font-weight:600}
 .vorschlag{border-left:3px solid var(--seagrass);background:#F2F8F4;border-radius:0 8px 8px 0;padding:10px 12px;margin:0 0 10px}
@@ -834,21 +850,41 @@ KOMMEN</div>
       <p class="note">Die Daten liegen in einem privaten Gist deines GitHub-Kontos. Auf dem zweiten Gerät Token und Gist-ID eintragen und „Herunterladen" drücken. Ohne Empfang arbeitet die App normal weiter; der Abgleich passiert nur, wenn du ihn auslöst.</p>
     </div>
 
-    <div class="tools">
-      <button class="primary" id="btnUpdate">Nach Updates suchen</button>
-      <button class="primary" id="btnBackup">Backup in Downloads</button>
-      <button id="btnRestore">Backup laden</button>
-      <button id="btnExcel">Excel: aktive Reise</button>
-      <button id="btnExcelAlle">Excel: alle Reisen</button>
-      <button id="btnPdf">PDF erzeugen</button>
-      <button id="btnPdfMail">PDF per Mail teilen</button>
-      <button id="btnDiag">Diagnosebericht</button>
-      <button id="btnText">Logbuch als Text</button>
-      <button id="btnPrint">Drucken / PDF</button>
-      <button class="warn" id="btnClear">Aktuellen Tag leeren</button>
-      <button id="btnFeedback">Rückmeldung an den Support</button>
+    <div class="sheet">
+      <h2>Ausgeben und teilen</h2>
+      <div class="tools">
+        <button class="primary" id="btnExcel">Excel: aktive Reise</button>
+        <button id="btnExcelAlle">Excel: alle Reisen</button>
+        <button class="primary" id="btnPdf">PDF erzeugen</button>
+        <button id="btnPdfMail">PDF per Mail teilen</button>
+        <button id="btnPrint">Drucken</button>
+        <button id="btnText">Als Text anzeigen</button>
+      </div>
+      <p class="note">Excel und PDF beziehen sich auf die aktive Reise, sofern nicht anders angegeben.</p>
+    </div>
+
+    <div class="sheet">
+      <h2>Sichern und übertragen</h2>
+      <div class="tools">
+        <button class="primary" id="btnBackup">Backup speichern</button>
+        <button id="btnRestore">Backup laden</button>
+        <button id="btnUpdate">Nach Updates suchen</button>
+      </div>
+      <p class="note">Das Backup enthält alle Reisen. Vor größeren Änderungen und vor dem Löschen einer Reise lohnt es sich immer.</p>
       <input type="file" id="file" accept=".json,application/json" hidden>
     </div>
+
+    <div class="sheet">
+      <h2>Hilfe und Wartung</h2>
+      <div class="tools">
+        <button id="btnFeedback">Rückmeldung per E-Mail</button>
+        <button id="btnFeedbackTeilen">Infodatei teilen</button>
+        <button id="btnDiag">Diagnosebericht</button>
+        <button class="warn" id="btnClear">Aktuellen Tag leeren</button>
+      </div>
+      <p class="note">Rückmeldungen gehen an support@5buttons.eu. Übertragen werden nur App- und Stammdaten, keine Logbuchtexte und keine Positionen.</p>
+    </div>
+
     <div id="exportOut" class="hidden"></div>
   </section>
   <section class="view" id="viewInfo">
@@ -963,7 +999,9 @@ KOMMEN</div>
         <li><b>Excel: alle Reisen</b> – ein Tabellenblatt je Reise plus Stammdaten der aktiven</li>
         <li><b>PDF erzeugen</b> – vollständiges Logbuch der aktiven Reise als PDF</li>
         <li><b>PDF per Mail teilen</b> – übergibt die PDF an die Teilen-Funktion des Geräts, also an Mail, WhatsApp oder Drive. Geht das nicht, landet sie in den Downloads und die E-Mail öffnet sich mit dem Hinweis, sie anzuhängen.</li>
-        <li><b>Rückmeldung an den Support</b> – erzeugt eine Infodatei mit App-Version, Stammdaten, Schwellenwerten und Fehlerprotokoll und öffnet eine E-Mail an support@5buttons.eu. Anmerkungen bitte in die Mail schreiben. Logbuchtexte, Positionen und Zugangsdaten werden nicht übertragen.</li>
+        <li><b>Rückmeldung per E-Mail</b> – legt eine Infodatei in den Downloads ab und öffnet eine E-Mail an support@5buttons.eu mit fertigem Betreff. Anmerkungen in die Mail schreiben, Datei anhängen.</li>
+        <li><b>Infodatei teilen</b> – dieselbe Datei über die Teilen-Funktion des Geräts, etwa per WhatsApp. Dabei setzt das System keinen Empfänger; die Adresse steht in der Datei und in der Statuszeile.</li>
+        <li>Beide enthalten App-Version, Stammdaten, Schwellenwerte und Fehlerprotokoll – keine Logbuchtexte, Positionen oder Zugangsdaten.</li>
         <li><b>Drucken / PDF</b> – mit Logo, Bootsname und Törnzeitraum als Kopf</li>
       </ul>
 
@@ -1059,7 +1097,7 @@ KOMMEN</div>
 var WT = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 var TAGE = [];
 
-var APP_VERSION = "5.3.2";
+var APP_VERSION = "5.4";
 var APP_STAND = "28.08.2026";
 var APP_NAME = "5B Cruise Log";
 var APP_KURZ = "5BCL";   /* nur für Dateinamen und das Startbildschirm-Symbol */
@@ -1068,7 +1106,7 @@ var APP_AUTOR = "M. Button";
 function infoBauen(){
   var eintraege = [
     ["App", APP_NAME + " · 5buttons.eu"],
-    ["Version", APP_VERSION + " · Cache 5.3.2"],
+    ["Version", APP_VERSION + " · Cache 5.4"],
     ["Stand", APP_STAND],
     ["Autor", APP_AUTOR],
     ["Wettermodell", modellInfo(setup.modell).l],
@@ -1371,8 +1409,11 @@ function tageBauen(){
   var info = $("tornInfo");
   if(info){
     info.className = "note";
-    info.textContent = TAGE.length + " Reisetage von " + TAGE[0].d + " bis " + TAGE[TAGE.length-1].d +
-      ". Einträge hängen an der Tagesnummer: verschiebst du den Zeitraum, wandern vorhandene Einträge mit der Nummer, nicht mit dem Datum.";
+    var erfasst = 0;
+    TAGE.forEach(function(t){ if(gefuellt(t.n)) erfasst++; });
+    info.textContent = TAGE.length + " Reisetage · " + TAGE[0].d + " bis " + TAGE[TAGE.length-1].d +
+      " · " + erfasst + (erfasst === 1 ? " Tag" : " Tage") + " mit Einträgen" +
+      (erfasst ? ". Beim Ändern des Zeitraums bleiben Einträge an ihrer Tagesnummer." : ".");
   }
   var bb = $("brandBoot");
   if(bb){
@@ -2981,7 +3022,7 @@ function karteHtml(){
     return '<div class="block"><h3>Wetterkarte</h3><p class="note err">Ohne Empfang lässt sich keine Karte laden. Die Auswertung oben bleibt gültig.</p></div>';
   }
   return '<div class="block"><h3>Wetterkarte</h3>' +
-    '<div class="btnrow">' +
+    '<div class="btnrow eng">' +
     '<button class="small kbtn primary" data-o="wind">Wind</button>' +
     '<button class="small kbtn" data-o="gust">Böen</button>' +
     '<button class="small kbtn" data-o="waves">Wellen</button>' +
@@ -5046,27 +5087,47 @@ function feedbackText(){
   t.push("  Erfasste Tage in der aktiven Reise: " + tage + " von " + TAGE.length + " · " + sm.toFixed(1) + " sm");
   t.push("  Fehlerprotokoll: " + (fehlerLog.length ? fehlerLog.join(" | ") : "leer"));
   t.push("");
+  t.push("Empfänger: support@5buttons.eu");
   t.push("Es werden keine Logbuchtexte, Positionen oder Zugangsdaten übertragen.");
   return t.join("\n");
 }
 
-$("btnFeedback").onclick = async function(){
-  var txt = feedbackText();
-  var name = APP_KURZ + "_Info_" + new Date().toISOString().slice(0,10) + ".txt";
-  var enc = new TextEncoder();
+function feedbackDatei(){
+  return {name: APP_KURZ + "_Info_" + new Date().toISOString().slice(0,10) + ".txt",
+    bytes: new TextEncoder().encode(feedbackText())};
+}
+var SUPPORT = "support@5buttons.eu";
+
+/* Weg über die E-Mail: Empfänger und Betreff stehen fest, Datei kommt aus den Downloads */
+$("btnFeedback").onclick = function(){
+  var f = feedbackDatei();
+  var blob = new Blob([f.bytes], {type:"text/plain"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = f.name;
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
+
   var betreff = "Rückmeldung " + APP_NAME + " " + APP_VERSION;
   var koerper = "Bitte hier die Anmerkungen zur App eintragen:\n\n\n\n" +
-    "-- technische Angaben im Anhang --";
-  var erg = await dateiTeilen(name, enc.encode(txt), "text/plain", betreff);
+    "----------------------------------------\n" +
+    "Die Datei " + f.name + " liegt in den Downloads. Bitte anhängen, sie enthält\n" +
+    "App-Version, Stammdaten und Schwellenwerte – keine Logbuchtexte und keine Positionen.\n";
+  setStatus("Infodatei in den Downloads · E-Mail an " + SUPPORT + " wird geöffnet");
   setTimeout(function(){
-    location.href = "mailto:support@5buttons.eu?subject=" + encodeURIComponent(betreff) +
-      "&body=" + encodeURIComponent(koerper + (erg === "geladen"
-        ? "\n\nHinweis: Die Datei " + name + " liegt in den Downloads und muss hier von Hand angehängt werden."
-        : ""));
-  }, 700);
+    location.href = "mailto:" + SUPPORT + "?subject=" + encodeURIComponent(betreff) +
+      "&body=" + encodeURIComponent(koerper);
+  }, 500);
+};
+
+/* Weg über die Teilen-Funktion: für WhatsApp, Drive und ähnliches */
+$("btnFeedbackTeilen").onclick = async function(){
+  var f = feedbackDatei();
+  var erg = await dateiTeilen(f.name, f.bytes, "text/plain",
+    "Rückmeldung " + APP_NAME + " " + APP_VERSION + " – Empfänger: " + SUPPORT);
   setStatus(erg === "geteilt"
-    ? "Info geteilt – bitte Anmerkungen in die E-Mail schreiben"
-    : "Infodatei erstellt – E-Mail wird geöffnet, Datei anhängen und Anmerkungen schreiben");
+    ? "Infodatei übergeben · Empfänger " + SUPPORT + " bitte selbst eintragen"
+    : erg === "abgebrochen" ? "Teilen abgebrochen" : "Infodatei in den Downloads");
 };
 
 $("btnExcel").onclick = function(){ excelErzeugen(false); };
